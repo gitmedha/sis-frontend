@@ -1,6 +1,7 @@
 export const opportunitiesFields = `
 id
 type
+earning_type
 role_or_designation
 number_of_opportunities
 created_at
@@ -17,6 +18,7 @@ state
 pin_code
 medha_area
 district
+experience_required
 job_description_file {
   id
   url

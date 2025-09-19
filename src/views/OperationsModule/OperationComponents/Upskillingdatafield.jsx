@@ -14,7 +14,7 @@ import UpskillUpdate from "./UpskillUpdate";
 import { deactivate_user_students_upskills } from "./operationsActions";
 import Deletepopup from "./Deletepopup";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .icon-box {
@@ -80,8 +80,8 @@ const Upskillingdatafield = (props) => {
   }
 
   const deleteEntry=async()=>{
-    // let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling DELETE",event_id:"",updatedby:userId ,changes_in:{...props}};
-    //   await createLatestAcivity(datavaluesforlatestcreate);
+    let datavaluesforlatestcreate={module_name:"Operation",activity:"Student Upskilling Data Deleted",event_id:"",updatedby:userId ,changes_in:{name:"N/A"}};
+      await createLatestAcivity(datavaluesforlatestcreate);
     const data=await deactivate_user_students_upskills(Number(props.id))
     if(data.status==200){
      setAlert("Entry Deleted Successfully.", "success");
@@ -132,7 +132,7 @@ const Upskillingdatafield = (props) => {
                 <DetailField
                     
                     label="Student Name"
-                    value={<Anchor text={props.student_id.full_name} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
+                    value={<Anchor text={props.student_id?.full_name} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
                   />
                   
                   <DetailField

@@ -27,6 +27,21 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const DateRangeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  
+  > div {
+    flex: 1;
+    &:first-child {
+      margin-right: 15px;
+    }
+  }
+`;
+
 const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
   let options = [
     { key: 3, value: "email", label: "Email" },
@@ -217,6 +232,7 @@ const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
           <Form>
             <Section>
               <div className="row align-items-center">
+                {/* Search Field Column */}
                 <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
                   <Input
                     icon="down"
@@ -228,7 +244,9 @@ const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
                     onChange={(e) => setSearchItem(e.value)}
                   />
                 </div>
-                <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
+                
+                {/* Search Value Column */}
+                <div className="col-lg-4 col-md-6 col-sm-12 mb-2">
                   {selectedSearchField === null && (
                     <Input
                       name="search_by_value"
@@ -295,8 +313,8 @@ const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
                   )}
 
                   {selectedSearchField === "query_start" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
+                    <DateRangeContainer>
+                      <div>
                         <Input
                           name="search_by_value_date"
                           label="From"
@@ -307,7 +325,7 @@ const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
                           disabled={disabled ? true : false}
                         />
                       </div>
-                      <div className="ml-2">
+                      <div>
                         <Input
                           name="search_by_value_date_to"
                           label="To"
@@ -318,12 +336,12 @@ const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
                           disabled={disabled ? true : false}
                         />
                       </div>
-                    </div>
+                    </DateRangeContainer>
                   )}
 
                   {selectedSearchField === "query_end" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
+                    <DateRangeContainer>
+                      <div>
                         <Input
                           name="search_by_value_date_end_from"
                           label="From"
@@ -334,7 +352,7 @@ const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
                           disabled={disabled ? true : false}
                         />
                       </div>
-                      <div className="ml-2">
+                      <div>
                         <Input
                           name="search_by_value_date_end_to"
                           label="To"
@@ -345,9 +363,11 @@ const AlumniSearchBar = ({ searchOperationTab, resetSearch }) => {
                           disabled={disabled ? true : false}
                         />
                       </div>
-                    </div>
+                    </DateRangeContainer>
                   )}
                 </div>
+                
+                {/* Action Buttons Column */}
                 <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
                   <button
                     className="btn btn-primary action_button_sec search_bar_action_sec"

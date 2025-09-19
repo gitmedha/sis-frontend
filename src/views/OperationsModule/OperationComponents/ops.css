@@ -1,0 +1,113 @@
+/* .filter-box {
+  border: 1px solid #1a2b3c;
+  border-radius: 8px;
+  padding: 16px;
+  background: #fff;
+  max-width: 100%;
+} */
+.w-300{
+  width: 300px !important;
+}
+
+.filter-title {
+  margin-bottom: 12px;
+  font-weight: 500;
+}
+
+.filter-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.chip {
+  border: 1px solid #c4c4c4;
+  border-radius: 6px;
+  padding: 6px 14px;
+  background: #f8f9fa;
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  min-height: 32px;
+}
+
+.chip:hover {
+  background: #e2e6ea;
+}
+
+.chip.active {
+  background: #21867a;
+  border-color: #21867a;
+  color: #fff;
+}
+
+.filter-inputs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
+  margin-bottom: 16px;
+}
+
+.filter-select {
+  min-width: 200px;
+  padding: 6px 10px;
+  border-radius: 6px;
+  border: 1px solid #c4c4c4;
+  font-size: 14px;
+  height: 36px;
+  outline: none;
+}
+
+.filter-select:focus {
+  border-color: #21867a;
+  box-shadow: 0 0 0 2px rgba(33, 134, 122, 0.2);
+}
+
+.filter-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+.btn {
+  min-width: 80px;
+  height: 36px;
+  border-radius: 6px;
+  border: none;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: background 0.2s ease;
+}
+
+.btn .apply .apply_pitch{
+  background: #21867a !important;
+  color: white;
+}
+.close{
+     min-width: 80px;
+    height: 36px;
+    border-radius: 6px;
+    border: none;
+    font-size: 14px;
+    color: white;
+    font-weight: 500;
+    background-color: #6c757d;
+    cursor: pointer;
+    -webkit-transition: background 0.2s ease;
+    transition: background 0.2s ease;
+  /* 6c757d */
+}
+.btn.apply:hover {
+  background: #18645a;
+}
+
+.btn.clear {
+  background: #6c757d;
+  color: white;
+}
+
+.btn.clear:hover {
+  background: #565e64;
+}

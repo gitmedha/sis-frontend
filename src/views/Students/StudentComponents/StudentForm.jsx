@@ -18,6 +18,7 @@ import {
 } from "../../../utils/function/lookupOptions";
 import { isAdmin, isSRM } from "../../../common/commonFunctions";
 import { capitalizeFirstLetter } from "../../../utils/function/Checker";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -55,6 +56,7 @@ const StudentForm = (props) => {
   const [areaOptions, setAreaOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
+  const [blocked, setBlocked] = useState(false)
   const [showCVSubLabel, setShowCVSubLabel] = useState(
     props.CV && props.CV.url
   );
@@ -133,6 +135,22 @@ const StudentForm = (props) => {
 
     setShowCVSubLabel(props.CV && props.CV.url);
   }, [props]);
+  useEffect(() => {
+    
+    let userID = props?.assigned_to?.id;
+    
+    function findUser(users, searchTerm) {
+        
+        return users.find(user => 
+            String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+        ) || false;
+    }
+    
+    let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+    setBlocked(userExistsByIdBoolean.blocked);
+
+}, [props, assigneeOptions]);
+
 
   const onStateChange = (value) => {
     setDistrictOptions([]);
@@ -176,8 +194,30 @@ const StudentForm = (props) => {
     values.name_of_parent_or_guardian = capitalizeFirstLetter(
       values.name_of_parent_or_guardian
     );
+    // console.log(values.full_name);
     setDisableSaveButton(true);
-    await onHide(values);
+    let studentData = {};
+    let StudentValues=await onHide(values); 
+    // console.log(StudentValues);
+    if (props.student_id) {
+      let updatedvalue=initialValues;
+    updatedvalue.full_name=capitalizeFirstLetter(initialValues.full_name);
+    updatedvalue.name_of_parent_or_guardian = capitalizeFirstLetter(
+      initialValues.name_of_parent_or_guardian
+    );
+      let changes_in=compareObjects( values,studentData);
+      // console.log(changes_in);
+      studentData = {
+        module_name: "student",
+        activity: "Student Data Updated",
+        event_id: values.id,
+        updatedby: userId,
+        changes_in: compareObjects( values,updatedvalue),
+      };
+      await createLatestAcivity(studentData)
+    } 
+    
+    
     setDisableSaveButton(false);
   };
 
@@ -277,12 +317,13 @@ const StudentForm = (props) => {
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
-                      {/* {statusOptions.length ? ( */}
+                      
                       <Input
                         control="lookupAsync"
                         name="assigned_to"
                         label="Assigned To"
                         required
+                        isDisabled={blocked}
                         className="form-control capitalize"
                         placeholder="Assigned To"
                         filterData={filterAssignedTo}
@@ -453,10 +494,10 @@ const StudentForm = (props) => {
                         icon="down"
                         control="lookup"
                         name="your_plan_after_your_current_course"
-                        label="Your plan after your current course"
+                        label="Your plan after your current course ?"
                         options={yourPlanFfterYourCurrentCourse}
                         className="form-control"
-                        placeholder="Current Course"
+                        placeholder="Your plan after your current course"
                       />
                     </div>
                     {(isSRM() || isAdmin()) && (
@@ -640,7 +681,7 @@ const StudentForm = (props) => {
                   </div>
                 </Section> */}
               </div>
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

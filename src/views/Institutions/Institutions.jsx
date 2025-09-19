@@ -20,8 +20,8 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import InstitutionSearchBar from "./InstitutionComponents/InstitutionSearchBar";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
- 
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
+
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
   { title: "My Area", key: "my_area" },
@@ -49,51 +49,64 @@ const Institutions = (props) => {
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const prevIsSearchEnableRef = useRef();
- 
- 
+
+  
   useEffect(() => {
     if (isSearchEnable) {
       getInstitutions(activeTab.key);
     }
-   
+    
     if (prevIsSearchEnableRef.current !== undefined) {
       if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
         getInstitutions(activeTab.key);
       }
     }
- 
+
     prevIsSearchEnableRef.current = isSearchEnable;
   }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
  
-  const columns = useMemo(
-    () => [
-      {
-        Header: "Name",
-        accessor: "avatar",
-      },
-      {
-        Header: "Area",
-        accessor: "medha_area",
-      },
-      {
-        Header: "State",
-        accessor: "state",
-      },
-      {
-        Header: "Type",
-        accessor: "type",
-      },
-      {
-        Header: "Status",
-        accessor: "status",
-      },
-      {
-        Header: "Assigned To",
-        accessor: "assigned_to.username",
-      },
-    ],
-    []
-  );
+   const getDisplayValue = (value) => {
+  if (value && typeof value === 'object' && 'props' in value && 'value' in value.props) {
+    return value.props.value || "N/A";
+  }
+  return value || "N/A";
+};
+
+const columns = useMemo(
+  () => [
+    {
+      Header: "Name",
+      accessor: "avatar",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Area",
+      accessor: "medha_area",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "State",
+      accessor: "state",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Type",
+      accessor: "type",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Status",
+      accessor: "status",
+      Cell: ({ value }) => getDisplayValue(value)
+    },
+    {
+      Header: "Assigned To",
+      accessor: "assigned_to.username",
+      Cell: ({ row }) => getDisplayValue(row.original.assigned_to?.username)
+    },
+  ],
+  []
+);
  
   const getInstitutionsBySearchFilter = async (
     selectedTab,
@@ -260,7 +273,7 @@ const Institutions = (props) => {
         state:$state,
         status:$status,
         type:$type,
-        name_contains: $name
+        name_contains: $name 
       }
     ) {
       values {
@@ -430,7 +443,7 @@ const Institutions = (props) => {
           <Avatar
             name={institution.name}
             logo={institution.logo}
-            style={{ width: "35px", height: "35px" }}
+            style={{ width: "5px", height: "5px" }}
           />
         ),
         status: (
@@ -483,7 +496,7 @@ const Institutions = (props) => {
           setAlert("Institution created successfully.", "success");
           setModalShow(false);
           getInstitutions();
-         
+          
           let propgramEnrollemntData = {
             module_name: "institution",
             activity: "Institution Data Created",
@@ -491,15 +504,15 @@ const Institutions = (props) => {
             updatedby: userId,
             changes_in: { name: data.data.data.createInstitution.institution.name },
           };
-   
-          // createLatestAcivity(propgramEnrollemntData)
-          //   .then(() => {
-          //     console.log("Activity created successfully.");
-          //   })
-          //   .catch((err) => {
-          //     console.error("Failed to create activity:", err);
-          //   });
-   
+    
+          createLatestAcivity(propgramEnrollemntData)
+            .then(() => {
+              console.log("Activity created successfully.");
+            })
+            .catch((err) => {
+              console.error("Failed to create activity:", err);
+            });
+    
           history.push(`/institution/${data.data.data.createInstitution.institution.id}`);
         }
       })

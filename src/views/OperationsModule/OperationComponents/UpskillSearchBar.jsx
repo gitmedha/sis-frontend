@@ -1,37 +1,133 @@
-import React, { useState, Fragment } from "react";
+import React, { Fragment, useState } from "react";
 import { connect } from "react-redux";
 import { Input } from "../../../utils/Form";
-import { Formik, Form, useFormik } from "formik";
+import { Formik, Form } from "formik";
 import styled from "styled-components";
 import {
   searchOperationTab,
   resetSearch,
 } from "../../../store/reducers/Operations/actions";
 import { getFieldValues } from "./operationsActions";
-import * as Yup from "yup";
+import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
+import Select from "react-select";
+import Modal from 'react-bootstrap/Modal';
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
 
 const Section = styled.div`
   padding-bottom: 30px;
-
   &:not(:first-child) {
     border-top: 1px solid #c4c4c4;
   }
+`;
 
-  .section-header {
+const SearchRow = styled.div`
+  margin-bottom: 20px;
+  display: flex;
+  align-items: flex-start;
+  flex-wrap: wrap;
+  gap: 15px;
+`;
+
+const SearchFieldContainer = styled.div`
+  flex: 0 0 200px;
+`;
+
+const SearchValueContainer = styled.div`
+  flex: 0 0 300px;
+`;
+
+const IconContainer = styled.div`
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-top: 28px;
+  
+  svg {
+    cursor: pointer;
+    font-size: 20px;
     color: #207b69;
-    font-family: "Latto-Regular";
-    font-style: normal;
-    font-weight: bold;
-    font-size: 14px;
-    line-height: 18px;
-    margin-bottom: 15px;
+    &:hover {
+      color: #16574a;
+    }
   }
 `;
-const UpSkillSearchBar = function UpSkillSearch({
-  searchOperationTab,
-  resetSearch,
-}) {
-  let options = [
+
+const DateRangeContainer = styled.div`
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  
+  > div {
+    flex: 1;
+    &:first-child {
+      margin-right: 15px;
+    }
+  }
+`;
+
+const MultipleFilterBox = styled.div`
+  .filter-box {
+    border: 1px solid #1a2b3c;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+    max-width: 100%;
+  }
+
+  .filter-title {
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .chip {
+    border: 1px solid #c4c4c4;
+    border-radius: 6px;
+    padding: 6px 14px;
+    background: #f8f9fa;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 32px;
+  }
+
+  .chip:hover { background: #e2e6ea; }
+  .chip.active { background: #21867a; border-color: #21867a; color: #fff; }
+
+  .filter-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .btn { min-width: 80px; height: 36px; border-radius: 6px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s ease; }
+  .btn.apply { background: #21867a; color: white; }
+  .btn.apply:hover { background: #18645a; }
+  .btn.clear { background: #6c757d; color: white; }
+  .btn.clear:hover { background: #565e64; }
+`;
+const SearchButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 22px; /* Adjust as needed for alignment with other inputs */
+`;
+
+const UpskillSearchBar = ({ searchOperationTab, resetSearch }) => {
+  const options = [
     { key: 1, value: "assigned_to.username", label: "Assigned to" },
     { key: 3, value: "course_name", label: "Course Name" },
     { key: 6, value: "end_date", label: "End Date" },
@@ -40,129 +136,483 @@ const UpSkillSearchBar = function UpSkillSearch({
     { key: 0, value: "student_id.full_name", label: "Student Name" },
     { key: 4, value: "program_name", label: "Program Name" },
     { key: 7, value: "category", label: "Category" },
-  ].sort((a, b) => a.label - b.label);
+  ].sort((a, b) => a.label.localeCompare(b.label));
 
   const [studentNameOptions, setStudentNameOptions] = useState([]);
   const [assignedToOptions, setAssignedToOptions] = useState([]);
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [courseNameOptions, setCourseNameOptions] = useState([]);
-
   const [programNameOptions, setProgramOptions] = useState([]);
   const [categoryOptions, setCategoryOptions] = useState([]);
-
-  const [selectedSearchField, setSelectedSearchField] = useState(null);
-  const [disabled, setDisbaled] = useState(true);
+  const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
+  const [disabled, setDisabled] = useState(true);
+  const [counter, setCounter] = useState(1);
+  const [isFieldEmpty, setIsFieldEmpty] = useState(false);
+  const [onefilter, setOnefilter] = useState(true);
+  const [appliedFilters, setAppliedFilters] = useState([]); // {label, value}
+  const [persistentFilterValues, setPersistentFilterValues] = useState({});
+  const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false);
+  const [appliedFiltersSummary, setAppliedFiltersSummary] = useState("");
 
   let today = new Date();
   const initialValues = {
-    search_by_field: "",
-    search_by_value: "",
-    search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
-    search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
-    search_by_value_date_end_from: new Date(
-      new Date(today).setDate(today.getDate())
-    ),
-    search_by_value_date_end_to: new Date(
-      new Date(today).setDate(today.getDate())
-    ),
+    searches: [{
+      search_by_field: "",
+      search_by_value: "",
+      search_by_value_date_to: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date_end_from: new Date(new Date(today).setDate(today.getDate())),
+      search_by_value_date_end_to: new Date(new Date(today).setDate(today.getDate())),
+    }],
   };
-  const formatdate = (dateval) => {
-    const date = new Date(dateval);
 
+  const formatDate = (dateVal) => {
+    const date = new Date(dateVal);
     const yyyy = date.getFullYear();
-    const mm = String(date.getMonth() + 1).padStart(2, "0"); // Adding 1 because months are zero-based
+    const mm = String(date.getMonth() + 1).padStart(2, "0");
     const dd = String(date.getDate()).padStart(2, "0");
-
-    const formattedDate = `${yyyy}-${mm}-${dd}`;
-    return formattedDate;
+    return `${yyyy}-${mm}-${dd}`;
   };
 
   const handleSubmit = async (values) => {
-    let baseUrl = "students-upskillings";
-    //  await searchOperationTab(baseUrl,values.search_by_field,values.search_by_value)
-    if (
-      values.search_by_field === "start_date" ||
-      values.search_by_field === "end_date"
-    ) {
-      // let baseUrl = 'alumni-queries'
-      if (values.search_by_field == "start_date") {
-        const date1 = formatdate(values.search_by_value_date);
-        const date2 = formatdate(values.search_by_value_date_to);
-        let val = {
-          start_date: date1,
-          end_date: date2,
-        };
-        await searchOperationTab(baseUrl, values.search_by_field, val);
+    const baseUrl = "students-upskillings";
+    const searchFields = [];
+    const searchValues = [];
+    const appliedList = [];
 
-        //stores the last searched result in the local storage as cache
-        //we will use it to refresh the search results
+    const fieldLabelMap = options.reduce((acc, cur) => {
+      acc[cur.value] = cur.label;
+      return acc;
+    }, {});
 
-        await localStorage.setItem(
-          "prevSearchedPropsAndValues",
-          JSON.stringify({
-            baseUrl: baseUrl,
-            searchedProp: values.search_by_field,
-            searchValue: val,
-          })
-        );
+    values.searches.forEach((search) => {
+      if (search.search_by_field && search.search_by_value) {
+        searchFields.push(search.search_by_field);
+        searchValues.push(search.search_by_value);
+        appliedList.push({ label: fieldLabelMap[search.search_by_field] || search.search_by_field, value: search.search_by_value });
+      } else if (
+        search.search_by_field === "start_date" &&
+        search.search_by_value_date &&
+        search.search_by_value_date_to
+      ) {
+        const startDate = formatDate(search.search_by_value_date);
+        const endDate = formatDate(search.search_by_value_date_to);
+        searchFields.push(search.search_by_field);
+        searchValues.push({ start: startDate, end: endDate });
+        appliedList.push({ label: fieldLabelMap[search.search_by_field] || "Start Date", value: `${startDate} - ${endDate}` });
+      } else if (
+        search.search_by_field === "end_date" &&
+        search.search_by_value_date_end_from &&
+        search.search_by_value_date_end_to
+      ) {
+        const startDate = formatDate(search.search_by_value_date_end_from);
+        const endDate = formatDate(search.search_by_value_date_end_to);
+        searchFields.push(search.search_by_field);
+        searchValues.push({ start: startDate, end: endDate });
+        appliedList.push({ label: fieldLabelMap[search.search_by_field] || "End Date", value: `${startDate} - ${endDate}` });
       }
-      if (values.search_by_field == "end_date") {
-        const date1 = formatdate(values.search_by_value_date_end_from);
-        const date2 = formatdate(values.search_by_value_date_end_to);
-        let val = {
-          start_date: date1,
-          end_date: date2,
-        };
-        await searchOperationTab(baseUrl, values.search_by_field, val);
+    });
 
-        //stores the last searched result in the local storage as cache
-        //we will use it to refresh the search results
-
-        await localStorage.setItem(
-          "prevSearchedPropsAndValues",
-          JSON.stringify({
-            baseUrl: baseUrl,
-            searchedProp: values.search_by_field,
-            searchValue: val,
-          })
-        );
-      }
-    } else {
-      await searchOperationTab(
-        baseUrl,
-        values.search_by_field,
-        values.search_by_value
-      );
-
-      //stores the last searched result in the local storage as cache
-      //we will use it to refresh the search results
-
-      await localStorage.setItem(
-        "prevSearchedPropsAndValues",
-        JSON.stringify({
-          baseUrl: baseUrl,
-          searchedProp: values.search_by_field,
-          searchValue: values.search_by_value,
-        })
-      );
-    }
+    const searchData = { searchFields, searchValues };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
+    // Do not show applied filters for single-filter submissions
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
   };
-  const formik = useFormik({
-    // Create a Formik reference using useFormik
-    initialValues,
-    onSubmit: handleSubmit,
-  });
 
   const clear = async (formik) => {
     formik.setValues(initialValues);
     await resetSearch();
-    setSelectedSearchField(null);
-    setDisbaled(true);
+    setSelectedSearchFields([null]);
+    setDisabled(true);
+    setCounter(1);
+    setIsFieldEmpty(false);
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    setAppliedFiltersSummary("");
+    setPersistentFilterValues({});
+    const baseUrl = "students-upskillings";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
   };
 
-  const setSearchItem = (value) => {
-    setSelectedSearchField(value);
-    setDisbaled(false);
+  const closefilterBox = () => {
+    setOnefilter(true);
+  };
+
+  const clearModalFiltersAndClose = async (formik) => {
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    setAppliedFiltersSummary("");
+    await clear(formik);
+    closefilterBox();
+  };
+
+  const filters = [
+    "Student Name",
+    "Assigned To",
+    "Institute Name",
+    "Course Name",
+    "Program Name",
+    "Category",
+    "Start Date",
+    "End Date",
+  ];
+
+  const FilterBox = ({ initialFilterValues }) => {
+    const [activeFilters, setActiveFilters] = useState(() => {
+      const s = new Set();
+      Object.keys(initialFilterValues || {}).forEach(k => {
+        const v = initialFilterValues[k];
+        if (v !== null && v !== '') {
+          // If we got date range keys, enable their base chip
+          if (k === 'Start Date From' || k === 'Start Date To') {
+            s.add('Start Date');
+          } else if (k === 'End Date From' || k === 'End Date To') {
+            s.add('End Date');
+          } else {
+            s.add(k);
+          }
+        }
+      });
+      return Array.from(s);
+    });
+    const [isApplyDisabled, setIsApplyDisabled] = useState(true);
+
+    const validate = (vals) => {
+      if (activeFilters.length === 0) { setIsApplyDisabled(true); return false; }
+      let ok = true;
+      activeFilters.forEach(f => {
+        if (f === "Start Date" || f === "End Date") {
+          const fromVal = vals[`${f} From`];
+          const toVal = vals[`${f} To`];
+          if (!fromVal || !toVal) ok = false;
+          if (fromVal instanceof Date && toVal instanceof Date && fromVal > toVal) ok = false;
+        } else {
+          const v = vals[f];
+          if (!v || (typeof v === 'string' && v.trim() === '')) ok = false;
+        }
+      });
+      setIsApplyDisabled(!ok);
+      return ok;
+    };
+
+    const handleChange = (filter, value, setFieldValue, currentValues) => {
+      setFieldValue(filter, value);
+      validate({ ...currentValues, [filter]: value });
+    };
+
+    const ensureOptions = async () => {
+      // Fetch options lazily based on active filters
+      for (const f of activeFilters) {
+        if (f === "Student Name" && studentNameOptions.length === 0) {
+          const { data } = await getFieldValues("student_id", "students-upskillings");
+          setStudentNameOptions(data);
+        } else if (f === "Assigned To" && assignedToOptions.length === 0) {
+          const users = await getAllSearchSrm();
+          setAssignedToOptions(users);
+        } else if (f === "Institute Name" && institutionOptions.length === 0) {
+          const { data } = await getFieldValues("institution", "students-upskillings");
+          setInstitutionOptions(data);
+        } else if (f === "Course Name" && courseNameOptions.length === 0) {
+          const { data } = await getFieldValues("course_name", "students-upskillings");
+          setCourseNameOptions(data);
+        } else if (f === "Program Name" && programNameOptions.length === 0) {
+          const { data } = await getFieldValues("program_name", "students-upskillings");
+          setProgramOptions(data);
+        } else if (f === "Category" && categoryOptions.length === 0) {
+          const { data } = await getFieldValues("category", "students-upskillings");
+          setCategoryOptions(data);
+        }
+      }
+    };
+
+    React.useEffect(() => { ensureOptions(); }, [activeFilters]);
+
+    const toggleFilter = (filter, modalFormik) => {
+      setActiveFilters(prev => {
+        const isCurrentlyActive = prev.includes(filter);
+        const newActiveFilters = isCurrentlyActive
+          ? prev.filter(f => f !== filter) 
+          : [...prev, filter];
+        
+        // Only clear values when filter is being deselected (was active, now inactive)
+        if (isCurrentlyActive) {
+          const fm = modalFormik;
+          fm.setFieldValue(filter, null);
+          if (filter === "Start Date" || filter === "End Date") {
+            fm.setFieldValue(`${filter} From`, null);
+            fm.setFieldValue(`${filter} To`, null);
+          }
+        }
+        
+        return newActiveFilters;
+      });
+    };
+
+    const handleApply = async (values) => {
+      if (!validate(values)) return;
+      const backendFieldMap = {
+        "Student Name": "student_id.full_name",
+        "Assigned To": "assigned_to.username",
+        "Institute Name": "institution.name",
+        "Course Name": "course_name",
+        "Program Name": "program_name",
+        "Category": "category",
+        "Start Date From": "start_date_from",
+        "Start Date To": "start_date_to",
+        "End Date From": "end_date_from",
+        "End Date To": "end_date_to",
+      };
+      const searchFields = [];
+      const searchValues = [];
+      const chips = [];
+      const appliedFiltersSummaryParts = [];
+      
+      Object.keys(values).forEach(k => {
+        let v = values[k];
+        if (v !== null && v !== undefined && v !== '') {
+          searchFields.push(backendFieldMap[k] || k);
+          let displayValue = v;
+          
+          if (v instanceof Date && !isNaN(v)) {
+            displayValue = new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(v);
+            v = v.toISOString();
+          }
+          
+          // Handle date ranges specially
+          if (k === "Start Date From") {
+            const toValue = values["Start Date To"];
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            chips.push({ label: "Start Date", value: `${displayValue} - ${formattedTo}` });
+            appliedFiltersSummaryParts.push(`Start Date: ${displayValue} - ${formattedTo}`);
+          } else if (k === "End Date From") {
+            const toValue = values["End Date To"];
+            const formattedTo = toValue instanceof Date && !isNaN(toValue) 
+              ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(toValue)
+              : '';
+            chips.push({ label: "End Date", value: `${displayValue} - ${formattedTo}` });
+            appliedFiltersSummaryParts.push(`End Date: ${displayValue} - ${formattedTo}`);
+          } else if (k !== "Start Date To" && k !== "End Date To") {
+            chips.push({ label: k, value: displayValue });
+            appliedFiltersSummaryParts.push(`${k}: ${displayValue}`);
+          }
+          
+          searchValues.push(v);
+        }
+      });
+      
+      const baseUrl = "students-upskillings";
+      const searchData = { searchFields, searchValues };
+      await searchOperationTab(baseUrl, searchData);
+      await localStorage.setItem("prevSearchedPropsAndValues", JSON.stringify({ baseUrl, searchData }));
+      
+      setPersistentFilterValues(values);
+      setAppliedFilters(chips);
+      
+      // Set summary message
+      if (appliedFiltersSummaryParts.length > 0) {
+        setAppliedFiltersSummary("Multiple Filter Applied: " + appliedFiltersSummaryParts.join(", "));
+        setShowAppliedFilterMessage(true);
+      } else {
+        setAppliedFiltersSummary("");
+        setShowAppliedFilterMessage(false);
+      }
+      
+      closefilterBox();
+    };
+
+    return (
+      <Formik
+        initialValues={initialFilterValues}
+        enableReinitialize={true}
+        onSubmit={(values) => handleApply(values)}
+        validate={(values) => { validate(values); }}
+      >
+        {(formik) => (
+          <Form>
+            <Modal centered size="lg" show={true} onHide={closefilterBox} animation={false} aria-labelledby="contained-modal-title-vcenter" className="form-modal">
+              <Modal.Header className="bg-white">
+                <Modal.Title id="contained-modal-title-vcenter" className="text--primary latto-bold">Add Filters</Modal.Title>
+              </Modal.Header>
+              <Modal.Body>
+                <MultipleFilterBox>
+                  <div className="filter-chips">
+                    {filters.map((f) => (
+                      <button key={f} type="button" className={`chip ${activeFilters.includes(f) ? "active" : ""}`} onClick={() => toggleFilter(f, formik)}>
+                        {f}
+                      </button>
+                    ))}
+                  </div>
+                  <div className="filter-inputs">
+                    {activeFilters.map((f) => {
+                      switch (f) {
+                        case "Student Name":
+                          return (
+                            <div key={f}>
+                              <label>Student Name</label>
+                              <Select
+                                options={studentNameOptions.map(opt => ({ label: opt.label || opt.value, value: opt.value || opt.label }))}
+                                onChange={(sel) => handleChange("Student Name", sel?.value, formik.setFieldValue, formik.values)}
+                                placeholder="Select Student..."
+                                isClearable isSearchable
+                                value={formik.values["Student Name"] ? { label: formik.values["Student Name"], value: formik.values["Student Name"] } : null}
+                                styles={{ container:(base)=>({ ...base, width:"300px" }) }}
+                              />
+                            </div>
+                          );
+                        case "Start Date":
+                        case "End Date":
+                          return (
+                            <Fragment key={f}>
+                              <DateRangeContainer>
+                                <div className="date-input-group">
+                                  <label>{`${f} From`}</label>
+                                  <Input
+                                    control="datepicker"
+                                    name={`${f} From`}
+                                    className="form-control w-300"
+                                    onChange={(date) => handleChange(`${f} From`, date, formik.setFieldValue, formik.values)}
+                                    value={formik.values[`${f} From`] || null}
+                                    showTime={false}
+                                  />
+                                </div>
+                                <div className="date-input-group">
+                                  <label>{`${f} To`}</label>
+                                  <Input
+                                    control="datepicker"
+                                    name={`${f} To`}
+                                    className="form-control w-300"
+                                    onChange={(date) => handleChange(`${f} To`, date, formik.setFieldValue, formik.values)}
+                                    minDate={formik.values[`${f} From`] || null}
+                                    value={formik.values[`${f} To`] || null}
+                                    showTime={false}
+                                  />
+                                </div>
+                              </DateRangeContainer>
+                            </Fragment>
+                          );
+                        case "Assigned To":
+                          return (
+                            <div key={f}>
+                              <label>Assigned To</label>
+                              <Select
+                                options={assignedToOptions.map(opt => ({ label: opt.label || opt.value, value: opt.value || opt.label }))}
+                                onChange={(sel) => handleChange("Assigned To", sel?.value, formik.setFieldValue, formik.values)}
+                                placeholder="Select Assigned To..."
+                                isClearable isSearchable
+                                value={formik.values["Assigned To"] ? { label: formik.values["Assigned To"], value: formik.values["Assigned To"] } : null}
+                                styles={{ container:(base)=>({ ...base, width:"300px" }) }}
+                              />
+                            </div>
+                          );
+                        case "Institute Name":
+                          return (
+                            <div key={f}>
+                              <label>Institute Name</label>
+                              <Select
+                                options={institutionOptions.map(opt => ({ label: opt.label || opt.value, value: opt.value || opt.label }))}
+                                onChange={(sel) => handleChange("Institute Name", sel?.value, formik.setFieldValue, formik.values)}
+                                placeholder="Select Institute..."
+                                isClearable isSearchable
+                                value={formik.values["Institute Name"] ? { label: formik.values["Institute Name"], value: formik.values["Institute Name"] } : null}
+                                styles={{ container:(base)=>({ ...base, width:"300px" }) }}
+                              />
+                            </div>
+                          );
+                        case "Course Name":
+                          return (
+                            <div key={f}>
+                              <label>Course Name</label>
+                              <Select
+                                options={courseNameOptions.map(opt => ({ label: opt.label || opt.value, value: opt.value || opt.label }))}
+                                onChange={(sel) => handleChange("Course Name", sel?.value, formik.setFieldValue, formik.values)}
+                                placeholder="Select Course..."
+                                isClearable isSearchable
+                                value={formik.values["Course Name"] ? { label: formik.values["Course Name"], value: formik.values["Course Name"] } : null}
+                                styles={{ container:(base)=>({ ...base, width:"300px" }) }}
+                              />
+                            </div>
+                          );
+                        case "Program Name":
+                          return (
+                            <div key={f}>
+                              <label>Program Name</label>
+                              <Select
+                                options={programNameOptions.map(opt => ({ label: opt.label || opt.value, value: opt.value || opt.label }))}
+                                onChange={(sel) => handleChange("Program Name", sel?.value, formik.setFieldValue, formik.values)}
+                                placeholder="Select Program..."
+                                isClearable isSearchable
+                                value={formik.values["Program Name"] ? { label: formik.values["Program Name"], value: formik.values["Program Name"] } : null}
+                                styles={{ container:(base)=>({ ...base, width:"300px" }) }}
+                              />
+                            </div>
+                          );
+                        case "Category":
+                          return (
+                            <div key={f}>
+                              <label>Category</label>
+                              <Select
+                                options={categoryOptions.map(opt => ({ label: opt.label || opt.value, value: opt.value || opt.label }))}
+                                onChange={(sel) => handleChange("Category", sel?.value, formik.setFieldValue, formik.values)}
+                                placeholder="Select Category..."
+                                isClearable isSearchable
+                                value={formik.values["Category"] ? { label: formik.values["Category"], value: formik.values["Category"] } : null}
+                                styles={{ container:(base)=>({ ...base, width:"300px" }) }}
+                              />
+                            </div>
+                          );
+                        default:
+                          return null;
+                      }
+                    })}
+                  </div>
+                  {appliedFilters.length > 0 && (
+                <div className="row">
+                  <div className="col-12" style={{ marginTop: "10px" }}>
+                    <p style={{ color: '#257b69', marginBottom: '6px' }}>
+                      Applied Filters ({appliedFilters.length}):
+                    </p>
+                    <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
+                      {appliedFilters.map((f, idx) => (
+                        <span key={`${f.label}-${idx}`} className="chip">
+                          {f.label}: {f.value}
+                        </span>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+                  <div className="filter-actions">
+                    <button className="btn apply" type="button" onClick={formik.handleSubmit} disabled={isApplyDisabled}>Apply</button>
+                    <button className="btn clear" type="button" onClick={() => clearModalFiltersAndClose(formik)}>Clear</button>
+                  </div>
+                </MultipleFilterBox>
+              </Modal.Body>
+            </Modal>
+          </Form>
+        )}
+      </Formik>
+    );
+  };
+
+  const setSearchItem = (value, index) => {
+    const newSelectedSearchFields = [...selectedSearchFields];
+    newSelectedSearchFields[index] = value;
+    setSelectedSearchFields(newSelectedSearchFields);
+    setDisabled(false);
+    setIsFieldEmpty(false);
 
     if (value === "student_id.full_name") {
       setDropdownValues("student_id");
@@ -174,7 +624,7 @@ const UpSkillSearchBar = function UpSkillSearch({
       setDropdownValues("course_name");
     } else if (value === "program_name") {
       setDropdownValues("program_name");
-    } else {
+    } else if (value === "category") {
       setDropdownValues("category");
     }
   };
@@ -186,18 +636,33 @@ const UpSkillSearchBar = function UpSkillSearch({
       if (fieldName === "student_id") {
         setStudentNameOptions(data);
       } else if (fieldName === "assigned_to") {
-        setAssignedToOptions(data);
+        let newSRM = await getAllSearchSrm();
+        setAssignedToOptions(newSRM);
       } else if (fieldName === "institution") {
         setInstitutionOptions(data);
       } else if (fieldName === "course_name") {
         setCourseNameOptions(data);
       } else if (fieldName === "program_name") {
         setProgramOptions(data);
-      } else {
+      } else if (fieldName === "category") {
         setCategoryOptions(data);
       }
     } catch (error) {
       console.error(error);
+    }
+  };
+
+  const addSearchRow = () => {
+    setCounter(counter + 1);
+    setSelectedSearchFields([...selectedSearchFields, null]);
+  };
+
+  const removeSearchRow = () => {
+    if (counter > 1) {
+      setCounter(counter - 1);
+      const newSelectedFields = [...selectedSearchFields];
+      newSelectedFields.pop();
+      setSelectedSearchFields(newSelectedFields);
     }
   };
 
@@ -207,172 +672,271 @@ const UpSkillSearchBar = function UpSkillSearch({
         {(formik) => (
           <Form>
             <Section>
-              <div className="row align-items-center">
-                <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
-                  <Input
-                    icon="down"
-                    name="search_by_field"
-                    label="Search Field"
-                    control="lookup"
-                    options={options}
-                    className="form-control"
-                    onChange={(e) => setSearchItem(e.value)}
-                  />
-                </div>
-                <div className="col-lg-3 col-md-4 col-sm-12 mb-2">
-                  {selectedSearchField === null && (
-                    <Input
-                      name="search_by_value"
-                      control="input"
-                      label="Search Value"
-                      className="form-control"
-                      disabled={true}
-                    />
-                  )}
+              {Array.from({ length: counter }).map((_, index) => (
+                <SearchRow key={index}>
+                  {/* Search Field Column */}
+                  <div className="col-lg-2 col-md-4 col-sm-6">
+                    <SearchFieldContainer>
+                      <Input
+                        icon="down"
+                        name={`searches[${index}].search_by_field`}
+                        label="Search Field"
+                        control="lookup"
+                        options={options}
+                        className="form-control"
+                        onChange={(e) => setSearchItem(e.value, index)}
+                      />
+                    </SearchFieldContainer>
+                  </div>
 
-                  {selectedSearchField === "start_date" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
+                  {/* Search Value Column */}
+                  <div className="col-lg-4 col-md-6 col-sm-6">
+                    <SearchValueContainer>
+                      {selectedSearchFields[index] === null && (
                         <Input
-                          name="search_by_value_date"
-                          label="From"
-                          placeholder="Query start date"
-                          control="datepicker"
-                          className="form-control "
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                      <div className="ml-2">
-                        <Input
-                          name="search_by_value_date_to"
-                          label="To"
-                          placeholder="Query start date"
-                          control="datepicker"
+                          name={`searches[${index}].search_by_value`}
+                          control="input"
+                          label="Search Value"
                           className="form-control"
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
+                          onClick={() => setIsFieldEmpty(true)}
+                          disabled
                         />
-                      </div>
-                    </div>
-                  )}
+                      )}
 
-                  {selectedSearchField === "end_date" && (
-                    <div className="d-flex justify-content-between align-items-center">
-                      <div className="mr-3">
+                      {selectedSearchFields[index] === "student_id.full_name" && (
                         <Input
-                          name="search_by_value_date_end_from"
-                          label="From"
-                          placeholder="Query start date"
-                          control="datepicker"
-                          className="form-control "
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
-                        />
-                      </div>
-                      <div className="ml-2">
-                        <Input
-                          name="search_by_value_date_end_to"
-                          label="To"
-                          placeholder="Query start date"
-                          control="datepicker"
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={studentNameOptions}
                           className="form-control"
-                          autoComplete="off"
-                          disabled={disabled ? true : false}
+                          disabled={disabled}
                         />
-                      </div>
+                      )}
+
+                      {selectedSearchFields[index] === "assigned_to.username" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={assignedToOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "institution.name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={institutionOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "course_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={courseNameOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "program_name" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={programNameOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "category" && (
+                        <Input
+                          icon="down"
+                          name={`searches[${index}].search_by_value`}
+                          label="Search Value"
+                          control="lookup"
+                          options={categoryOptions}
+                          className="form-control"
+                          disabled={disabled}
+                        />
+                      )}
+
+                      {selectedSearchFields[index] === "start_date" && (
+                        <DateRangeContainer>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date`}
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                              onChange={(date) => formik.setFieldValue(`searches[${index}].search_by_value_date`, date)}
+                              value={formik.values.searches?.[index]?.search_by_value_date || null}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date_to`}
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                              minDate={formik.values.searches?.[index]?.search_by_value_date || null}
+                              onChange={(date) => formik.setFieldValue(`searches[${index}].search_by_value_date_to`, date)}
+                              value={formik.values.searches?.[index]?.search_by_value_date_to || null}
+                            />
+                          </div>
+                        </DateRangeContainer>
+                      )}
+
+                      {selectedSearchFields[index] === "end_date" && (
+                        <DateRangeContainer>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date_end_from`}
+                              label="From"
+                              placeholder="Start Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                              onChange={(date) => formik.setFieldValue(`searches[${index}].search_by_value_date_end_from`, date)}
+                              value={formik.values.searches?.[index]?.search_by_value_date_end_from || null}
+                            />
+                          </div>
+                          <div>
+                            <Input
+                              name={`searches[${index}].search_by_value_date_end_to`}
+                              label="To"
+                              placeholder="End Date"
+                              control="datepicker"
+                              className="form-control"
+                              autoComplete="off"
+                              disabled={disabled}
+                              minDate={formik.values.searches?.[index]?.search_by_value_date_end_from || null}
+                              onChange={(date) => formik.setFieldValue(`searches[${index}].search_by_value_date_end_to`, date)}
+                              value={formik.values.searches?.[index]?.search_by_value_date_end_to || null}
+                            />
+                          </div>
+                        </DateRangeContainer>
+                      )}
+                    </SearchValueContainer>
+                  </div>
+
+                  {/* Add/Remove Icons Column */}
+                  {/* {index === counter - 1 && (
+                    <div className="col-lg-1 col-md-2 col-sm-12">
+                      <IconContainer>
+                        <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
+                        {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
+                      </IconContainer>
                     </div>
-                  )}
+                  )} */}
+                  <SearchButtonContainer>
+                      <button
+                        className="btn btn-primary uniform-btn"
+                        type="submit"
+                        disabled={disabled}
+                      >
+                        Search
+                      </button>
+                      <button
+                        className="btn btn-primary uniform-btn"
+                        type="button"
+                        onClick={() => setOnefilter(false)}
+                      >
+                        Add Filter
+                      </button>
+                      <button
+                        className="btn btn-secondary uniform-btn"
+                        type="button"
+                        onClick={() => clear(formik)}
+                        // disabled={disabled}
+                      >
+                        CLEAR
+                      </button>
+                    </SearchButtonContainer>
+                </SearchRow>
+              ))}
 
-                  {selectedSearchField === "student_id.full_name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={studentNameOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-
-                  {selectedSearchField === "assigned_to.username" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={assignedToOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "institution.name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={institutionOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-
-                  {selectedSearchField === "course_name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={courseNameOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-                  {selectedSearchField === "program_name" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={programNameOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
-
-                  {selectedSearchField === "category" && (
-                    <Input
-                      icon="down"
-                      name="search_by_value"
-                      label="Search Value"
-                      control="lookup"
-                      options={categoryOptions}
-                      className="form-control"
-                      disabled={disabled ? true : false}
-                    />
-                  )}
+              {/* Applied Filters Summary */}
+              {/* {showAppliedFilterMessage && appliedFiltersSummary && (
+                <div className="row" style={{ marginBottom: '15px' }}>
+                  <div className="col-12">
+                    <div style={{ 
+                      padding: '10px 15px', 
+                      backgroundColor: '#e8f5e8', 
+                      border: '1px solid #21867a', 
+                      borderRadius: '6px',
+                      color: '#21867a',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}>
+                      {appliedFiltersSummary}
+                    </div>
+                  </div>
                 </div>
-                <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
-                  <button
-                    className="btn btn-primary action_button_sec search_bar_action_sec"
-                    type="submit"
-                    disabled={disabled ? true : false}
-                  >
-                    FIND
-                  </button>
-                  <button
-                    className="btn btn-secondary action_button_sec search_bar_action_sec"
-                    type="button"
-                    onClick={() => clear(formik)}
-                    disabled={disabled ? true : false}
-                  >
-                    CLEAR
-                  </button>
+              )} */}
+
+              {/* Error Message Row */}
+              {isFieldEmpty && (
+                <div className="row">
+                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
+                  <div className="col-lg-2 col-md-4 col-sm-12 mb-2">
+                    <p style={{ color: "red" }}>Please select any field first.</p>
+                  </div>
                 </div>
-              </div>
+              )}
+              
             </Section>
+            {!onefilter && (
+              <FilterBox initialFilterValues={(() => {
+                const mapped = { ...persistentFilterValues };
+                const labelMap = {
+                  "student_id.full_name": "Student Name",
+                  "assigned_to.username": "Assigned To",
+                  "institution.name": "Institute Name",
+                  "course_name": "Course Name",
+                  "program_name": "Program Name",
+                  "category": "Category",
+                  "start_date": "Start Date",
+                  "end_date": "End Date",
+                };
+                (formik.values.searches || []).forEach((s) => {
+                  if (!s || !s.search_by_field) return;
+                  const key = labelMap[s.search_by_field];
+                  if (!key) return;
+                  if (s.search_by_field === "start_date") {
+                    if (s.search_by_value_date) mapped["Start Date From"] = new Date(s.search_by_value_date);
+                    if (s.search_by_value_date_to) mapped["Start Date To"] = new Date(s.search_by_value_date_to);
+                  } else if (s.search_by_field === "end_date") {
+                    if (s.search_by_value_date_end_from) mapped["End Date From"] = new Date(s.search_by_value_date_end_from);
+                    if (s.search_by_value_date_end_to) mapped["End Date To"] = new Date(s.search_by_value_date_end_to);
+                  } else if (s.search_by_value) {
+                    mapped[key] = s.search_by_value;
+                  }
+                });
+                return mapped;
+              })()} />
+            )}
           </Form>
         )}
       </Formik>
@@ -380,6 +944,4 @@ const UpSkillSearchBar = function UpSkillSearch({
   );
 };
 
-export default connect(null, { searchOperationTab, resetSearch })(
-  UpSkillSearchBar
-);
+export default connect(null, { searchOperationTab, resetSearch })(UpskillSearchBar);

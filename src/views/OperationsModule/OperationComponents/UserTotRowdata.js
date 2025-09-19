@@ -11,7 +11,7 @@ import {
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
 import { getStudentsPickList } from "../../Students/StudentComponents/StudentActions";
-import { getTotPickList } from "./operationsActions";
+import { getTotPickList, getCollegesByProjectName } from "./operationsActions";
 
 const projecttypeoptions = [
   { value: 'External', label: "External" },

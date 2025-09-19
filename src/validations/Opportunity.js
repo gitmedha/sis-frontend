@@ -21,7 +21,7 @@ const pin_code = Yup.string("Should be a number.")
   .required("Pincode is required.");
 const city = Yup.string().required("City is required.");
 const district= Yup.string().required("District is required.");
-const experience_required=Yup.string().required("Experience is required.");
+const experience_required=Yup.string().nullable().required("Experience is required.");
 
 export const OpportunityValidations = Yup.object({
   status,
@@ -60,13 +60,20 @@ export const OpportunityValidations = Yup.object({
   medha_area,
   district,
   state,
-  city:Yup.string().required('City is required.') // Check for required input
+  city:Yup.string().nullable().required('City is required.') // Check for required input
   .test(
     'no-trailing-space',
     'Please remove extra space.',
     (value) => value && !value.endsWith(' ') && !value.startsWith(' ') 
   ),
   pin_code,
+  earning_type: Yup.string().nullable().when('type', {
+    is: (val) => val === 'Freelance',
+    then: (schema) => schema.required('Earning type is required when type is Freelance.'),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+
+
 });
 
 export const EmployerOpportunityValidations = Yup.object({

@@ -28,7 +28,7 @@ import {
 import { updateOpsActivity, getOpsPickList } from "../operationsActions";
 import { urlPath } from "src/constants";
 import { mentorshipValidations } from "src/validations/OperationsValidation";
-// import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -48,6 +48,29 @@ const Section = styled.div`
     margin-bottom: 15px;
   }
 `;
+
+const mentorshipValidationSchema = Yup.object().shape({
+  mentor_name: Yup.string().required("Mentor Name is required"),
+  contact: Yup.string().matches(/^[0-9]+$/, "Contact number must be digits only").min(10, "Contact number must be at least 10 digits").required("Contact is required"),
+  email: Yup.string().email("Invalid email address").required("Email is required"),
+  mentor_domain: Yup.string().required("Mentor\'s Domain is required"),
+  specify_other: Yup.string().when("mentor_domain", {
+    is: 'Others',
+    then: (schema) => schema.required("Please specify the domain"),
+    otherwise: (schema) => schema.notRequired(),
+  }),
+  mentor_company_name: Yup.string().required("Mentor\'s Company Name is required"),
+  designation: Yup.string().required("Designation/Title is required"),
+  mentor_state: Yup.string().required("Mentor\'s State is required"),
+  mentor_area: Yup.string().required("Mentor\'s City is required"), // Assuming 'mentor_area' corresponds to Mentor's City
+  outreach: Yup.string().required("Outreach (Offline/Online) is required"),
+  onboarding_date: Yup.date().nullable().required("Onboarding Date is required"),
+  social_media_profile_link: Yup.string().notRequired(), // Social Media Link is optional based on the description
+  assigned_to: Yup.string().required("Assigned To is required"),
+  medha_area: Yup.string().required("Medha Area is required"),
+  program_name: Yup.string().required("Medha Program Name is required"),
+  status: Yup.string().required("Status is required"),
+});
 
 const hideBatchName = [
   "New Enrollments -- CAB",
@@ -73,28 +96,17 @@ const statusOption = [
   { value: "Dropped out", label: "Dropped out" },
 ];
 
-const Activityoptions = [
-  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
-  {
-    value: "Industry visit/Exposure visit",
-    label: "Industry visit/Exposure visit",
-  },
-  {
-    value: "Workshop/Training Session/Activity (In/Off campus)",
-    label: "Workshop/Training Session/Activity (In/Off campus)",
-  },
-  { value: "Alumni Engagement", label: "Alumni Engagement" },
-  { value: "Placement Drive", label: "Placement Drive" },
-];
 
 const UpdateMentorship = (props) => {
   let { onHide, show, closeopsedit, refreshTableOnDataSaving } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
+  const [showSpecifyOthers, setShowSpecifyOthers] = useState(props.mentor_domain === 'Others');
   const [stateOptions, setStateOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [districtOption, setDistrictOptions] = useState([]);
   const [disableSaveButton, setDisableSaveButton] = useState(false);
   const [programeName, setProgramName] = useState([]);
+  const [blocked, setBlocked] = useState(false);
   const userId = localStorage.getItem("user_id");
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -168,8 +180,8 @@ const UpdateMentorship = (props) => {
         "YYYY-MM-DD"
       );
       newData["updatedby"] = Number(userId);
-      // let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Update",event_id:"",updatedby:userId ,changes_in:compareObjects(newData,initialValues)};
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      let datavaluesforlatestcreate={module_name:"Operation",activity:"Mentorship Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newData,initialValues)};
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await updateMentorshipData(Number(props.id), newData);
       refreshTableOnDataSaving();
       setDisableSaveButton(true);
@@ -197,6 +209,7 @@ const UpdateMentorship = (props) => {
     medha_area: "",
     status: "",
     program_name: "",
+    specify_other: "",
   };
 
   if (props) {
@@ -215,6 +228,7 @@ const UpdateMentorship = (props) => {
     initialValues["outreach"] = props.outreach;
     initialValues["contact"] = props.contact;
     initialValues["social_media_profile_link"] = props.social_media_profile_link;
+    initialValues["specify_other"] = props.specify_other;
   }
 
   useEffect(async () => {
@@ -240,6 +254,22 @@ const UpdateMentorship = (props) => {
   //       );
   //     }),
   // });
+
+  useEffect(() => {
+      let userID = props?.assigned_to?.id;
+      
+      function findUser(users, searchTerm) {
+          
+          return users.find(user => 
+              String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+          ) || false;
+      }
+      
+      let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+      
+      setBlocked(userExistsByIdBoolean.blocked);
+  
+  }, [props, assigneeOptions]);
 
   return (
     <>
@@ -275,7 +305,7 @@ const UpdateMentorship = (props) => {
             <Formik
               onSubmit={onSubmit}
               initialValues={initialValues}
-              validationSchema={mentorshipValidations}
+              validationSchema={mentorshipValidationSchema}
             >
               {({ values, setFieldValue }) => (
                 <Form>
@@ -306,6 +336,7 @@ const UpdateMentorship = (props) => {
                               placeholder="Assigned To"
                               filterData={filterAssignedTo}
                               defaultOptions={assigneeOptions}
+                              isDisabled={blocked}
                             />
                           )}
                         </div>
@@ -403,6 +434,10 @@ const UpdateMentorship = (props) => {
                             className="form-control"
                             placeholder="Mentor's Domain"
                             required
+                            onChange={(e) => {
+                              setFieldValue('mentor_domain', e.target.value);
+                              setShowSpecifyOthers(e.target.value === 'Others');
+                            }}
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -436,6 +471,19 @@ const UpdateMentorship = (props) => {
                             required
                           />
                         </div>
+                        {showSpecifyOthers && (
+                          <div className="col-md-6 col-sm-12 mb-2">
+                            <Input
+                              icon="down"
+                              control="input"
+                              name="specify_other"
+                              label="Specify Others"
+                              className="form-control"
+                              placeholder="Specify Others"
+                              required
+                            />
+                          </div>
+                        )}
                       </div>
                     </Section>
                     <Section>
@@ -452,6 +500,7 @@ const UpdateMentorship = (props) => {
                               onChange={onStateChange}
                               placeholder="State"
                               className="form-control"
+                              required
                             />
                           ) : (
                             <Skeleton count={1} height={45} />
@@ -467,6 +516,7 @@ const UpdateMentorship = (props) => {
                               options={areaOptions}
                               placeholder="Area"
                               className="form-control"
+                              required
                             />
                           {/* ) : (
                             <>

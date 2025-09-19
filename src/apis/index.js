@@ -28,7 +28,7 @@ api.interceptors.response.use(function (response) {
         // clear token and push to login
         localStorage.removeItem('token');
         // setAlert
-        window.location.href = '/login';
+        window.location.href = '/';
       }
     })
   }

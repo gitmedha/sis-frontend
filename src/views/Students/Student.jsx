@@ -14,7 +14,7 @@ import AlumniServices from "./StudentComponents/AlumniServices";
 import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent } from "./StudentComponents/StudentActions";
+import { deleteStudent, getStudent, getStudentAlumniServices, getStudentEmploymentConnections, getStudentProgramEnrollments, updateStudent,getStudentMedhaviMemberships } from "./StudentComponents/StudentActions";
 // import {getAllOperations} from "../Operations/operationsActions";
 import EmploymentConnections from "./StudentComponents/EmploymentConnections";
 import StudentForm from "./StudentComponents/StudentForm";
@@ -26,6 +26,8 @@ import styled from 'styled-components';
 import { deleteFile } from "../../common/commonActions";
 import { uploadFile } from "../../components/content/Utils";
 import { isAdmin, isChapterHead, isSRM } from "../../common/commonFunctions";
+import MedhaviMemberships from "./StudentComponents/MedhaviMemberships";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
 
@@ -49,9 +51,12 @@ const Student = (props) => {
   const [alumniServiceAggregate, setAlumniServiceAggregate] = useState([]);
   const [modalShow, setModalShow] = useState(false);
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
+  const [studentMedhaviMemberships, setStudentMedhaviMemberships] = useState([]);
+  const [studentMedhaviMembershipsAggregate, setStudentMedhaviMembershipsAggregate] = useState([]);
   const history = useHistory();
   const {setAlert} = props;
   const { address, contacts, ...rest } = student;
+  const userId = parseInt(localStorage.getItem("user_id"));
 
   const hideUpdateModal = async (data) => {
     if (!data || data.isTrusted) {
@@ -170,6 +175,22 @@ const Student = (props) => {
       
     });
   }
+  const getMemberships = async ()=>{
+    try{
+const memberships = await getStudentMedhaviMemberships(studentId);
+      if(memberships?.data?.data?.medhaviMembershipsConnection?.values?.length > 0){
+        setStudentMedhaviMemberships(memberships.data.data.medhaviMembershipsConnection.values);  
+        setStudentMedhaviMembershipsAggregate(memberships.data.data.medhaviMembershipsConnection.aggregate);
+      }else{
+        setStudentMedhaviMemberships([]);
+        setStudentMedhaviMembershipsAggregate({count: 0});
+      }
+    }catch(err){
+      console.log(err); 
+      setAlert("Unable to fetch memberships.", "error");
+    }
+
+  }
 
   const updateEmploymentConnectionsBadge = (employmentConnections) => {
     let jobEmploymentConnections = employmentConnections.filter(employmentConnection => employmentConnection.opportunity && employmentConnection.opportunity.type === 'Job');
@@ -201,13 +222,30 @@ const Student = (props) => {
       break;
   }
 
-  useEffect(async () => {
-    // await testOperationsActions();
+  useEffect(() => {
+    async function componentMount (){
     await getStudent();
     await getProgramEnrollments();
     await getEmploymentConnections();
     await getAlumniServices();
-  }, [studentId]);
+    await getMemberships();
+
+    }
+    componentMount();
+    
+  }, []);
+
+   const deleteStudentProfile=async()=>{
+    let studentData = {
+      module_name: "students",
+      activity: "Student Data Deleted",
+      event_id: student.id,
+      updatedby: userId,
+      changes_in: {name:`${student.full_name }- ${student.student_id}`},
+    };
+    await createLatestAcivity(studentData);
+    setShowDeleteAlert(true)
+  }
 
   if (isLoading) {
     return <SkeletonLoader />;
@@ -224,7 +262,7 @@ const Student = (props) => {
             >
               EDIT
             </button>
-            {(isSRM() || isAdmin()) && <button onClick={() => setShowDeleteAlert(true)} className="btn--primary action_button_sec">
+            {(isSRM() || isAdmin()) && <button onClick={() =>deleteStudentProfile()} className="btn--primary action_button_sec">
               DELETE
             </button>}
           </div>
@@ -258,6 +296,9 @@ const Student = (props) => {
         </Collapsible>
         <Collapsible title="Alumni Engagements" badge={alumniServiceAggregate.count}>
           <AlumniServices student={student} onDataUpdate={getAlumniServices} id={studentId}/>
+        </Collapsible>
+        <Collapsible title="Medhavi Membership" badge={studentMedhaviMembershipsAggregate.count}>
+          <MedhaviMemberships membershipsStudent = {studentMedhaviMemberships} student={student}  onDataUpdate={getMemberships} id={studentId}/>
         </Collapsible>
         <StudentForm
           {...student}

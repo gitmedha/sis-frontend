@@ -10,7 +10,7 @@ import {
   getAllSrm,
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
-
+import * as Yup from "yup";
 import DetailField from "../../../components/content/DetailField";
 import moment from "moment";
 import {
@@ -25,6 +25,7 @@ import {
   handleKeyPress,
   mobileNochecker,
 } from "../../../utils/function/OpsModulechecker";
+import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -45,6 +46,17 @@ const Section = styled.div`
   }
 `;
 
+const collegePitchesValidationSchema = Yup.object().shape({
+  pitch_date: Yup.date().nullable().required("Date of Pitching is required"),
+  student_name: Yup.string().required("Student Name is required"),
+  course_name: Yup.string().required("Course Name is required"),
+  course_year: Yup.string().required("Course Year is required"),
+  college_name: Yup.string().required("Institution is required"),
+  program_name: Yup.string().required("Program Name is required"),
+  phone: Yup.string().matches(/^[0-9]+$/, "Phone number must be digits only").min(10, "Phone number must be at least 10 digits").required("Phone is required"),
+  whatsapp: Yup.string().matches(/^[0-9]+$/, "Whatsapp number must be digits only").min(10, "Whatsapp number must be at least 10 digits").required("Whatsapp Number is required"),
+});
+
 const CollepitchesEdit = (props) => {
   let { onHide, show, refreshTableOnDataSaving } = props;
   const [srmOption, setsrmOption] = useState([]);
@@ -58,7 +70,7 @@ const CollepitchesEdit = (props) => {
   const [colleges, setCollege] = useState([]);
   const [currentCourseYearOptions, setCurrentCourseYearOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState(null);
-
+  const userId = localStorage.getItem("user_id");
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
       setAssigneeOptions(data);
@@ -174,6 +186,22 @@ const CollepitchesEdit = (props) => {
           "YYYY-MM-DD"
         ))
       : delete newObj["pitch_date"];
+      const initialValues = {
+        email: props.email,
+        phone: props.phone,
+        course_name: props.course_name,
+        course_year: props.course_year,
+        college_name: props.college_name,
+        srm_name: props.srm_name ? props.srm_name.id.toString() : "",
+        student_name: props.student_name,
+        pitch_date: props.pitch_date ? formatDateStringToIndianStandardTime(props.pitch_date) : "",
+        remarks: props.remarks,
+        area: props.area,
+        program_name: props.program_name,
+        whatsapp:props.whatsapp
+      };
+    let datavaluesforlatestcreate={module_name:"operations",activity:"College Pitching Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObj,initialValues)};
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateCollegePitch(Number(props.id), newObj);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -206,7 +234,7 @@ const CollepitchesEdit = (props) => {
     initialValues["course_name"] = props.course_name;
     initialValues["course_year"] = props.course_year;
     initialValues["college_name"] = props.college_name;
-    initialValues["srm_name"] = props.srm_name?.id.toString();
+    initialValues["srm_name"] = props.srm_name?.id;
     initialValues["student_name"] = props.student_name;
     initialValues["pitch_date"] = props.pitch_date
       ? formatDateStringToIndianStandardTime(props.pitch_date)
@@ -282,7 +310,7 @@ const CollepitchesEdit = (props) => {
             </Modal.Title>
           </Modal.Header>
           <Modal.Body className="bg-white">
-            <Formik onSubmit={onSubmit} initialValues={initialValues}>
+            <Formik onSubmit={onSubmit} initialValues={initialValues} validationSchema={collegePitchesValidationSchema}>
               {({ values, setFieldValue }) => (
                 <Form>
                   <div className="row form_sec">
@@ -310,6 +338,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="Course Name"
+                            required
                           />
                         </div>
 
@@ -325,6 +354,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="Course Year"
+                            required
                           />
                         </div>
 
@@ -338,6 +368,19 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={handleKeyPress}
                             className="form-control"
                             placeholder="College Name"
+                            required
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="pitch_date"
+                            label="Pitch Date"
+                            control="datepicker"
+                            icon="down"
+                            onKeyPress={handleKeyPress}
+                            className="form-control"
+                            placeholder="Pitch Date"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -349,6 +392,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={mobileNochecker}
                             className="form-control"
                             placeholder="Phone"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -359,6 +403,7 @@ const CollepitchesEdit = (props) => {
                             onKeyPress={mobileNochecker}
                             className="form-control"
                             placeholder="Whatsapp Number"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -382,13 +427,14 @@ const CollepitchesEdit = (props) => {
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
+                          {console.log(assigneeOptions)}
                           <Input
                             name="srm_name"
                             label="SRM Name"
                             placeholder="SRM Name"
-                            control="lookup"
+                            control="lookupAsync"
                             icon="down"
-                            defaultOptions={srmOption}
+                            defaultOptions={assigneeOptions}
                             onKeyPress={handleKeyPress}
                             className="form-control"
                           />

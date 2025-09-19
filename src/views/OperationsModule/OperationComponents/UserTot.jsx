@@ -37,7 +37,9 @@ const UserTot = (props) => {
       designation: "",
       start_date:"",
       end_date:"",
-      email:""
+      email:"",
+      institution: "",
+      new_entry:""
     },
   ]);
   const [rows, setRows] = useState([
@@ -60,7 +62,8 @@ const UserTot = (props) => {
       designation: "",
       start_date:"",
       end_date:"",
-      email:""
+      email:"",
+      new_entry:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -82,7 +85,8 @@ const UserTot = (props) => {
     designation: "",
     start_date:"",
     end_date:"",
-    email:""
+    email:"",
+    new_entry:""
   });
   
   const [showLimit, setshowLimit] = useState(false);
@@ -301,7 +305,9 @@ const UserTot = (props) => {
           contact: "",
           designation: "",
           start_date:"",
-          end_date:""
+          end_date:"",
+          email:" ",
+          institution: ""
         },
       ]);
     } catch (error) {
@@ -345,7 +351,7 @@ const UserTot = (props) => {
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value: institution.name,
         };
       });
 
@@ -486,8 +492,8 @@ const UserTot = (props) => {
                   <th>Module Name</th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
-                  <th>Trainer 1 *</th>
-                  <th>Trainer 2 </th>
+                  <th>Facilitator 1 *</th>
+                  <th>Facilitator 2 </th>
                   <th>Certificate Given *</th>
                   <th>Project Type *</th>
                 </tr>

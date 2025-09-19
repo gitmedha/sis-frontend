@@ -1,14 +1,11 @@
 import React from "react";
 import { isAdmin, isSRM } from "../../../../common/commonFunctions";
 import { Modal } from "react-bootstrap";
-import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
 import styled from "styled-components";
-import { isNumber } from "lodash";
 
 const Style = styled.div`
   overflow-x: auto;
-  // width: 120%;
 
   table {
     display: block;
@@ -24,8 +21,7 @@ const Style = styled.div`
 
 const CheckTot = (props) => {
   let { onHide } = props;
-  const pattern = /^[0-9]{10}$/;
-  
+
   return (
     <>
       <Modal
@@ -37,7 +33,6 @@ const CheckTot = (props) => {
         aria-labelledby="contained-modal-title-vcenter"
         className="form-modal "
         id="custom-modal"
-        // dialogClassName="fullscreen-modal"
       >
         <Modal.Header className="bg-white">
           <Modal.Title
@@ -72,8 +67,8 @@ const CheckTot = (props) => {
                         <th>Module Name</th>
                         <th>Start Date </th>
                         <th>End Date </th>
-                        <th>Trainer 1 </th>
-                        <th>Trainer 2 </th>
+                        <th>Facilitator 1 </th>
+                        <th>Facilitator 2 </th>
                         <th>Certificate Given </th>
                         <th>Project Type </th>
                         <th>New Entry </th>
@@ -83,74 +78,70 @@ const CheckTot = (props) => {
                       {props.notUploadedData.map((obj, i) => (
                         <tr key={i}>
                           <td>{obj.index}</td>
-                          <td className={obj.user_name =="No data"?"text-danger":""}>{obj.user_name ?obj.user_name:"no data"}</td>
-                          <td className={obj.email =="No data"?"text-danger":""}>{obj.email ?obj.email:"no data"}</td>
-                          <td className={""}>{ obj.age ? obj.age:"No data" }</td>
-                          <td className={obj.gender ? "":'text-danger'}>{obj.gender?obj.gender :"Please select from dropdown"}</td>
-                          <td className={!pattern.test(obj.contact) ? "text-danger":""}>{obj.contact}</td>
-                          <td className={obj.state ? "":"text-danger"}>{obj.state?obj.state:"Please select from dropdown"}</td>
-                          <td className={obj.city ? "":"text-danger"}>{obj.city? obj.city:"Please select from dropdown"}</td>
-                          <td>{obj.designation}</td>
-                          <td className={obj.college ==="Please select from dropdown" ? "text-danger" : ""}>{
-                            obj.college
-                              ? obj.college
-                              : "Please select from dropdown"
-                          
-                          }</td>
-                          <td
-                            className={obj.project_name?.notFound || !obj.project_name ? "text-danger" : ""}
-                          >
-                            {obj.project_name?.value
-                              ? obj.project_name?.value
-                              : obj.project_name
-                              ? obj.project_name
-                              : "Please select from dropdown"}
+
+                          <td className={obj.error?.includes("Full Name") ? "text-danger" : ""}>
+                            {obj.user_name || "No data"}
                           </td>
-                          <td
-                            className={obj.partner_dept.notFound ? "text-danger" : ""}
-                          >
-                            {obj.partner_dept?.value
-                              ? obj.partner_dept?.value
-                              : obj.partner_dept
-                              ? obj.partner_dept
-                              : "Please select from dropdown"}
+
+                          <td className={obj.error?.includes("Email") ? "text-danger" : ""}>
+                            {obj.email || "No data"}
                           </td>
-                          <td
-                            className={
-                              obj.module_name.notFound ? "text-danger" : ""
-                            }
-                          >
-                            {obj.module_name?.value
-                              ? obj.module_name?.value
-                              : obj.module_name
-                              ? obj.module_name
-                              : "Please select from dropdown"}
+
+                          <td>{obj.age || "No data"}</td>
+
+                          <td className={obj.error?.includes("Gender") ? "text-danger" : ""}>
+                            {obj.gender || "No data"}
                           </td>
-                          <td className={obj.start_date?.notFound || !obj.start_date ? "text-danger" : ""}>{obj.start_date.value ?obj.start_date.value :obj.start_date ?obj.start_date:"please add start date"}</td>
-                          <td className={obj.end_date?.notFound || !obj.end_date ? "text-danger" : ""}>{obj.end_date.value ?obj.end_date.value :obj.end_date ?obj.end_date:"please add start date"}</td>
-                          <td className={!obj.trainer_1 ? "text-danger" : ""}>
-                            {obj.trainer_1
-                              ? obj.trainer_1
-                              : "Please select from dropdown"}
+
+                          <td className={obj.error?.includes("Contact") ? "text-danger" : ""}>
+                            {obj.contact || "No data"}
                           </td>
-                          <td className={!obj.trainer_2 ? "text-danger" : ""}>
-                            {obj.trainer_2
-                              ? obj.trainer_2
-                              : "Please select from dropdown"}
+
+                          <td className={obj.error?.includes("State") ? "text-danger" : ""}>
+                            {obj.state || "No data"}
                           </td>
-                          <td>{obj.certificate_given}</td>
-                          <td
-                            className={
-                              obj.project_type.notFound ? "text-danger" : ""
-                            }
-                          >
-                            {obj.project_type?.value
-                              ? obj.project_type?.value
-                              : obj.project_type
-                              ? obj.project_type
-                              : "Please select from dropdown"}
+
+                          <td className={obj.error?.includes("City") ? "text-danger" : ""}>
+                            {obj.city || "No data"}
                           </td>
-                          <td>{obj.new_entry  }</td>
+
+                          <td>{obj.designation || "No data"}</td>
+
+                          <td className={obj.error?.includes("College") ? "text-danger" : ""}>
+                            {obj.college || "No data"}
+                          </td>
+
+                          <td className={obj.error?.includes("Project Name") ? "text-danger" : ""}>
+                            {obj.project_name || "No data"}
+                          </td>
+
+                          <td className={obj.error?.includes("Government Department") ? "text-danger" : ""}>
+                            {obj.partner_dept || "No data"}
+                          </td>
+
+                          <td className={obj.error?.includes("Module") ? "text-danger" : ""}>
+                            {obj.module_name || "No data"}
+                          </td>
+
+                          <td className={obj.error?.includes("Start Date") ? "text-danger" : ""}>
+                            {obj.start_date || "No data"}
+                          </td>
+
+                          <td className={obj.error?.includes("End Date") ? "text-danger" : ""}>
+                            {obj.end_date || "No data"}
+                          </td>
+
+                          <td>{obj.trainer_1 || "No data"}</td>
+
+                          <td>{obj.trainer_2 || "No data"}</td>
+
+                          <td>{obj.certificate_given || "No data"}</td>
+
+                          <td className={obj.error?.includes("Project Type") ? "text-danger" : ""}>
+                            {obj.project_type || "No data"}
+                          </td>
+
+                          <td>{obj.new_entry || "No data"}</td>
                         </tr>
                       ))}
                     </tbody>
@@ -158,41 +149,43 @@ const CheckTot = (props) => {
                 </>
               ) : (
                 <div className="d-flex justify-content-center align-content-center">
-                  <h2 className="text--primary bebas-thick mb-0"></h2>
+                  <h2 className="text--primary bebas-thick mb-0">No data found</h2>
                 </div>
               )}
             </div>
             <div className="">
-            <h6 className="text-danger text-center">There are 1 or more incorrect data in the excel. Please correct the ones shown in red and reupload the file</h6>
-            {(isSRM() || isAdmin()) && (
-            <div className="row mb-4">
-              <div className="col-md-12 d-flex justify-content-center">
-                {props.notUploadedData.length === 0 ? (
-                  <button
-                    type="button"
-                    onClick={() => props.uploadExcel(props.excelData)}
-                    className="btn btn-primary px-4 "
-                  >
-                    Upload
-                  </button>
-                ) : (
-                  <button
-                    type="button"
-                    className="btn btn-primary px-4 "
-                    onClick={() => onHide()}
-                  >
-                    ReUpload
-                  </button>
-                )}
-              </div>
+              <h6 className="text-danger text-center">
+                There are 1 or more incorrect data in the excel. Please correct the ones shown in red and reupload the file
+              </h6>
+              {(isSRM() || isAdmin()) && (
+                <div className="row mb-4">
+                  <div className="col-md-12 d-flex justify-content-center">
+                    {props.notUploadedData.length === 0 ? (
+                      <button
+                        type="button"
+                        onClick={() => props.uploadExcel(props.excelData)}
+                        className="btn btn-primary px-4 "
+                      >
+                        Upload
+                      </button>
+                    ) : (
+                      <button
+                        type="button"
+                        className="btn btn-primary px-4 "
+                        onClick={() => onHide()}
+                      >
+                        ReUpload
+                      </button>
+                    )}
+                  </div>
+                </div>
+
+              )}
+              <div />
             </div>
 
-          )}
-          <div/>
-          </div>
-          
           </Modal.Body>
-          
+
         </Style>
       </Modal>
     </>
