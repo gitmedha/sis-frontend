@@ -878,7 +878,7 @@ const TotUpload = (props) => {
 
           // Store the file info in your database or state as needed
           props.updateToturl(uploadData.url)
-          UpdatePicklist(50,[uploadData.url])
+          UpdatePicklist(56,[uploadData.url])
           storeFileInfoInDatabase(uploadData);
         } else {
           throw new Error('Upload failed: Missing id or url in response');
