@@ -1151,7 +1151,7 @@ const TotUpload = (props) => {
 
                 >
                   {/* <i className="fas fa-cloud-upload-alt me-2"></i> */}
-                  cancel
+                  Cancel
                 </Button>
 
                 <Button
