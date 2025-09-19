@@ -21,6 +21,8 @@ import {
   bulkCreateUsersTots,
   getAllInstitute,
   getTotPickList,
+  UpdatePicklist,
+  useUpdatePicklist,
 } from "../../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber, set } from "lodash";
@@ -875,6 +877,8 @@ const TotUpload = (props) => {
           // console.log("Uploaded file URL:", uploadData.url);
 
           // Store the file info in your database or state as needed
+          props.updateToturl(uploadData.url)
+          UpdatePicklist(50,[uploadData.url])
           storeFileInfoInDatabase(uploadData);
         } else {
           throw new Error('Upload failed: Missing id or url in response');

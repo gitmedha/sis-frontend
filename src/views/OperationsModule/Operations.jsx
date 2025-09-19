@@ -53,7 +53,8 @@ import {
   bulkCreateUsersTots,
   bulkCreateStudentOutreach,
   bulkCreateEcosystem,
-  bulkCreateCurriculumIntervention
+  bulkCreateCurriculumIntervention,
+  getTotPickList
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -118,10 +119,8 @@ const Styled = styled.div`
 `;
 
 const totfile = `https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
-const feildActivityFIle =
-  "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
-const mentorshipFile =
-  "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
+const feildActivityFIle ="https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
+const mentorshipFile ="https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
 
 const Operations = ({
   opsData,
@@ -168,6 +167,7 @@ const Operations = ({
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
+  const [updatedUrl,setupdatedUrl]=useState(totfile)
   const [uploadModal, setUploadModal] = useState({
     myData: false,
     tot: false,
@@ -1570,13 +1570,60 @@ const Operations = ({
       });
     }
   };
+   const updateToturl=(url)=>{
+    setupdatedUrl(url)
+  } 
+  const handleDownload = async (retries = 3) => {
+    const fileUrl = updatedUrl;
+    console.log(updateToturl);
+    
+    const customFileName = "ToT-Template.xlsx";
 
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(fileUrl);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = customFileName;
+            link.click();
+            window.URL.revokeObjectURL(blobUrl);
+            
+            console.log("Download successful");
+            return; // Success, exit function
+        } catch (err) {
+            console.error(`Attempt ${i + 1} failed:`, err);
+            if (i === retries - 1) throw err; // If last attempt, rethrow error
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+        }
+    }
+};
+useEffect(async() => {
+
+  let data = await getTotPickList();
+  setupdatedUrl(data.totLink[0]);
+}, [])
+
+
+const handleDownloadClick =()=>{
+  SampleFile()
+  
+}
   const SampleFile = () => {
+   
+
     switch (activeTab.key) {
       case "my_data":
-        return feildActivityFIle;
-      case "useTot":
-        return totfile;
+        return 'https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx';
+      // case "useTot":
+      //   return totfile;
+       case "useTot":
+        handleDownload();   // trigger download
+        return "";  
       case "mentorship":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Mentorship-Template.xlsx";
       case "upskilling":
@@ -1590,6 +1637,7 @@ const Operations = ({
         return ""; // Fallback in case the tab doesn't match
     }
   };
+ 
   const columnsStudentOutreach = useMemo(
     () => [
       {
@@ -1712,10 +1760,10 @@ const Operations = ({
                     <button className="btn btn-primary ops_action_button">
                       <div>
                         <a
-                          href={SampleFile()}
+                          href={activeTab.key === "useTot" ? "#" : SampleFile()}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
-                          download={SampleFile()}
+                          onClick={handleDownloadClick}
                         >
                           Sample&nbsp;
                           <span>
@@ -2079,6 +2127,7 @@ const Operations = ({
           {uploadModal.tot && (
             <>
               <TotUpload
+                updateToturl={updateToturl}
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={closeUpload}
