@@ -1018,20 +1018,13 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       </button>
                     </SearchButtonContainer>
                   </SearchRow>
-                  {/* {appliedFilters.length > 0 && (
+                  {appliedFilters.length > 0 && (
                     <div style={{ marginTop: '10px' }}>
                       <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                        Applied Filters ({appliedFilters.length}):
+                        Multiple Filter Applied
                       </p>
-                      <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {appliedFilters.map((f, idx) => (
-                          <span key={`${f.label}-${idx}`} className="chip">
-                            {f.label}: {f.value}
-                          </span>
-                        ))}
-                      </div>
                     </div>
-                  )} */}
+                  )}
                   {isFieldEmpty && (
                     <div className="row">
                       <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>
