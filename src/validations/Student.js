@@ -50,7 +50,6 @@ const opportunity_id = Yup.string().required("Opportunity is required.");
 const student_id = Yup.string().required("Student is required.");
 const source = Yup.string().required("Source is required.");
 const salary_offered = Yup.number()
-  .nullable()
   .required("Monthly Salary is required.")
   .min(0, "Min value 0.")
   .max(1000000, "Salary should be in range of between 0 to 10 Lakh.");
@@ -155,7 +154,6 @@ export const EmploymentConnectionValidations = Yup.object({
     }),
   work_engagement,
   assigned_to,
-  earning_type: Yup.string().required("Earning type is required."),
 
 });
 
@@ -164,7 +162,11 @@ export const OpportunityEmploymentConnectionValidations = Yup.object({
   status: employment_connection_status,
   student_id,
   source,
-  salary_offered,
+  salary_offered: Yup.number()
+  .required("Monthly Salary is required.")
+  .typeError("Must be a valid number.")
+  .min(1, "Salary must be at least ₹1.")
+  .max(1000000, "Salary should be less than ₹10 Lakh."),
   reason_if_rejected: Yup.string()
     .nullable()
     .when("status", {

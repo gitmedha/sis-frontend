@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT, GET_STUDENT_BY_STUID } from "../../../graphql";
+import { GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT, GET_STUDENT_BY_STUID, UPDATE_PICKLIST } from "../../../graphql";
 import NP from "nprogress";
 import {
   GET_OPERATIONS,
@@ -577,7 +577,7 @@ export const bulkCreateStudentOutreach = async (data) => {
 };
 export const bulkCreateMentorship = async (data) => {
   try {
-    const response = await api.post("/mentorship/createBulkmentorship", data);
+    const response = await api.post("/mentorships/createBulkmentorship", data);
     return response;
   } catch (error) {
     return console.error(error);
@@ -1014,6 +1014,27 @@ export const getOrgsPicklist = async (field, table) => {
 
   }
 }
+
+// Custom hook for updating picklist
+export const UpdatePicklist = async (id, values) => {
+  return await api
+    .post("/graphql", {
+      query: UPDATE_PICKLIST,
+      variables: {
+        id,
+        values,
+      },
+    })
+    .then((res) => {
+      return res.data?.data?.updatePicklistFieldConfig?.picklistFieldConfig || null;
+    })
+    .catch((error) => {
+      console.error("❌ Error updating picklist:", error);
+      return Promise.reject(error);
+    });
+};
+
+
 
 export const searchEmployers = async function (searchValue) {
   // try {

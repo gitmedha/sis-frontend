@@ -50,7 +50,7 @@ const collegePitchesValidationSchema = Yup.object().shape({
   pitch_date: Yup.date().nullable().required("Date of Pitching is required"),
   student_name: Yup.string().required("Student Name is required"),
   course_name: Yup.string().required("Course Name is required"),
-  course_year: Yup.number().typeError("Course Year must be a number").required("Course Year is required").min(1900, "Course Year must be after 1900").max(2100, "Course Year must be before 2100"),
+  course_year: Yup.string().required("Course Year is required"),
   college_name: Yup.string().required("Institution is required"),
   program_name: Yup.string().required("Program Name is required"),
   phone: Yup.string().matches(/^[0-9]+$/, "Phone number must be digits only").min(10, "Phone number must be at least 10 digits").required("Phone is required"),

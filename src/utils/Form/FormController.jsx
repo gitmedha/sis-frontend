@@ -25,7 +25,9 @@ const FormController = (props) => {
     case "checkbox":
       return <CheckboxGroup {...rest} />;
     case "datepicker":
-      return <DatePicker {...rest} />;
+      // Destructure onChange and pass it as onInputCallback for DatePicker
+      const { onChange, ...datePickerRest } = rest;
+      return <DatePicker {...datePickerRest} onInputCallback={onChange} />;
     case "lookup":
       return <SelectLookup {...rest} />;
     case "lookupAsync":
