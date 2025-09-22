@@ -1004,16 +1004,6 @@ export const getCurriculumInterventionFieldValues = async (field) => {
   }
 };
 
-export const getOrgsPicklist = async (field, table) => {
-  try {
-    const response = await api.get(`/users-ops-activities/custom-picklist/${table}/${field}`);
-    return response.data;
-  } catch (error) {
-    console.error("Error fetching organization picklist:", error);
-    throw error;
-
-  }
-}
 
 // Custom hook for updating picklist
 export const UpdatePicklist = async (id, values) => {
@@ -1036,19 +1026,3 @@ export const UpdatePicklist = async (id, values) => {
 
 
 
-export const searchEmployers = async function (searchValue) {
-  // try {
-  //   const { data } = await api.post("/graphql", {
-  //     query: SEARCH_EMPLOYERS,
-  //     variables: {
-  //       limit: 20,
-  //       sort: "name:asc",
-  //       query: searchValue,
-  //     },
-  //   });
-
-  //   return data;
-  // } catch (error) {
-  //   console.error(error.message);
-  // }
-};

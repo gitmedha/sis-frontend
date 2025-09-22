@@ -1602,11 +1602,23 @@ const Operations = ({
         }
     }
 };
-useEffect(async() => {
+useEffect(() => {
+  const fetchData = async () => {
+    try {
+      let data = await getTotPickList();
+      
+      if (data?.totLink?.length > 0) {
+        setupdatedUrl(data.totLink[0]);
+      } else {
+        console.warn("totLink is empty or undefined", data);
+      }
+    } catch (err) {
+      console.error("Error fetching tot pick list:", err);
+    }
+  };
 
-  let data = await getTotPickList();
-  setupdatedUrl(data.totLink[0]);
-}, [])
+  fetchData();
+}, []);
 
 
 const handleDownloadClick =()=>{
