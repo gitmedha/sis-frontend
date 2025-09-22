@@ -265,11 +265,13 @@ const UpskillingUpload = (props) => {
             student.data?.studentsConnection.values[0].id,
             10
           );
-          studentExists = student?.data?.studentsConnection?.values.length > 0;
+          studentExists = student?.data?.studentsConnection?.values.filter((val)=>val.student_id == studentId).length > 0 ;
         } catch (err) {
           console.error(`Error fetching student with ID: ${studentId}`, err);
         }
       }
+      console.log(studentExists);
+      
       const createdby = Number(userId);
       const updatedby = Number(userId);
       if (
