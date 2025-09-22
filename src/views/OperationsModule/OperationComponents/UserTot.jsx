@@ -518,7 +518,7 @@ const UserTot = (props) => {
                 ))}
               </tbody>
             </table>
-            <div className="d-flex justify-content-end" style={{position:'relative', left:'145%', marginTop:'15px'}}>
+            <div className="d-flex justify-content-end" style={{position:'relative', left:'140vw', marginTop:'15px'}}>
               <button 
                 onClick={CloneTheValues}
                 disabled={isCloneDisabled}
