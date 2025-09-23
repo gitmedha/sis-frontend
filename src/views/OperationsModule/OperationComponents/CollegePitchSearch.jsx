@@ -322,7 +322,7 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                     {activeFilters.length > 0 && (
                       <div style={{ marginTop: '10px' }}>
                         <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                          Current Selections ({activeFilters.length}):
+                          Applied Filters ({activeFilters.length}):
                         </p>
                         <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                           {activeFilters.map((af) => {
