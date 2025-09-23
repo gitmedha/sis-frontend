@@ -415,6 +415,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
             fetchOptionsForFilter(filter);
           }
         }
+
         return newActiveFilters;
       });
     };
@@ -764,18 +765,36 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       })}
                     </div>
 
-                    {/* Applied Chips Inside Modal */}
-                    {appliedFilters && appliedFilters.length > 0 && (
+                    {/* Live Selected Chips Inside Modal (reflect current dropdown/date selections) */}
+                    {activeFilters.length > 0 && (
                       <div style={{ marginTop: '10px' }}>
                         <p style={{ color: '#257b69', marginBottom: '6px' }}>
                           Applied Filters ({appliedFilters.length}):
                         </p>
                         <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                          {appliedFilters.map((f, idx) => (
-                            <span key={`${f.label}-${idx}`} className="chip">
-                              {f.label}: {f.value}
-                            </span>
-                          ))}
+                          {activeFilters.map((af) => {
+                            // Build display from current Formik values
+                            if (af === 'Start Date' || af === 'End Date') {
+                              const fromVal = formik.values[`${af} From`];
+                              const toVal = formik.values[`${af} To`];
+                              const fmt = (d) => (d instanceof Date && !isNaN(d) ? new Intl.DateTimeFormat('en-US', { year: 'numeric', month: 'short', day: 'numeric' }).format(d) : '');
+                              const range = `${fmt(fromVal)}${fromVal || toVal ? ' - ' : ''}${fmt(toVal)}`;
+                              return (
+                                <span key={`live-${af}`} className="chip">
+                                  {af}: {range}
+                                </span>
+                              );
+                            }
+                            const val = formik.values[af];
+                            if (val !== null && val !== undefined && val !== '') {
+                              return (
+                                <span key={`live-${af}`} className="chip">
+                                  {af}: {val}
+                                </span>
+                              );
+                            }
+                            return null;
+                          })}
                         </div>
                       </div>
                     )}
@@ -1018,20 +1037,13 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       </button>
                     </SearchButtonContainer>
                   </SearchRow>
-                  {/* {appliedFilters.length > 0 && (
+                  {appliedFilters.length > 0 && (
                     <div style={{ marginTop: '10px' }}>
                       <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                        Applied Filters ({appliedFilters.length}):
+                        Multiple Filter Applied
                       </p>
-                      <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                        {appliedFilters.map((f, idx) => (
-                          <span key={`${f.label}-${idx}`} className="chip">
-                            {f.label}: {f.value}
-                          </span>
-                        ))}
-                      </div>
                     </div>
-                  )} */}
+                  )}
                   {isFieldEmpty && (
                     <div className="row">
                       <div className="col-lg-2 col-md-4 col-sm-12 mb-2"></div>

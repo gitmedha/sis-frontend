@@ -106,17 +106,21 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
       closefilterBox();
     };
   
-    const filters = [
-
-      "Medha Area",
-      "Program Name",
-    ];
+    const initialFilterValues = {
+      "Medha Area": "",
+      "Program Name": "",
+    };
   
     const FilterBox = ({ closefilterBox, clear, clearModalFiltersAndClose, initialSelectedField, initialFilterValues, formik: parentFormik }) => {
       const filterMap = {
         "area": "Medha Area",
         "program_name": "Program Name",
       };
+
+      const filters = [
+        "Medha Area",
+        "Program Name",
+      ];
 
       const [activeFilters, setActiveFilters] = useState(() => {
         const initial = new Set();
@@ -313,20 +317,29 @@ const CollegePitchSearch = ({ searchOperationTab, resetSearch }) => {
                         }
                       })}
                     </div>
-                    {appliedFilters && appliedFilters.length > 0 && (
+
+                    {/* Live Selected Chips Inside Modal (reflect current dropdown selections) */}
+                    {activeFilters.length > 0 && (
                       <div style={{ marginTop: '10px' }}>
                         <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                          Applied Filters ({appliedFilters.length}):
+                          Applied Filters ({activeFilters.length}):
                         </p>
                         <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
-                          {appliedFilters.map((f, idx) => (
-                            <span key={`${f.label}-${idx}`} className="chip">
-                              {f.label}: {f.value}
-                            </span>
-                          ))}
+                          {activeFilters.map((af) => {
+                            const val = formik.values[af];
+                            if (val !== null && val !== undefined && val !== '') {
+                              return (
+                                <span key={`live-${af}`} className="chip">
+                                  {af}: {val}
+                                </span>
+                              );
+                            }
+                            return null;
+                          })}
                         </div>
                       </div>
                     )}
+
                     <div className="filter-actions">
                       <button className="btn apply_pitch" style={{background:"#21867a",color:"#fff"}} type="button" onClick={formik.handleSubmit} disabled={isApplyDisabled}>
                         Apply
