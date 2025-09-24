@@ -643,7 +643,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                     value: opt.value,
                                   }))}
                                   onChange={(selected) => handleChange("Activity Type", selected?.value, formik.setFieldValue)}
-                                  placeholder="Select Activity..."
+                                  placeholder="Select Activity Type"
                                   isClearable
                                   isSearchable
                                   value={formik.values["Activity Type"] ? { label: formik.values["Activity Type"], value: formik.values["Activity Type"] } : null} // Use Formik's value
@@ -668,7 +668,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                     value: opt.value,
                                   }))}
                                   onChange={(selected) => handleChange("Assigned to", selected?.value, formik.setFieldValue)}
-                                  placeholder="Select Assigned to..."
+                                  placeholder="Select Assigned to"
                                   isClearable
                                   isSearchable
                                   value={formik.values["Assigned to"] ? { label: formik.values["Assigned to"], value: formik.values["Assigned to"] } : null} // Use Formik's value
@@ -693,7 +693,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                     value: opt.name,
                                   }))}
                                   onChange={(selected) => handleChange("Batch", selected?.value, formik.setFieldValue)}
-                                  placeholder="Select Batch..."
+                                  placeholder="Select Batch"
                                   isClearable
                                   isSearchable
                                   value={formik.values["Batch"] ? { label: formik.values["Batch"], value: formik.values["Batch"] } : null} // Use Formik's value
@@ -718,7 +718,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                     value: opt.value,
                                   }))}
                                   onChange={(selected) => handleChange("Medha Area", selected?.value, formik.setFieldValue)}
-                                  placeholder="Medha Area..."
+                                  placeholder="Select Medha Area"
                                   isClearable
                                   isSearchable
                                   value={formik.values["Medha Area"] ? { label: formik.values["Medha Area"], value: formik.values["Medha Area"] } : null} // Use Formik's value
@@ -743,7 +743,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                                     value: opt.value,
                                   }))}
                                   onChange={(selected) => handleChange("Program", selected?.value, formik.setFieldValue)}
-                                  placeholder="Program..."
+                                  placeholder="Select Program Name"
                                   isClearable
                                   isSearchable
                                   value={formik.values["Program"] ? { label: formik.values["Program"], value: formik.values["Program"] } : null} // Use Formik's value
