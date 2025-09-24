@@ -257,7 +257,27 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const [uploadType, setUploadType] = useState("newData");
-  const role =localStorage.getItem('role').toLocaleUpperCase()
+  // const role =localStorage.getItem('role').toLocaleUpperCase()
+  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
+  // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
+  const [validationResult, setValidationResult] = useState({
+    isValid: false,
+    message: "",
+    headers: []
+  });
+  const [fileForUpload, setFileForUpload] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState("");
+  const [uploadResult, setUploadResult] = useState(null);
+  const [fileNameError, setFileNameError] = useState("");
+
+  // Create refs for file inputs at the top with your other refs
+  const fileInputRef = useRef(null);
+  const fileInputRefNew = useRef(null);
+
+  // ... your existing code
+  const expectedFileName = "ToT-Template.xlsx";
   useEffect(() => {
     const getdata = async () => {
       const data = await getAllSrmbyname();
@@ -668,26 +688,7 @@ const TotUpload = (props) => {
   };
   // const [notUploadedData_newfile, setnotUploadedData_newfile] = useState(false);
   // const [fileName_new, setFileName_new] = useState("")
-  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
-  // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
-  const [validationResult, setValidationResult] = useState({
-    isValid: false,
-    message: "",
-    headers: []
-  });
-  const [fileForUpload, setFileForUpload] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadStatus, setUploadStatus] = useState("");
-  const [uploadResult, setUploadResult] = useState(null);
-  const [fileNameError, setFileNameError] = useState("");
-
-  // Create refs for file inputs at the top with your other refs
-  const fileInputRef = useRef(null);
-  const fileInputRefNew = useRef(null);
-
-  // ... your existing code
-  const expectedFileName = "ToT-Template.xlsx";
+  
 
   // ... your existing code
 
