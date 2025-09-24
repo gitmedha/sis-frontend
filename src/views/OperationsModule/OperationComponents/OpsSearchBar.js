@@ -211,7 +211,9 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
   };
 
   // New function for clearing filters only within the modal, then closing it
-  const clearModalFiltersAndClose = async () => {
+  const clearModalFiltersAndClose = async (setAppliedFilters, setAppliedFiltersSummary, setShowAppliedFilterMessage, formik) => {
+    console.log('Modal clear called with formik:', formik);
+
     setPersistentFilterValues({}); // Clear persistent values
     const searchData = {
       searchFields: [],
@@ -221,6 +223,12 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     setAppliedFiltersSummary(""); // Clear the summary as well
     setAppliedFilters([]); // Clear applied filter chips
     await searchOperationTab("users-ops-activities", searchData);
+
+    // Also call the main clear function to reset the entire search
+    console.log('Calling main clear function...');
+    await clear(formik);
+
+    console.log('Modal clear completed');
     closefilterBox(); // Just close the modal, which also hides the message
   };
 
@@ -234,7 +242,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     "End Date",
   ];
 
-  const FilterBox = ({ closefilterBox, clear, initialSelectedField, initialFilterValues, formik: parentFormik, setPersistentFilterValues, excludeFilter }) => {
+  const FilterBox = ({ closefilterBox, clear, initialSelectedField, initialFilterValues, formik: parentFormik, setPersistentFilterValues, excludeFilter, setAppliedFilters, setAppliedFiltersSummary, setShowAppliedFilterMessage, mainFormik }) => {
     const [activeFilters, setActiveFilters] = useState(() => {
       const initialActive = new Set(); // Use a Set to avoid duplicate filter chips
       
@@ -769,7 +777,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                     {activeFilters.length > 0 && (
                       <div style={{ marginTop: '10px' }}>
                         <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                          Applied Filters ({appliedFilters.length}):
+                          Applied Filters ({activeFilters.length}):
                         </p>
                         <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                           {activeFilters.map((af) => {
@@ -804,7 +812,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                       <button className="btn apply" type="button" onClick={() => handleApply(formik.values)} disabled={isApplyDisabled}>
                         Apply
                       </button>
-                      <button className="btn clear" type="button" onClick={clearModalFiltersAndClose}>
+                      <button className="btn clear" type="button" onClick={() => clearModalFiltersAndClose(setAppliedFilters, setAppliedFiltersSummary, setShowAppliedFilterMessage, mainFormik)}>
                         Clear
                       </button>
                     </div>
@@ -837,7 +845,18 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
   ];
 
   const clear = async (formik) => {
-    formik.setValues(initialValues);
+    console.log('Clear function called with formik:', formik);
+    console.log('Clear function - formik type:', typeof formik);
+    console.log('Clear function - formik keys:', formik ? Object.keys(formik) : 'null');
+
+    if (formik) {
+      console.log('Clear function - calling setValues with initialValues:', initialValues);
+      formik.setValues(initialValues);
+      console.log('Clear function - setValues completed');
+    } else {
+      console.log('Clear function - formik is null/undefined, skipping setValues');
+    }
+
     await resetSearch();
     setSelectedSearchField(null);
     setDisabled(true);
@@ -856,6 +875,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       "prevSearchedPropsAndValues",
       JSON.stringify({ baseUrl, searchData })
     );
+    console.log('Clear function completed');
+    // Note: closefilterBox() is handled separately in clearModalFiltersAndClose
   };
 
   const setSearchItem = async (value, formik) => {
@@ -1102,6 +1123,9 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                     };
                     return singleFilterMap[selectedSearchField];
                   })()} // Pass the currently selected single filter to exclude
+                  setAppliedFilters={setAppliedFilters}
+                  setShowAppliedFilterMessage={setShowAppliedFilterMessage}
+                  mainFormik={formik}
                 />
               )}
             </Section>

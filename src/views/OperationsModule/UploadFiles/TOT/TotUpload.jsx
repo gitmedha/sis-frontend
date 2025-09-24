@@ -257,7 +257,27 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const [uploadType, setUploadType] = useState("newData");
-  const role =localStorage.getItem('role').toLocaleUpperCase()
+  // const role =localStorage.getItem('role').toLocaleUpperCase()
+  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
+  // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
+  const [validationResult, setValidationResult] = useState({
+    isValid: false,
+    message: "",
+    headers: []
+  });
+  const [fileForUpload, setFileForUpload] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState("");
+  const [uploadResult, setUploadResult] = useState(null);
+  const [fileNameError, setFileNameError] = useState("");
+
+  // Create refs for file inputs at the top with your other refs
+  const fileInputRef = useRef(null);
+  const fileInputRefNew = useRef(null);
+
+  // ... your existing code
+  const expectedFileName = "ToT-Template.xlsx";
   useEffect(() => {
     const getdata = async () => {
       const data = await getAllSrmbyname();
@@ -668,26 +688,7 @@ const TotUpload = (props) => {
   };
   // const [notUploadedData_newfile, setnotUploadedData_newfile] = useState(false);
   // const [fileName_new, setFileName_new] = useState("")
-  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
-  // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
-  const [validationResult, setValidationResult] = useState({
-    isValid: false,
-    message: "",
-    headers: []
-  });
-  const [fileForUpload, setFileForUpload] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadStatus, setUploadStatus] = useState("");
-  const [uploadResult, setUploadResult] = useState(null);
-  const [fileNameError, setFileNameError] = useState("");
-
-  // Create refs for file inputs at the top with your other refs
-  const fileInputRef = useRef(null);
-  const fileInputRefNew = useRef(null);
-
-  // ... your existing code
-  const expectedFileName = "ToT-Template.xlsx";
+  
 
   // ... your existing code
 
@@ -1249,25 +1250,33 @@ const handleFileChangeNewFile = (event) => {
         </label>
       </div>
       
-      {/* Show verification loader */}
-      {isUploading && uploadStatus === "Verifying file..." && (
+      {/* Show single loader for entire process */}
+      {isUploading && (
         <div className="mt-3">
           <div className="d-flex justify-content-center align-items-center">
             <Spinner animation="border" variant="success" size="sm" className="me-2" />
-            <span>{uploadStatus} {uploadProgress}%</span>
+            <span>
+              {uploadStatus === "Verifying file..." ? "Validating file..." :
+               uploadStatus === "Uploading file..." ? "Uploading file..." :
+               uploadStatus === "Validation complete. Ready to upload." ? "Ready to upload" :
+               uploadStatus}
+              {uploadProgress > 0 ? ` ${uploadProgress}%` : ''}
+            </span>
           </div>
-          <div className="progress mt-2">
-            <div
-              className="progress-bar progress-bar-striped progress-bar-animated"
-              role="progressbar"
-              style={{ width: `${uploadProgress}%` }}
-              aria-valuenow={uploadProgress}
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              {uploadProgress}%
+          {uploadProgress > 0 && (
+            <div className="progress mt-2">
+              <div
+                className="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                style={{ width: `${uploadProgress}%` }}
+                aria-valuenow={uploadProgress}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                {uploadProgress}%
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       
@@ -1313,25 +1322,6 @@ const handleFileChangeNewFile = (event) => {
                           Please fix all validation issues before uploading
                         </p>
                       )}
-                    </div>
-                  )}
-
-                  {/* Show progress when uploading */}
-                  {(isUploading ) && (
-                    <div className="mt-3">
-                      <div className="progress">
-                        <div
-                          className="progress-bar progress-bar-striped progress-bar-animated"
-                          role="progressbar"
-                          style={{ width: `${uploadProgress}%` }}
-                          aria-valuenow={uploadProgress}
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        >
-                          {uploadProgress}%
-                        </div>
-                      </div>
-                      <p className="text-center mt-2">{uploadStatus}</p>
                     </div>
                   )}
 
