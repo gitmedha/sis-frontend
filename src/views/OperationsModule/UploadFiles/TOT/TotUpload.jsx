@@ -806,7 +806,7 @@ const handleFileChangeNewFile = (event) => {
 
       // Check if file has data rows (should only have headers)
       if (hasDataRows) {
-        const message = "Please upload only the template with headers only.";
+        const message = "Please upload the template with headers only.";
         setValidationResult({ 
           isValid: false, 
           message, 
