@@ -1249,25 +1249,33 @@ const handleFileChangeNewFile = (event) => {
         </label>
       </div>
       
-      {/* Show verification loader */}
-      {isUploading && uploadStatus === "Verifying file..." && (
+      {/* Show single loader for entire process */}
+      {isUploading && (
         <div className="mt-3">
           <div className="d-flex justify-content-center align-items-center">
             <Spinner animation="border" variant="success" size="sm" className="me-2" />
-            <span>{uploadStatus} {uploadProgress}%</span>
+            <span>
+              {uploadStatus === "Verifying file..." ? "Validating file..." :
+               uploadStatus === "Uploading file..." ? "Uploading file..." :
+               uploadStatus === "Validation complete. Ready to upload." ? "Ready to upload" :
+               uploadStatus}
+              {uploadProgress > 0 ? ` ${uploadProgress}%` : ''}
+            </span>
           </div>
-          <div className="progress mt-2">
-            <div
-              className="progress-bar progress-bar-striped progress-bar-animated"
-              role="progressbar"
-              style={{ width: `${uploadProgress}%` }}
-              aria-valuenow={uploadProgress}
-              aria-valuemin="0"
-              aria-valuemax="100"
-            >
-              {uploadProgress}%
+          {uploadProgress > 0 && (
+            <div className="progress mt-2">
+              <div
+                className="progress-bar progress-bar-striped progress-bar-animated"
+                role="progressbar"
+                style={{ width: `${uploadProgress}%` }}
+                aria-valuenow={uploadProgress}
+                aria-valuemin="0"
+                aria-valuemax="100"
+              >
+                {uploadProgress}%
+              </div>
             </div>
-          </div>
+          )}
         </div>
       )}
       
@@ -1313,25 +1321,6 @@ const handleFileChangeNewFile = (event) => {
                           Please fix all validation issues before uploading
                         </p>
                       )}
-                    </div>
-                  )}
-
-                  {/* Show progress when uploading */}
-                  {(isUploading ) && (
-                    <div className="mt-3">
-                      <div className="progress">
-                        <div
-                          className="progress-bar progress-bar-striped progress-bar-animated"
-                          role="progressbar"
-                          style={{ width: `${uploadProgress}%` }}
-                          aria-valuenow={uploadProgress}
-                          aria-valuemin="0"
-                          aria-valuemax="100"
-                        >
-                          {uploadProgress}%
-                        </div>
-                      </div>
-                      <p className="text-center mt-2">{uploadStatus}</p>
                     </div>
                   )}
 
