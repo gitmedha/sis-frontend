@@ -230,8 +230,8 @@ const options = [
   { value: "collegePitch", label: "Pitching" },
 ];
 const filteypeoptions = [
-  { value: "newFileUpload", label: "New File Upload" },
-  { value: "newData", label: "New Data Entry" }
+  { value: "newData", label: "New Data Entry" },
+  { value: "newFileUpload", label: "New File Upload" }
 ];
 
 const TotUpload = (props) => {
@@ -1083,11 +1083,11 @@ const TotUpload = (props) => {
             id="uploadType"
             className="basic-single"
             classNamePrefix="select"
-            value={options.find((option) => option.value === uploadType)}
+            value={filteypeoptions?.find((option) => option.value === uploadType) || null}
             onChange={(selectedOption) => {
-              setUploadType(selectedOption.value);
+              setUploadType(selectedOption?.value || '');
             }}
-            options={filteypeoptions}
+            options={filteypeoptions || []}
             placeholder="Choose upload type..."
           />
         </div>
