@@ -76,6 +76,7 @@ import { GET_PMUS_DATA } from "../../graphql";
 import PmusSearchBar from "./SaModule/PMus/PmusSearchBar";
 import PmusDataField from "./SaModule/PMus/PmusDataField";
 import PmusBulkAdd from "./SaModule/PMus/PmusBulkAdd";
+import QueryUpload from "./UploadFiles/AlumniQuery/QueryUpload";
 
 const tabPickerOptionsMain = [
   { title: "Core Programs", key: "coreProgramme" },
@@ -1459,6 +1460,10 @@ const Operations = ({
             setAlert("Unable to create TOT data.", "error");
           });
       }
+      if (key === "alumniQuery") {
+        await api.post("/alumni-queries/create-bulk-alumni-queries", data);
+        setAlert("Data created successfully.", "success");
+      }
 
       if (key === "pitching") {
         datavaluesforlatestcreate = {
@@ -1539,7 +1544,7 @@ const Operations = ({
     setUploadModal(false);
   };
 
-  const openclosepopup = () => {
+ const openclosepopup = () => {
     if (activeTab.key == "my_data") {
       setUploadModal({
         myData: true,
@@ -1547,21 +1552,23 @@ const Operations = ({
         mentorship: false,
         upskill: false,
         pitching: false,
-      });
-    }
-    if (activeTab.key == "pmus") {
-      setUploadModal({
-        tot: false,
-        myData: false,
-        mentorship: false,
-        upskill: false,
-        pitching: false,
-        pmus: true
+        alumniQueries: false,
       });
     }
     if (activeTab.key == "useTot") {
       setUploadModal({
         tot: true,
+        myData: false,
+        mentorship: false,
+        upskill: false,
+        alumniQueries: false,
+        pitching: false,
+      });
+    }
+     if (activeTab.key == "alumniQueries") {
+      setUploadModal({
+        tot: false,
+        alumniQueries: true,
         myData: false,
         mentorship: false,
         upskill: false,
@@ -1572,6 +1579,7 @@ const Operations = ({
       setUploadModal({
         tot: false,
         myData: false,
+        alumniQueries: false,
         mentorship: true,
         upskill: false,
         pitching: false,
@@ -1583,6 +1591,7 @@ const Operations = ({
         myData: false,
         mentorship: false,
         pitching: false,
+        alumniQueries: false,
         upskill: true,
       });
     }
@@ -1592,6 +1601,7 @@ const Operations = ({
         myData: false,
         mentorship: false,
         upskill: false,
+        alumniQueries: false,
         pitching: true,
       });
     }
@@ -1609,6 +1619,8 @@ const Operations = ({
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student+Upskilling+Template.xlsx";
       case "collegePitches":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
+      case "alumniQueries":
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Alumni+Queries+Template.xlsx";
       default:
         return ""; // Fallback in case the tab doesn't match
     }
@@ -1653,13 +1665,13 @@ const Operations = ({
                       <FaPlus size="12" color="#fff" />
                     </span>
                   </button>
-                {console.log(activeTab.key)
-                }
+                {console.log(activeTab.key)}
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
                   activeTab.key == "upskilling" ||
-                  activeTab.key == "collegePitches"
+                   activeTab.key == "collegePitches" || 
+                   activeTab.key =="alumniQueries"
                    ? (
                     <button
                       className="btn btn-primary ops_action_button"
@@ -1679,6 +1691,7 @@ const Operations = ({
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
                   activeTab.key == "upskilling" ||
+                  activeTab.key =="alumniQueries" || 
                   activeTab.key == "collegePitches" 
                   ? (
                     <button className="btn btn-primary ops_action_button">
@@ -2092,6 +2105,17 @@ const Operations = ({
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={() => closeUpload()}
                 Upskill="yes"
+              />
+            </>
+          )}
+
+          {uploadModal.alumniQueries && (
+            <>
+              <QueryUpload
+                uploadExcel={uploadExcel}
+                alertForNotuploadedData={alertForNotuploadedData}
+                closeThepopus={() => closeUpload()}
+                AlumniQuery="yes"
               />
             </>
           )}
