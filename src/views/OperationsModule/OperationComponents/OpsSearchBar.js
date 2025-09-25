@@ -179,7 +179,11 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
   const [appliedFiltersSummary, setAppliedFiltersSummary] = useState(""); // New state for filter summary
   const [persistentFilterValues, setPersistentFilterValues] = useState({}); // New state to persist multi-filter values
   const [appliedFilters, setAppliedFilters] = useState([]); // Array of { label, value }
-
+  const [clickedFilter, setClickedFilter] = useState(false);
+  
+  const toggelClicked=()=>{
+    setClickedFilter(!clickedFilter)
+  }
   const handleSubmit = async (values) => {
     setShowAppliedFilterMessage(false); // Hide multi-filter applied message on single filter submission
     const baseUrl = "users-ops-activities";
@@ -242,7 +246,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     "End Date",
   ];
 
-  const FilterBox = ({ closefilterBox, clear, initialSelectedField, initialFilterValues, formik: parentFormik, setPersistentFilterValues, excludeFilter, setAppliedFilters, setAppliedFiltersSummary, setShowAppliedFilterMessage, mainFormik }) => {
+  const FilterBox = ({ closefilterBox, clear, initialSelectedField, initialFilterValues, formik: parentFormik, setPersistentFilterValues, excludeFilter, setAppliedFilters, setAppliedFiltersSummary, setShowAppliedFilterMessage, mainFormik ,clickedFilter,toggelClicked}) => {
     const [activeFilters, setActiveFilters] = useState(() => {
       const initialActive = new Set(); // Use a Set to avoid duplicate filter chips
       
@@ -277,11 +281,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       }
       return Array.from(initialActive); // Convert Set back to Array
     });
-    // const [filterValues, setFilterValues] = useState({}); // Removed, now using Formik state
-
-    // useEffect(() => {
-    //   setFilterValues(initialFilterValues);
-    // }, [initialFilterValues]); // Removed
+     // Track which filter chip is clicked
 
     const [filterErrors, setFilterErrors] = useState({}); // State to store validation errors
     const [isApplyDisabled, setIsApplyDisabled] = useState(true); // State to control Apply button disabled state
@@ -451,6 +451,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
       });
     };
     const handleApply = async (formikValues) => { // Accept formikValues as argument
+      toggelClicked()
       // Run validation before applying filters
       if (!validateAllFilters(formikValues)) { // Pass formikValues to validation
         return; // Stop if validation fails
@@ -797,10 +798,10 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                     </div>
 
                     {/* Live Selected Chips Inside Modal (reflect current dropdown/date selections) */}
-                    {activeFilters.length > 0 && (
+                    {(getAppliedFiltersCount(formik.values) > 0  ) && (
                       <div style={{ marginTop: '10px' }}>
                         <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                          Applied Filters ({getAppliedFiltersCount(formik.values)}):
+                          Applied Filters ({clickedFilter && getAppliedFiltersCount(formik.values) > 0 ? getAppliedFiltersCount(formik.values):0}):
                         </p>
                         <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                           {activeFilters.map((af) => {
@@ -1149,6 +1150,8 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                   setAppliedFilters={setAppliedFilters}
                   setShowAppliedFilterMessage={setShowAppliedFilterMessage}
                   mainFormik={formik}
+                  toggelClicked={()=>toggelClicked()}
+                  clickedFilter={clickedFilter}
                 />
               )}
             </Section>
