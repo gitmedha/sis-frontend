@@ -292,6 +292,29 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     const [areaOptions, setAreaOptions] = useState([]);
     const [programOptions, setProgramOptions] = useState([]);
 
+    // Function to count only filters that have actual values applied
+    const getAppliedFiltersCount = (formikValues) => {
+      let count = 0;
+
+      activeFilters.forEach(filter => {
+        if (filter === "Start Date" || filter === "End Date") {
+          const fromValue = formikValues[`${filter} From`];
+          const toValue = formikValues[`${filter} To`];
+          // Count as applied if both dates are filled
+          if (fromValue && toValue && fromValue instanceof Date && toValue instanceof Date) {
+            count++;
+          }
+        } else {
+          const val = formikValues[filter];
+          // Count as applied if the value is not null, undefined, or empty string
+          if (val !== null && val !== undefined && val !== '') {
+            count++;
+          }
+        }
+      });
+
+      return count;
+    }
     // Validation function for all active filters
     const validateAllFilters = (currentFilterValues) => { // Accept currentFilterValues as argument
       const newErrors = {};
@@ -777,7 +800,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
                     {activeFilters.length > 0 && (
                       <div style={{ marginTop: '10px' }}>
                         <p style={{ color: '#257b69', marginBottom: '6px' }}>
-                          Applied Filters ({activeFilters.length}):
+                          Applied Filters ({getAppliedFiltersCount(formik.values)}):
                         </p>
                         <div className="filter-chips" style={{ display: 'flex', flexWrap: 'wrap', gap: '8px' }}>
                           {activeFilters.map((af) => {
