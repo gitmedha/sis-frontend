@@ -123,9 +123,14 @@ const Batch = (props) => {
         let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
         let studentsWithAttendance = studentsData.map(student => {
           let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
+          let presentCount = studentAttendancePercent?.connection?.aggregate?.count || 0;
+          let calculatedPercent =  sessionCount ? Math.floor((presentCount/sessionCount) * 100) : 0;
+          //cap at 100 % to handle duplicate attendance records
+          let cappedPercent = Math.min(calculatedPercent, 100);
           return {
             ...student,
-            attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/sessionCount) * 100) : 0,
+            attendancePercent: cappedPercent
+
           }
         });
         setStudents(studentsWithAttendance);
