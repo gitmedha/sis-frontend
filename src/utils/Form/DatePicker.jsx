@@ -4,7 +4,6 @@ import { Field, ErrorMessage } from "formik";
 import styled from "styled-components";
 import { FaCalendarAlt } from "react-icons/fa";
 import{ useRef } from "react";
-import { useEffect } from "react";
 
 const DatePickerField = styled.div`
 .react-datepicker {
@@ -111,17 +110,14 @@ label {
 `;
 
 const DatePicker = (props) => {
-  const { name, showtime, label, required, onInput: onInputCallback, value: datePickerValue, ...rest } = props;
+  const { name, showtime, label, required, onInput: onInputCallback, ...rest } = props;
   const datepickerRef = useRef(null);
-  
-  useEffect(() => {
-    console.log("DatePicker - value prop changed:", datePickerValue);
-  }, [datePickerValue]);
-
   function handleClickDatepickerIcon() {
     const datepickerElement = datepickerRef.current;
     datepickerElement.setFocus(true);
   }
+  console.log("props",props);
+  
 
   return (
     <DatePickerField>
@@ -134,9 +130,6 @@ const DatePicker = (props) => {
           {({ form, field }) => {
             const { value } = field;
             const { setFieldValue } = form;
-
-            // Moved useEffect outside to the component's top level
-
             return (
               <div className="datepicker-wrapper">
                 <DateView
@@ -148,9 +141,8 @@ const DatePicker = (props) => {
                   id={name}
                   {...field}
                   {...rest}
-                  selected={datePickerValue instanceof Date && !isNaN(datePickerValue) ? datePickerValue : null}
+                  selected={value}
                   onChange={(val) => {
-                    console.log("DatePicker - onChange received value (raw from picker):", val);
                     setFieldValue(name, val);
                     if (typeof onInputCallback === 'function') {
                       onInputCallback(val)
