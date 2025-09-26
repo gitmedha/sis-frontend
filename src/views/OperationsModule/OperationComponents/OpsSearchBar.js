@@ -185,6 +185,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     setClickedFilter(!clickedFilter)
   }
   const handleSubmit = async (values) => {
+    toggelClicked()
     setShowAppliedFilterMessage(false); // Hide multi-filter applied message on single filter submission
     const baseUrl = "users-ops-activities";
     let searchData;
