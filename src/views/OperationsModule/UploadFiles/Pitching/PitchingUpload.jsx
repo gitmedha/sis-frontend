@@ -307,7 +307,6 @@ const PitchingUpload = (props) => {
         if (!isValidProgramName(newItem["Program name"])) errors.push("Invalid Program name");
         if (Date.includes("NaN")) errors.push("Invalid Date of Pitching, expected YYYY/MM/DD");
         if (newItem["WhatsApp Number"] && !whatsappValid) errors.push("WhatsApp number must be 10 digits");
-
         notFoundData.push({
           index: index + 1,
           date_of_pitching: newItem['Date of Pitching'] || "",

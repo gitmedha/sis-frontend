@@ -96,6 +96,8 @@ const TotEdit = (props) => {
   useEffect(() => {
     if (props.college) {
       filterInstitution().then((data) => {
+        console.log(data);
+
         setInstitutionOptions(data);
       });
     }
@@ -174,7 +176,7 @@ const TotEdit = (props) => {
     });
   }, []);
 
-  const onStateChange = async (value) => {};
+  const onStateChange = async (value) => { };
 
   useEffect(() => {
     getStudentsPickList().then((data) => {
@@ -225,7 +227,7 @@ const TotEdit = (props) => {
     contact: "",
     designation: "",
     published_at: "",
-    email:""
+    email: ""
   };
   // { "Created At": "2023-04-19T12:18:24.383286Z", "Organization": "Goonj", "Activity Type": "Industry Talk/Expert Talk", "Institution": 329, "Updated At": null, "End Date": "2020-07-06", "Designation": "State Head(U.P)", "Start Date": "2020-07-06", "Assigned To": 123, "Other Links": "0", "Topic": "Goonj fellowship and NGO work", "Donor": false, "Batch": 162, "ID": 2201, "Updated By": null, "Students Attended": 14, "Created By": 2, "State": "Uttar Pradesh", "Area": "Gorakhpur (City)", "Guest": "Mr. Shushil Yadav" },
 
@@ -590,7 +592,7 @@ const TotEdit = (props) => {
                   <Section>
                     <h3 className="section-header">Address</h3>
                     <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
+                        <div className="col-md-6 col-sm-12 mb-2">
                         {stateOptions.length ? (
                           <Input
                             icon="down"
@@ -607,75 +609,261 @@ const TotEdit = (props) => {
                           <Skeleton count={1} height={45} />
                         )}
                       </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        {areaOptions.length ? (
+
+                        <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
-                            name="city"
-                            label="District where training took place"
                             control="lookup"
                             options={areaOptions}
                             required
-                            placeholder="City"
                             className="form-control"
+                            placeholder="Facilitator 1"
                           />
-                        ) : (
-                          <>
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="trainer_2"
+                            label="Facilitator 2"
+                            required
+                            options={srmOption}
+                            className="form-control"
+                            placeholder="Facilitator 2"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="module_name"
+                            label="Module Name"
+                            required
+                            options={moduleName}
+                            className="form-control"
+                            placeholder="Module Name"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="new_entry"
+                            label="New Entry"
+                            required
+                            options={options}
+                            className="form-control"
+                            placeholder="New Entry"
+                          />
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="start_date"
+                            label="Start Date "
+                            // required
+                            placeholder="Start Date"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            name="end_date"
+                            label="End Date"
+                            // required
+                            placeholder="End Date"
+                            control="datepicker"
+                            className="form-control"
+                            autoComplete="off"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="project_type"
+                            label="Project Type"
+                            required
+                            options={projecttypeoptions}
+                            className="form-control"
+                            placeholder="Project Type"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="certificate_given"
+                            label="Certificate Given"
+                            required
+                            options={certificateoptions}
+                            className="form-control"
+                            placeholder="Certificate Given"
+                          />
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="partner_dept"
+                            label="Partner Department"
+                            required
+                            options={partnerDept}
+                            className="form-control"
+                            placeholder="Partner Department"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="lookupAsync"
+                            name="college"
+                            label="College"
+                            // onKeyPress={handleKeyPress}
+                            className="form-control"
+                            defaultOptions={institutionOptions}
+                            filterData={filterInstitution}
+                            placeholder="College"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="age"
+                            label="Age"
+                            onKeyPress={numberChecker}
+                            className="form-control"
+                            placeholder="Guest"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="lookup"
+                            name="gender"
+                            label="Gender"
+                            required
+                            options={genderOptions}
+                            className="form-control"
+                            placeholder="Gender"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="contact"
+                            label="Contact"
+                            className="form-control"
+                            placeholder="Contact"
+                            onKeyPress={mobileNochecker}
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            icon="down"
+                            control="input"
+                            name="designation"
+                            label="Designation"
+                            className="form-control"
+                            placeholder="Designation"
+                            onKeyPress={handleKeyPress}
+                          />
+                        </div>
+                      </div>
+                    </Section>
+                    <Section>
+                      <h3 className="section-header">Address</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {stateOptions.length ? (
+                            <Input
+                              icon="down"
+                              name="state"
+                              label="State "
+                              control="lookup"
+                              options={stateOptions}
+                              onChange={onStateChange}
+                              placeholder="State"
+                              className="form-control"
+                            />
+                          ) : (
                             <Skeleton count={1} height={45} />
-                          </>
-                        )}
-                      </div>
-                    </div>
-                  </Section>
-
-                  <Section>
-                    <h3 className="section-header">Other Information</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12">
-                        <DetailField
-                          Bold={""}
-                          label="Created By"
-                          value={
-                            props.createdby
-                              ? props.createdby.username
-                              : "not found"
-                          }
-                        />
-                        <DetailField
-                          Bold={""}
-                          label="Created At"
-                          value={moment(props.created_at).format(
-                            "DD MMM YYYY, h:mm a"
                           )}
-                        />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          {areaOptions.length ? (
+                            <Input
+                              icon="down"
+                              name="city"
+                              label="District where training took place"
+                              control="lookup"
+                              options={areaOptions}
+                              placeholder="City"
+                              className="form-control"
+                            />
+                          ) : (
+                            <>
+                              <Skeleton count={1} height={45} />
+                            </>
+                          )}
+                        </div>
                       </div>
+                    </Section>
 
-                      <div className="col-md-6 col-sm-12">
-                        <DetailField
-                          Bold={""}
-                          label="Updated By"
-                          value={
-                            props.updatedby
-                              ? props.updatedby.username
-                              : "not found"
-                          }
-                        />
-                        <DetailField
-                          Bold={""}
-                          label="Updated At"
-                          value={
-                            props.updated_at
-                              ? moment(props.updated_at).format(
+                    <Section>
+                      <h3 className="section-header">Other Information</h3>
+                      <div className="row">
+                        <div className="col-md-6 col-sm-12">
+                          <DetailField
+                            Bold={""}
+                            label="Created By"
+                            value={
+                              props.createdby
+                                ? props.createdby.username
+                                : "not found"
+                            }
+                          />
+                          <DetailField
+                            Bold={""}
+                            label="Created At"
+                            value={moment(props.created_at).format(
+                              "DD MMM YYYY, h:mm a"
+                            )}
+                          />
+                        </div>
+
+                        <div className="col-md-6 col-sm-12">
+                          <DetailField
+                            Bold={""}
+                            label="Updated By"
+                            value={
+                              props.updatedby
+                                ? props.updatedby.username
+                                : "not found"
+                            }
+                          />
+                          <DetailField
+                            Bold={""}
+                            label="Updated At"
+                            value={
+                              props.updated_at
+                                ? moment(props.updated_at).format(
                                   "DD MMM YYYY, h:mm a"
                                 )
-                              : "not found"
-                          }
-                        />
+                                : "not found"
+                            }
+                          />
+                        </div>
                       </div>
-                    </div>
-                  </Section>
+                    </Section>
                   </div>
-                 
+
                   <div className="row justify-content-end">
                     <div className="col-auto p-0">
                       <button
