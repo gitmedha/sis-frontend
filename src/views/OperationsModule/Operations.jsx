@@ -1508,7 +1508,7 @@ const Operations = ({
     setUploadModal(false);
   };
 
-  const openclosepopup = () => {
+ const openclosepopup = () => {
     if (activeTab.key == "my_data") {
       setUploadModal({
         myData: true,
@@ -1630,7 +1630,6 @@ const handleDownloadClick =()=>{
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student+Upskilling+Template.xlsx";
       case "collegePitches":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
-
       case "alumniQueries":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Alumni+Queries+Template.xlsx";
       default:
@@ -1729,8 +1728,7 @@ const handleDownloadClick =()=>{
                       <FaPlus size="12" color="#fff" />
                     </span>
                   </button>
-                {console.log(activeTab.key)
-                }
+                {console.log(activeTab.key)}
                   {activeTab.key == "my_data" ||
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||

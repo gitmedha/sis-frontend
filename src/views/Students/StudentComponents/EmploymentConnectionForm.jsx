@@ -260,63 +260,63 @@ const EnrollmentConnectionForm = (props) => {
   }, []);
 
   useEffect(() => {
-    getEmploymentConnectionsPickList().then((data) => {
-      setrejectionreason(
-        data.reason_if_rejected?.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setWorkEngagementOptions(
-        data.work_engagement.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setAllStatusOptions(
-        data.status.map((item) => ({
-          ...item,
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setSourceOptions(
-        data.source.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-      setEarningTypeOptions(
-        data.earning_type.map((item) => ({
-          key: item.value,
-          value: item.value,
-          label: item.value,
-        }))
-      );
-    });
+  getEmploymentConnectionsPickList().then((data) => {
+    setrejectionreason(
+      data.reason_if_rejected?.map((item) => ({
+        key: item.value,
+        value: item.value,
+        label: item.value,
+      }))
+    );
+    setWorkEngagementOptions(
+      data.work_engagement.map((item) => ({
+        ...item,
+        key: item.value,
+        value: item.value,
+        label: item.value,
+      }))
+    );
+    setAllStatusOptions(
+      data.status.map((item) => ({
+        ...item,
+        key: item.value,
+        value: item.value,
+        label: item.value,
+      }))
+    );
+    setSourceOptions(
+      data.source.map((item) => ({
+        key: item.value,
+        value: item.value,
+        label: item.value,
+      }))
+    );
+    setEarningTypeOptions(
+      data.earning_type.map((item) => ({
+        key: item.value,
+        value: item.value,
+        label: item.value,
+      }))
+    );
+  });
 
-    if (props.employmentConnection) {
-      filterEmployer(
-        Number(props.employmentConnection?.opportunity?.employer?.name)
-      ).then((data) => {
-        setEmployerOptions(data);
-      });
-    }
-    if (
-      props.employmentConnection &&
-      props.employmentConnection.opportunity &&
-      props.employmentConnection.opportunity.employer
-    ) {
-      updateEmployerOpportunityOptions({
-        value: Number(props.employmentConnection.opportunity.employer.id),
-      });
-    }
-  }, [props]);
+  if (props.employmentConnection) {
+    filterEmployer(
+      Number(props.employmentConnection?.opportunity?.employer?.name)
+    ).then((data) => {
+      setEmployerOptions(data);
+    });
+  }
+  if (
+    props.employmentConnection &&
+    props.employmentConnection.opportunity &&
+    props.employmentConnection.opportunity.employer
+  ) {
+    updateEmployerOpportunityOptions({
+      value: Number(props.employmentConnection.opportunity.employer.id),
+    });
+  }
+}, [props]);
 
   useEffect(() => {
     let filteredOptions = allStatusOptions;
@@ -581,6 +581,20 @@ console.log(statusOptions,'statusOptions')
                       onChange={(e) => handleStatusChange(e.value)}
                     />
                   </div>
+                  {selectedOpportunityType === "Freelance" && (
+                    <div className="col-md-6 col-sm-12 mt-2">
+                      <Input
+                        icon="down"
+                        control="lookup"
+                        name="earning_type"
+                        label="Earning Type"
+                        options={earningTypeOptions}
+                        className="form-control"
+                        placeholder="Earning Type"
+                        required
+                      />
+                    </div>
+                  )}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="start_date"
