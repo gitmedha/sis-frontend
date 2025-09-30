@@ -13,6 +13,7 @@ import {
   GET_STUDENTS_UPSKILLINGS,
   GET_USERSTOTS,
   GET_ECOSYSTEM_DATA,
+  GET_STUDENT_OUTREACHES,
   GET_CURRICULUM_INTERVENTIONS
 } from "../../graphql";
 import TabPicker from "../../components/content/TabPicker";
@@ -26,6 +27,7 @@ import StudentUpkillingBulkcreate from "./OperationComponents/StudentUpkillingBu
 // import Dtesamarth from "./OperationComponents/Dtesamarth";
 import Opsdatafeilds from "./OperationComponents/Opsdatafeilds";
 import Totdatafield from "./OperationComponents/Totdatafield";
+import StudentOutreachDataField from "./OperationComponents/StudentOutreachDataField";
 import Upskillingdatafield from "./OperationComponents/Upskillingdatafield";
 // import Dtesamarthdatafield from "./OperationComponents/Dtesamarthdatafield";
 import Alumuniqueriesdata from "./OperationComponents/Alumuniqueriesdata";
@@ -49,9 +51,10 @@ import {
   bulkCreateMentorship,
   bulkCreateStudentsUpskillings,
   bulkCreateUsersTots,
+  bulkCreateStudentOutreach,
   bulkCreateEcosystem,
   bulkCreateCurriculumIntervention,
-  bulkCreatePmus
+  getTotPickList
 } from "./OperationComponents/operationsActions";
 // import UploadFile from "./OperationComponents/UploadFile";
 import { FaDownload, FaFileUpload, FaPlus } from "react-icons/fa";
@@ -60,22 +63,19 @@ import TotUpload from "./UploadFiles/TOT/TotUpload";
 import MentorshipdataField from "./OperationComponents/Mentorship/MentorshipdataField";
 import MentorBulkAdd from "./OperationComponents/Mentorship/MentorBulkAdd";
 import MentorshipSearchbar from "./OperationComponents/Mentorship/MentorshipSearchbar";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
+import AddStudentOutreach from "./OperationComponents/StudentOutreach/AddStudentOutreach";
+import EcosystemBulkAdd from "./SaModule/Ecosystem/EcosystemBulkAdd";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import MentorshipUpload from "./UploadFiles/MentorShip/MentorshipUpload";
 import UpskillUpdate from "./OperationComponents/UpskillUpdate";
 import UpskillingUpload from "./UploadFiles/Upskilling/UpskillingUpload";
 import PitchingUpload from "./UploadFiles/Pitching/PitchingUpload";
+import StudentOutreachSearchBar from "./OperationComponents/studentOutreachSearchBar";
 // import { createLatestAcivity } from "src/utils/LatestChange/Api";
 import EcosystemDataField from "./SaModule/Ecosystem/EcosystemDataField"
-import EcosystemBulkAdd from "./SaModule/Ecosystem/EcosystemBulkAdd";
 import CurriculumInterventionSearchBar from "./SaModule/CurriculumIntervention/CurriculumInterventionSearchBar";
 import CurriculumInterventionDataField from "./SaModule/CurriculumIntervention/CurriculumInterventionDataField";
 import CurriculumInterventionBulkAdd from "./SaModule/CurriculumIntervention/CurriculumInterventionBulkAdd";
-// Add these imports with other imports
-import { GET_PMUS_DATA } from "../../graphql";
-import PmusSearchBar from "./SaModule/PMus/PmusSearchBar";
-import PmusDataField from "./SaModule/PMus/PmusDataField";
-import PmusBulkAdd from "./SaModule/PMus/PmusBulkAdd";
 import QueryUpload from "./UploadFiles/AlumniQuery/QueryUpload";
 
 const tabPickerOptionsMain = [
@@ -93,10 +93,10 @@ const tabPickerOptions1 = [
 const tabPickerOptions2 = [{ title: "Alumni Queries", key: "alumniQueries" }];
 const tabPickerOptions3 = [
   { title: "TOT", key: "useTot" },
-  // { title: "Ecosystem", key: "ecosystem" },
-  // { title: "Curriculum Intervention", key: "curriculumIntervention" },
-  // { title: "PMUs", key: "pmus" }
-
+  {title:"Ecosystem", key:'ecosystem'},
+  {title:"Career Progression", key: "career_progression"},
+  { title: "Student Outreach", key: "studentOutreach" },
+  { title: "Curriculum Intervention", key: "curriculumIntervention" }
 ];
 
 const Styled = styled.div`
@@ -119,10 +119,8 @@ const Styled = styled.div`
 `;
 
 const totfile = `https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
-const feildActivityFIle =
-  "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
-const mentorshipFile =
-  "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
+const feildActivityFIle ="https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
+const mentorshipFile ="https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
 
 const Operations = ({
   opsData,
@@ -136,13 +134,13 @@ const Operations = ({
   const [showModal, setShowModal] = useState({
     opsdata: false,
     totdata: false,
+    studentOutreachData: false,
     upskilldata: false,
     sditdata: false,
     alumniQueriesdata: false,
     collegePitches: false,
     mentorship: false,
-    ecosystemData:false,
-    pmusData: false // Add PMUs data modal
+    ecosystemData:false
   });
   const history = useHistory();
   const [loading, setLoading] = useState(false);
@@ -150,6 +148,7 @@ const Operations = ({
   const [optsdata, setOptsdata] = useState({
     opsdata: {},
     totdata: {},
+    studentOutreachData: {},
     upskilldata: {},
     sditdata: {},
     alumniQueriesdata: {},
@@ -168,6 +167,7 @@ const Operations = ({
   const [paginationPageSize, setPaginationPageSize] = useState(pageSize);
   const [paginationPageIndex, setPaginationPageIndex] = useState(0);
   const [searchedData, setSearchedData] = useState([]);
+  const [updatedUrl,setupdatedUrl]=useState(totfile)
   const [uploadModal, setUploadModal] = useState({
     myData: false,
     tot: false,
@@ -176,30 +176,9 @@ const Operations = ({
     pitching: false,
     ecosystem: false,
     curriculumIntervention: false,
-    pmusData: false
   });
   // console.log("uploadModal",uploadModal);
   const userId = localStorage.getItem("user_id");
-
-  const columnsPmus = useMemo(() => [
-    {
-      Header: "PMU Name",
-      accessor: "pmu",
-    },
-    {
-      Header: "State",
-      accessor: "State",
-    },
-    {
-      Header: "Year",
-      accessor: "year",
-      Cell: ({ value }) => value ? new Date(value).getFullYear() : "",
-    },
-    {
-      Header: "Medha POC",
-      accessor: "medha_poc.username",
-    }
-  ], []);
 
   const columns = useMemo(
     () => [
@@ -606,6 +585,31 @@ const Operations = ({
         });
     }
 
+    if (activeTab.key === "studentOutreach") {
+      await resetSearch();
+      variables.isactive = true;
+      delete variables.isActive;
+      await api
+        .post("/graphql", {
+          query: GET_STUDENT_OUTREACHES,
+          variables,
+        })
+        .then((data) => {
+          setOpts(data.data.data.activeStudentOutreaches.values);
+          setoptsAggregate(data.data.data.activeStudentOutreaches.aggregate);
+        })
+        .catch((error) => {
+          console.error(
+            "API Error:",
+            error.response ? error.response.data : error.message
+          );
+          return Promise.reject(error);
+        })
+        .finally(() => {
+          setLoading(false);
+          nProgress.done();
+        });
+    }
 
     if (activeTab.key === "upskilling") {
       await resetSearch();
@@ -627,26 +631,26 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key === "dtesamarth") {
-      // await resetSearch();
+    // if (activeTab.key === "dtesamarth") {
+    //   await resetSearch();
 
-      // await api
-      //   .post("/graphql", {
-      //     query: GET_DTE_SAMARTH_SDITS,
-      //     variables,
-      //   })
-      //   .then((data) => {
-      //     setOpts(data.data.data.dteSamarthSditsConnection.values);
-      //     setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate);
-      //   })
-      //   .catch((error) => {
-      //     return Promise.reject(error);
-      //   })
-      //   .finally(() => {
-      //     setLoading(false);
-      //     nProgress.done();
-      //   });
-    }
+    //   await api
+    //     .post("/graphql", {
+    //       query: GET_DTE_SAMARTH_SDITS,
+    //       variables,
+    //     })
+    //     .then((data) => {
+    //       setOpts(data.data.data.dteSamarthSditsConnection.values);
+    //       setoptsAggregate(data.data.data.dteSamarthSditsConnection.aggregate);
+    //     })
+    //     .catch((error) => {
+    //       return Promise.reject(error);
+    //     })
+    //     .finally(() => {
+    //       setLoading(false);
+    //       nProgress.done();
+    //     });
+    // }
     if (activeTab.key === "alumniQueries") {
       await resetSearch();
 
@@ -741,37 +745,6 @@ const Operations = ({
           nProgress.done();
         });
     }
-    if (activeTab.key === "pmus") {
-      await resetSearch();
-      variables.isactive = true;
-      delete variables.isActive;
-      await api
-        .post("/graphql", {
-          query: GET_PMUS_DATA,
-          variables,
-        })
-        .then((data) => {
-          setOpts(() => {
-            if (data?.data?.data?.activePmusData) {
-              return data.data.data.activePmusData.values;
-            }
-            return [];
-          });
-          setoptsAggregate(() => {
-            if (data?.data?.data?.activePmusData) {
-              return data.data.data.activePmusData.aggregate;
-            }
-            return [];
-          });
-        })
-        .catch((error) => {
-          return Promise.reject(error);
-        })
-        .finally(() => {
-          setLoading(false);
-          nProgress.done();
-        });
-    }
   };
 
   useEffect(() => {
@@ -834,38 +807,6 @@ const Operations = ({
               break;
           }
 
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex,
-            sortByField,
-            sortOrder
-          );
-        } else {
-          getoperations(
-            activeStatus,
-            activeTab.key,
-            pageSize,
-            pageSize * pageIndex
-          );
-        }
-      }
-      if (activeTab.key === "pmus") {
-        if (sortBy.length) {
-          let sortByField = "pmu";
-          let sortOrder = sortBy[0].desc ? "desc" : "asc";
-          switch (sortBy[0].id) {
-            case "pmu":
-            case "State":
-            case "year":
-            case "medha_poc.username":
-              sortByField = sortBy[0].id;
-              break;
-            default:
-              sortByField = "pmu";
-              break;
-          }
           getoperations(
             activeStatus,
             activeTab.key,
@@ -983,7 +924,7 @@ const Operations = ({
           );
         }
       }
-      if (activeTab.key == "dtesamarth") {
+      // if (activeTab.key == "dtesamarth") {
         // if (sortBy.length) {
         //   let sortByField;
         //   let sortOrder = sortBy[0].desc === true ? "desc" : "asc";
@@ -994,27 +935,27 @@ const Operations = ({
         //       sortByField = sortBy[0].id;
         //       break;
 
-        //     default:
-        //       break;
-        //   }
+      //       default:
+      //         break;
+      //     }
 
-        //   getoperations(
-        //     activeStatus,
-        //     activeTab.key,
-        //     pageSize,
-        //     pageSize * pageIndex,
-        //     sortByField,
-        //     sortOrder
-        //   );
-        // } else {
-        //   getoperations(
-        //     activeStatus,
-        //     activeTab.key,
-        //     pageSize,
-        //     pageSize * pageIndex
-        //   );
-        // }
-      }
+      //     getoperations(
+      //       activeStatus,
+      //       activeTab.key,
+      //       pageSize,
+      //       pageSize * pageIndex,
+      //       sortByField,
+      //       sortOrder
+      //     );
+      //   } else {
+      //     getoperations(
+      //       activeStatus,
+      //       activeTab.key,
+      //       pageSize,
+      //       pageSize * pageIndex
+      //     );
+      //   }
+      // }
       if (activeTab.key === "alumniQueries") {
         if (sortBy.length) {
           let sortByField;
@@ -1169,7 +1110,7 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await api
         .post("/users-ops-activities/createBulkOperations", data)
         .then((data) => {
@@ -1180,16 +1121,6 @@ const Operations = ({
           setAlert("Unable to create field data .", "error");
         });
     }
-    if (key === "pmus") {
-      try {
-        await bulkCreatePmus(data);
-        setAlert("PMUs data created successfully", "success");
-      } catch (error) {
-        console.error("Error creating PMUs data:", error);
-        setAlert("Unable to create PMUs data", "error");
-        return;
-      }
-    }
     if (key == "alum") {
       datavaluesforlatestcreate = {
         module_name: "operations",
@@ -1198,7 +1129,7 @@ const Operations = ({
         updatedby: userId,
         changes_in: { name: "N/A" },
       };
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateAlumniQueries(data)
         .then((data) => {
           setAlert("Alumni data created successfully.", "success");
@@ -1217,7 +1148,7 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateCollegePitch(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -1236,7 +1167,7 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateStudentsUpskillings(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -1256,8 +1187,18 @@ const Operations = ({
         changes_in: newValues,
       };
 
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateUsersTots(data)
+        .then((data) => {
+          setAlert("data created successfully.", "success");
+          // history.push(`/student/${data.data.data.createStudent.student.id}`);
+        })
+        .catch((err) => {
+          setAlert("Unable to create upskilling data.", "error");
+        });
+    }
+    if (key == "studentOutreach") {
+      const value = await bulkCreateStudentOutreach(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
           // history.push(`/student/${data.data.data.createStudent.student.id}`);
@@ -1275,7 +1216,7 @@ const Operations = ({
         updatedby: userId,
         changes_in: newValues,
       };
-      // await createLatestAcivity(datavaluesforlatestcreate);
+      await createLatestAcivity(datavaluesforlatestcreate);
       const value = await bulkCreateMentorship(data)
         .then((data) => {
           setAlert("data created successfully.", "success");
@@ -1312,6 +1253,7 @@ const Operations = ({
   };
 
   const showRowData = (key, data) => {
+    console.log('Data being set for', key, ':', data); // Add this line
     setOptsdata({ ...optsdata, [key]: data });
     setShowModal({ ...showModal, [key]: true });
     if (key === "curriculumInterventionData") {
@@ -1379,18 +1321,21 @@ const Operations = ({
     async (pageIndex, pageSize, sortBy) => {
       let startFrom = (pageIndex + 1) * pageSize - pageSize;
       let filteredArray = [];
+      
+      // Use opsData as the source for search results since that's where Redux stores the search results
+      const dataSource = opsData;
 
       if (sortBy.length) {
         const { id, desc } = sortBy[0];
-        desc ? descendingSort(id, opsData) : ascendingSort(id, opsData);
+        desc ? descendingSort(id, dataSource) : ascendingSort(id, dataSource);
         arrangeRows(startFrom);
       } else {
         for (let element = 0; element < pageSize; element++) {
-          if (element + 1 > opsData.length) {
+          if (element + 1 > dataSource.length) {
             break;
           }
-          if (opsData[startFrom]) {
-            filteredArray.push(opsData[startFrom]);
+          if (dataSource[startFrom]) {
+            filteredArray.push(dataSource[startFrom]);
           }
           startFrom++;
         }
@@ -1439,7 +1384,7 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await api.post("/users-ops-activities/createBulkOperations", data);
         setAlert("Data created successfully.", "success");
       }
@@ -1451,7 +1396,7 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateUsersTots(data)
           .then(() => {
             setAlert("data created successfully.", "success");
@@ -1460,7 +1405,32 @@ const Operations = ({
             setAlert("Unable to create TOT data.", "error");
           });
       }
+      if (key === "mentorship") {
+        datavaluesforlatestcreate = {
+          module_name: "Operations",
+          activity: "Mentorship Upload File",
+          event_id: "",
+          updatedby: userId,
+          changes_in: { changes_in: { name: "N/A" } },
+        };
+        await createLatestAcivity(datavaluesforlatestcreate);
+        await bulkCreateMentorship(data)
+          .then(() => {
+            setAlert("data created successfully.", "success");
+          })
+          .catch((err) => {
+            setAlert("Unable to create Mentorship data.", "error");
+          });
+      }
       if (key === "alumniQuery") {
+        // datavaluesforlatestcreate = {
+        //   module_name: "Operations",
+        //   activity: "Field Activities Upload File",
+        //   event_id: "",
+        //   updatedby: userId,
+        //   changes_in: { changes_in: { name: "N/A" } },
+        // };
+        // await createLatestAcivity(datavaluesforlatestcreate);
         await api.post("/alumni-queries/create-bulk-alumni-queries", data);
         setAlert("Data created successfully.", "success");
       }
@@ -1473,7 +1443,7 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateCollegePitch(data)
           .then(() => {
             setAlert("data created successfully.", "success");
@@ -1490,7 +1460,7 @@ const Operations = ({
           updatedby: userId,
           changes_in: { changes_in: { name: "N/A" } },
         };
-        // await createLatestAcivity(datavaluesforlatestcreate);
+        await createLatestAcivity(datavaluesforlatestcreate);
         await bulkCreateStudentsUpskillings(data)
           .then(() => {
             setAlert("data created successfully.", "success");
@@ -1499,25 +1469,19 @@ const Operations = ({
             setAlert("Unable to create Mentorship data.", "error");
           });
       }
-      
-      if (key === "mentorship") {
-        datavaluesforlatestcreate = {
-          module_name: "Operations",
-          activity: "Mentorship Upload File",
-          event_id: "",
-          updatedby: userId,
-          changes_in: { changes_in: { name: "N/A" } },
-        };
-        // await createLatestAcivity(datavaluesforlatestcreate);
-        await bulkCreateMentorship(data)
-          .then(() => {
+      if (key == "studentOutreach") {
+        const value = await bulkCreateStudentOutreach(data)
+          .then((data) => {
             setAlert("data created successfully.", "success");
+            // history.push(`/student/${data.data.data.createStudent.student.id}`);
           })
           .catch((err) => {
-            setAlert("Unable to create Mentorship data.", "error");
+            setAlert("Unable to create TOT data.", "error");
           });
       }
 
+
+     
       getoperations();
     } catch (err) {
       if (key === "my_data") {
@@ -1606,13 +1570,60 @@ const Operations = ({
       });
     }
   };
+   const updateToturl=(url)=>{
+    setupdatedUrl(url)
+  } 
+  const handleDownload = async (retries = 3) => {
+    const fileUrl = updatedUrl;
+    console.log(updateToturl);
+    
+    const customFileName = "ToT-Template.xlsx";
 
+    for (let i = 0; i < retries; i++) {
+        try {
+            const response = await fetch(fileUrl);
+            if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
+            
+            const blob = await response.blob();
+            const blobUrl = window.URL.createObjectURL(blob);
+            
+            const link = document.createElement("a");
+            link.href = blobUrl;
+            link.download = customFileName;
+            link.click();
+            window.URL.revokeObjectURL(blobUrl);
+            
+            console.log("Download successful");
+            return; // Success, exit function
+        } catch (err) {
+            console.error(`Attempt ${i + 1} failed:`, err);
+            if (i === retries - 1) throw err; // If last attempt, rethrow error
+            await new Promise(resolve => setTimeout(resolve, 1000)); // Wait 1 second before retry
+        }
+    }
+};
+useEffect(async() => {
+
+  let data = await getTotPickList();
+  setupdatedUrl(data.totLink[0]);
+}, [])
+
+
+const handleDownloadClick =()=>{
+  SampleFile()
+  
+}
   const SampleFile = () => {
+   
+
     switch (activeTab.key) {
       case "my_data":
-        return feildActivityFIle;
-      case "useTot":
-        return totfile;
+        return 'https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx';
+      // case "useTot":
+      //   return totfile;
+       case "useTot":
+        handleDownload();   // trigger download
+        return "";  
       case "mentorship":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Mentorship-Template.xlsx";
       case "upskilling":
@@ -1625,6 +1636,58 @@ const Operations = ({
         return ""; // Fallback in case the tab doesn't match
     }
   };
+ 
+  const columnsStudentOutreach = useMemo(
+    () => [
+      {
+        Header: "Financial Year",
+        accessor: "year_fy",
+        width: 120 // Fixed width in pixels
+      },
+      {
+        Header: "Quarter",
+        accessor: "quarter",
+        width: 80
+      },
+      {
+        Header: "Month",
+        accessor: "month",
+        width: 100
+      },
+      {
+        Header: "Category",
+        accessor: "category",
+        width: 200,
+        cell: ({ value }) => (
+          <div style={{
+            width: '100%',
+            whiteSpace: 'nowrap',
+            overflow: 'hidden',
+            textOverflow: 'ellipsis'
+          }}>
+            {value}
+          </div>
+        )
+      },
+      {
+        Header: "State",
+        accessor: "state",
+        width: 120
+      },
+      {
+        Header: "Department",
+        accessor: "department",
+        width: 100
+      },
+      {
+        Header: "Students",
+        accessor: "students",
+        width: 100
+      },
+    ],
+    []
+  );
+ 
 
   return (
     <Collapse title="OPERATIONS" type="plain" opened={true}>
@@ -1670,8 +1733,7 @@ const Operations = ({
                   activeTab.key == "useTot" ||
                   activeTab.key == "mentorship" ||
                   activeTab.key == "upskilling" ||
-                   activeTab.key == "collegePitches" || 
-                   activeTab.key =="alumniQueries"
+                  activeTab.key == "collegePitches" || activeTab.key =="alumniQueries"
                    ? (
                     <button
                       className="btn btn-primary ops_action_button"
@@ -1692,15 +1754,14 @@ const Operations = ({
                   activeTab.key == "mentorship" ||
                   activeTab.key == "upskilling" ||
                   activeTab.key =="alumniQueries" || 
-                  activeTab.key == "collegePitches" 
-                  ? (
+                  activeTab.key == "collegePitches" ? (
                     <button className="btn btn-primary ops_action_button">
                       <div>
                         <a
-                          href={SampleFile()}
+                          href={activeTab.key === "useTot" ? "#" : SampleFile()}
                           target="_blank"
                           className="c-pointer mb-1 d-block text-light text-decoration-none downloadLink"
-                          download={SampleFile()}
+                          onClick={handleDownloadClick}
                         >
                           Sample&nbsp;
                           <span>
@@ -1753,27 +1814,44 @@ const Operations = ({
                   // allDataCount={optsAggregate.count}
                 />
               </>
-            )
-            
-            // :activeTab.key === "ecosystem" ? (
-            //   <>
-            //     <EcosystemSearchBar />
-            //   <Table
-            //       onRowClick={(data) => showRowData("ecosystemData", data)}
-            //       columns={columnsEcosystem}
-            //       data={isSearching ? (isFound ? searchedData : []) : opts}
-            //       totalRecords={
-            //         isSearching ? opsData.length : optsAggregate.count
-            //       }
-            //       fetchData={isSearching ? fetchSearchedData : fetchData}
-            //       paginationPageSize={paginationPageSize}
-            //       onPageSizeChange={setPaginationPageSize}
-            //       paginationPageIndex={paginationPageIndex}
-            //       onPageIndexChange={setPaginationPageIndex}
-            //     />
+            ) : activeTab.key == "studentOutreach" ? (
+              <>
+                <StudentOutreachSearchBar />
+                <Table
+                  onRowClick={(data) =>
+                    showRowData("studentOutreachData", data)
+                  }
+                  columns={columnsStudentOutreach}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
+            ):activeTab.key === "ecosystem" ? (
+              <>
+                <EcosystemSearchBar />
+              <Table
+                  onRowClick={(data) => showRowData("ecosystemData", data)}
+                  columns={columnsEcosystem}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={
+                    isSearching ? opsData.length : optsAggregate.count
+                  }
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
               
-            //   </>
-            // ) 
+              </>
+            )
             
             : activeTab.key == "upskilling" ? (
               <>
@@ -1793,11 +1871,10 @@ const Operations = ({
                 />
               </>
             ) 
-            : 
-            // activeTab.key == "dtesamarth" ? (
+            // : activeTab.key == "dtesamarth" ? (
             //   <></>
-            // ) : 
-            activeTab.key == "alumniQueries" ? (
+            // ) 
+            : activeTab.key == "alumniQueries" ? (
               <>
                 <AlumniSearchBar />
                 <Table
@@ -1848,42 +1925,22 @@ const Operations = ({
                   onPageIndexChange={setPaginationPageIndex}
                 />
               </>
-            ) 
-            // : activeTab.key === "curriculumIntervention" ? (
-            //   <>
-            //     <CurriculumInterventionSearchBar />
-            //     <Table
-            //       onRowClick={(data) => showRowData("curriculumInterventionData", data)}
-            //       columns={columnsCurriculumIntervention}
-            //       data={isSearching ? (isFound ? searchedData : []) : opts}
-            //       totalRecords={isSearching ? opsData.length : optsAggregate.count}
-            //       fetchData={isSearching ? fetchSearchedData : fetchData}
-            //       paginationPageSize={paginationPageSize}
-            //       onPageSizeChange={setPaginationPageSize}
-            //       paginationPageIndex={paginationPageIndex}
-            //       onPageIndexChange={setPaginationPageIndex}
-            //     />
-            //   </>
-            // ) 
-            
-            // : activeTab.key === "pmus" ? (
-            //   <>
-            //   <PmusSearchBar />
-            //   <Table
-            //     onRowClick={(data) => showRowData("pmusData", data)}
-            //     columns={columnsPmus}
-            //     data={isSearching ? (isFound ? searchedData : []) : opts}
-            //     totalRecords={isSearching ? opsData.length : optsAggregate.count}
-            //     fetchData={isSearching ? fetchSearchedData : fetchData}
-            //     paginationPageSize={paginationPageSize}
-            //     onPageSizeChange={setPaginationPageSize}
-            //     paginationPageIndex={paginationPageIndex}
-            //     onPageIndexChange={setPaginationPageIndex}
-            //   />
-            //   </>
-            // ) 
-            
-            : (
+            ) : activeTab.key === "curriculumIntervention" ? (
+              <>
+                <CurriculumInterventionSearchBar />
+                <Table
+                  onRowClick={(data) => showRowData("curriculumInterventionData", data)}
+                  columns={columnsCurriculumIntervention}
+                  data={isSearching ? (isFound ? searchedData : []) : opts}
+                  totalRecords={isSearching ? opsData.length : optsAggregate.count}
+                  fetchData={isSearching ? fetchSearchedData : fetchData}
+                  paginationPageSize={paginationPageSize}
+                  onPageSizeChange={setPaginationPageSize}
+                  paginationPageIndex={paginationPageIndex}
+                  onPageIndexChange={setPaginationPageIndex}
+                />
+              </>
+            ) : (
               ""
             )}
           </div>
@@ -1908,9 +1965,15 @@ const Operations = ({
                 ModalShow={() => setModalShow(false)}
               />
             )
-          ) 
-          : 
-          activeTab.key == "upskilling" ? (
+          ) : activeTab.key == "studentOutreach" ? (
+            (isSRM() || isAdmin() || isMedhavi()) && (
+              <AddStudentOutreach
+                show={modalShow}
+                onHide={hideCreateModal}
+                ModalShow={() => setModalShow(false)}
+              />
+            )
+          ) : activeTab.key == "upskilling" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <StudentUpkillingBulkcreate
                 show={modalShow}
@@ -1918,16 +1981,17 @@ const Operations = ({
                 ModalShow={() => setModalShow(false)}
               />
             )
-          ) : activeTab.key == "dtesamarth" ? (
-            (isSRM() || isAdmin() || isMedhavi()) && (
-              // <Dtesamarth
-              //   show={modalShow}
-              //   onHide={hideCreateModal}
-              //   ModalShow={() => setModalShow(false)}
-              // />
-              <></>
-            )
-          ) : activeTab.key == "alumniQueries" ? (
+          ) 
+          // : activeTab.key == "dtesamarth" ? (
+          //   (isSRM() || isAdmin() || isMedhavi()) && (
+          //     <Dtesamarth
+          //       show={modalShow}
+          //       onHide={hideCreateModal}
+          //       ModalShow={() => setModalShow(false)}
+          //     />
+          //   )
+          // ) 
+          : activeTab.key == "alumniQueries" ? (
             (isSRM() || isAdmin() || isMedhavi()) && (
               <AllumuniBulkAdd
                 show={modalShow}
@@ -1951,7 +2015,7 @@ const Operations = ({
             />
           ) : activeTab.key === "ecosystem" ? (
             <EcosystemBulkAdd
-            show={modalShow}
+              show={modalShow}
               onHide={hideCreateModal}
               ModalShow={() => setModalShow(false)}
             />
@@ -1962,26 +2026,9 @@ const Operations = ({
               ModalShow={() => setModalShow(false)}
               refreshTableOnDataSaving={refreshTableOnDataSaving}
             />
-          ): activeTab.key === "pmus" ? (
-            <PmusBulkAdd
-              show={modalShow}
-              onHide={hideCreateModal}
-              ModalShow={() => setModalShow(false)}
-              refreshTableOnDataSaving={refreshTableOnDataSaving}
-
-            />
           ):(
             ""
           )}
-          {showModal.pmusData && (isSRM() || isAdmin() || isMedhavi()) && (
-  <PmusDataField
-    {...optsdata.pmusData}
-    show={showModal.pmusData}
-    onHide={() => hideShowModal("pmusData", false)}
-    refreshTableOnDataSaving={() => refreshTableOnDataSaving()}
-    refreshTableOnDeleting={() => refreshTableOnDeleting()}
-  />
-)}
           {showModal.opsdata && (isSRM() || isAdmin() || isMedhavi()) && (
             <Opsdatafeilds
               {...optsdata.opsdata}
@@ -2021,14 +2068,13 @@ const Operations = ({
               refreshTableOnDeleting={() => refreshTableOnDeleting()}
             />
           )}
-          {showModal.sditdata && (isSRM() || isAdmin() || isMedhavi()) && (
-            // <Dtesamarthdatafield
-            //   {...optsdata.sditdata}
-            //   show={showModal.opsdata}
-            //   onHide={() => hideShowModal("sditdata", false)}
-            // />
-            <></>
-          )}
+          {/* {showModal.sditdata && (isSRM() || isAdmin() || isMedhavi()) && (
+            <Dtesamarthdatafield
+              {...optsdata.sditdata}
+              show={showModal.opsdata}
+              onHide={() => hideShowModal("sditdata", false)}
+            />
+          )} */}
           {showModal.alumniQueriesdata &&
             (isSRM() || isAdmin() || isMedhavi()) && (
               <Alumuniqueriesdata
@@ -2079,6 +2125,7 @@ const Operations = ({
           {uploadModal.tot && (
             <>
               <TotUpload
+                updateToturl={updateToturl}
                 uploadExcel={uploadExcel}
                 alertForNotuploadedData={alertForNotuploadedData}
                 closeThepopus={closeUpload}

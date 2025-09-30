@@ -20,8 +20,8 @@ import { setAlert } from "../../store/reducers/Notifications/actions";
 import { connect } from "react-redux";
 import Collapse from "../../components/content/CollapsiblePanels";
 import InstitutionSearchBar from "./InstitutionComponents/InstitutionSearchBar";
-// import { createLatestAcivity } from "src/utils/LatestChange/Api";
- 
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
+
 const tabPickerOptions = [
   { title: "My Data", key: "my_data" },
   { title: "My Area", key: "my_area" },
@@ -49,19 +49,19 @@ const Institutions = (props) => {
   const [isSearchEnable, setIsSearchEnable] = useState(false);
   const [selectedSearchedValue, setSelectedSearchedValue] = useState(null);
   const prevIsSearchEnableRef = useRef();
- 
- 
+
+  
   useEffect(() => {
     if (isSearchEnable) {
       getInstitutions(activeTab.key);
     }
-   
+    
     if (prevIsSearchEnableRef.current !== undefined) {
       if (prevIsSearchEnableRef.current === true && isSearchEnable === false) {
         getInstitutions(activeTab.key);
       }
     }
- 
+
     prevIsSearchEnableRef.current = isSearchEnable;
   }, [isSearchEnable, selectedSearchedValue,activeTab.key]);
  
@@ -273,7 +273,7 @@ const columns = useMemo(
         state:$state,
         status:$status,
         type:$type,
-        name_contains: $name
+        name_contains: $name 
       }
     ) {
       values {
@@ -443,7 +443,7 @@ const columns = useMemo(
           <Avatar
             name={institution.name}
             logo={institution.logo}
-            style={{ width: "35px", height: "35px" }}
+            style={{ width: "5px", height: "5px" }}
           />
         ),
         status: (
@@ -496,7 +496,7 @@ const columns = useMemo(
           setAlert("Institution created successfully.", "success");
           setModalShow(false);
           getInstitutions();
-         
+          
           let propgramEnrollemntData = {
             module_name: "institution",
             activity: "Institution Data Created",
@@ -504,15 +504,15 @@ const columns = useMemo(
             updatedby: userId,
             changes_in: { name: data.data.data.createInstitution.institution.name },
           };
-   
-          // createLatestAcivity(propgramEnrollemntData)
-          //   .then(() => {
-          //     console.log("Activity created successfully.");
-          //   })
-          //   .catch((err) => {
-          //     console.error("Failed to create activity:", err);
-          //   });
-   
+    
+          createLatestAcivity(propgramEnrollemntData)
+            .then(() => {
+              console.log("Activity created successfully.");
+            })
+            .catch((err) => {
+              console.error("Failed to create activity:", err);
+            });
+    
           history.push(`/institution/${data.data.data.createInstitution.institution.id}`);
         }
       })

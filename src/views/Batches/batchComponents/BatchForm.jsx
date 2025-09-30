@@ -22,6 +22,11 @@ import {
   searchGrants,
   searchPrograms,
 } from "../batchActions";
+import {
+  createLatestAcivity,
+  findDifferences,
+  findUpdates,
+} from "src/utils/LatestChange/Api";
 import { updateProgramEnrollment } from "src/views/ProgramEnrollments/programEnrollmentActions";
 import { GET_ALL_INSTITUTES } from "src/graphql";
 import api from "src/apis";
@@ -62,6 +67,7 @@ const BatchForm = (props) => {
   const userId = parseInt(localStorage.getItem("user_id"));
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [modeOfPayment, setModeOfPayment] = useState("");
+  const [blocked, setBlocked] = useState(false)
   const AssignmentFileCertification = [
     { key: true, value: true, label: "Yes" },
     { key: false, value: false, label: "No" },
@@ -237,7 +243,7 @@ const BatchForm = (props) => {
       }
       
       const data = await getAllInstitutions();
-      setInstitutionOptions(data.map((institution) => {
+      setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
         return {
           ...institution,
           label: institution.name,
@@ -254,8 +260,7 @@ const BatchForm = (props) => {
      
       
       const data = await getAllInstitutions();
-      console.log(data);
-      setInstitutionOptions(data.map((institution) => {
+      setInstitutionOptions(data.data.data.institutionsConnection.values.map((institution) => {
         return {
           ...institution,
           label: institution.name,
@@ -312,37 +317,14 @@ const BatchForm = (props) => {
     }
   };
   const getAllInstitutions = async () => {
-    let allInstitutions = []; // Array to store all institutions
-    let start = 0; // Start index for pagination
-    const limit = 500; // Number of records to fetch per request
-  
-    try {
-      while (true) {
-        // Fetch data in chunks
-        const response = await api.post('/graphql', {
-          query: GET_ALL_INSTITUTES,
-          variables: { start, limit },
-        });
-  
-        const institutions = response.data.data.institutionsConnection.values;
-  
-        // If no more data is returned, break the loop
-        if (!institutions || institutions.length === 0) {
-          break;
-        }
-  
-        // Add fetched data to the array
-        allInstitutions = allInstitutions.concat(institutions);
-  
-        // Update the start index for the next request
-        start += limit;
-      }
-  
-      return allInstitutions; // Return all fetched institutions
-    } catch (error) {
-      return Promise.reject(error); // Handle errors
-    }
-  };
+    return await api.post('/graphql', {
+      query: GET_ALL_INSTITUTES,
+    }).then(data => {
+      return data;
+    }).catch(error => {
+      return Promise.reject(error);
+    });
+  }
 
   const filterProgram = async (filterValue) => {
     try {
@@ -358,6 +340,19 @@ const BatchForm = (props) => {
       console.error(error);
     }
   };
+
+  useEffect(() => {
+    let userID = props?.assigned_to?.id;
+    function findUser(users, searchTerm) {        
+        return users.find(user => 
+            String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+        ) || false;
+    }
+    
+    let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+    setBlocked(userExistsByIdBoolean.blocked);
+
+}, [props, assigneeOptions]);
 
   return (
     <Modal
@@ -409,6 +404,7 @@ const BatchForm = (props) => {
                       label="Assigned To"
                       required
                       className="form-control"
+                      isDisabled={blocked}
                       placeholder="Assigned To"
                       filterData={filterAssignedTo}
                       defaultOptions={assigneeOptions}

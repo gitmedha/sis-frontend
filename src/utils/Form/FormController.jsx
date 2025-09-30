@@ -8,10 +8,11 @@ import SelectLookup from "./SelectLookup";
 import SelectLookupAsync from "./SelectLookupAsync";
 import CheckboxGroup from "./CheckboxGroup";
 import FileUploadInput from "./FileUploadInput";
+import SelectSearchLookUp from "./SelectSearchLookUp";
 
 const FormController = (props) => {
   const { control, ...rest } = props;
-
+  // console.log(rest)
   switch (control) {
     case "input":
       return <Input {...rest} />;
@@ -24,13 +25,17 @@ const FormController = (props) => {
     case "checkbox":
       return <CheckboxGroup {...rest} />;
     case "datepicker":
-      return <DatePicker {...rest} />;
+      // Destructure onChange and pass it as onInputCallback for DatePicker
+      const { onChange, ...datePickerRest } = rest;
+      return <DatePicker {...datePickerRest} onInputCallback={onChange} />;
     case "lookup":
       return <SelectLookup {...rest} />;
     case "lookupAsync":
       return <SelectLookupAsync {...rest} />;
     case "file":
       return <FileUploadInput {...rest} />;
+    case "searchLookup":
+      <SelectSearchLookUp {...rest}/>
     default:
       return null;
   }
