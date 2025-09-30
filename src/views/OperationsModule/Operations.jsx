@@ -1618,7 +1618,7 @@ const Operations = ({
       case "upskilling":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student+Upskilling+Template.xlsx";
       case "collegePitches":
-        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching%2BTemplate.xlsx";
       case "alumniQueries":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Alumni+Queries+Template.xlsx";
       default:
