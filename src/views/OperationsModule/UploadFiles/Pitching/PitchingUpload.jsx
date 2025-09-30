@@ -58,7 +58,7 @@ const PitchingUpload = (props) => {
   const [showSpinner, setShowSpinner] = useState(true);
   const [fileName, setFileName] = useState("");
   const [nextDisabled, setNextDisabled] = useState(false);
-  const [uploadSuccesFully, setUploadSuccesFully] = useState("");
+
   const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
   const [assigneOption, setAssigneeOption] = useState([]);
   const [excelData, setExcelData] = useState([]);
@@ -92,9 +92,6 @@ const PitchingUpload = (props) => {
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
-    // if(!data){
-    //   setUploadSuccesFully("No Data")
-    // }
     if (data.length == 0) {
       setNotUploadSuccesFully(
         "File is empty please select file which has data in it"
@@ -151,7 +148,6 @@ const PitchingUpload = (props) => {
     setShowForm(true);
     setFileName(""); // Reset the file name display
     setNextDisabled(false); // Optionally disable the next button
-    setUploadSuccesFully("");
     setNotUploadSuccesFully("");
 
     if (file) {
@@ -171,7 +167,6 @@ const PitchingUpload = (props) => {
       reader.readAsBinaryString(file);
       fileInput.value = "";
     } else {
-      setUploadSuccesFully("The file type should be .xlsx");
     }
   };
 
@@ -214,7 +209,6 @@ const PitchingUpload = (props) => {
       return;
     }
     if (validateColumns(filteredArray, expectedColumns)) {
-      setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(filteredArray);
     }
@@ -288,15 +282,16 @@ const PitchingUpload = (props) => {
       console.log(srmcheck);
       
       if (
-        !newItem["Student Name"] ||
-        !newItem["Course Name"] ||
-        !phoneValid ||
-        !instituteId ||
-        !emailValid ||  Date.includes("NaN") ||
-        !isValidProgramName(newItem["Program name"]) ||
-        (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
-      ) {
-        console.log("Validation failed for row", index + 1, "with data:", newItem);
+  !newItem["Student Name"] ||
+  !newItem["Course Name"] ||
+  !phoneValid ||
+  !instituteId ||
+  Date.includes("NaN") ||
+  !isValidProgramName(newItem["Program name"]) ||
+  (newItem["WhatsApp Number"] && !whatsappValid) ||
+  (newItem["Email ID"] && !emailValid)
+) {
+        
         const errors = [];
         if (!newItem["Student Name"]) errors.push("Student Name is required");
         if (!newItem["Course Name"]) errors.push("Course Name is required");
@@ -370,18 +365,15 @@ const PitchingUpload = (props) => {
     setUploadNew(false);
     setFileName("");
     setNextDisabled(false);
-    setUploadSuccesFully("");
     setExcelData([]);
     setNotuploadedData([]);
   };
 
   const hideShowModal = () => {
     setShowModalPitching(false);
-    setUploadSuccesFully("");
     setShowForm(true);
     setFileName("");
     setNextDisabled(false);
-    setUploadSuccesFully("");
     setExcelData([]);
     setNotuploadedData([]);
   };

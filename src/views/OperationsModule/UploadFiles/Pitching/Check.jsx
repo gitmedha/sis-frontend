@@ -4,21 +4,7 @@ import { isAdmin, isSRM } from "../../../../common/commonFunctions";
 import Table from "react-bootstrap/Table";
 
 const Check = (props) => {
-  const { onHide,instituteData } = props;
-
-const isValidContact = (contact) => {
-    const pattern = /^[0-9]{10}$/; // 10-digit number
-    return contact && pattern.test(contact);
-  };
-  
-
-  const isValidEmail = (email) => {
-    const pattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    return email && pattern.test(email);
-  };
-  // console.log(obj.error);
-  
-
+  const { onHide } = props;
 
   return (
     <>
@@ -67,8 +53,6 @@ const isValidContact = (contact) => {
                   <tbody>
                     {props?.notFoundData?.map((obj, i) => (
                       <tr key={i} className={obj.error ? "" : ""}>
-                        {console.log(obj.error)
-                        }
                         <td>{obj.index}</td>
                         <td className={obj.error?.includes("Date of Pitching") ? "text-danger" : ""}>
                           {obj.date_of_pitching || "No data"}
@@ -95,8 +79,13 @@ const isValidContact = (contact) => {
                           {obj.whatsapp_number || "No data"}
                         </td>
                         <td className={obj.error?.includes("Email") ? "text-danger" : ""}>
-                          {obj.email || "No data"}
+                          {obj.email
+                            ? obj.error?.includes("Email")
+                              ? "Invalid Email format"
+                              : obj.email              
+                            : "No data"}                
                         </td>
+
                         <td>{obj.remarks || "No data"}</td>
                         <td>{obj.srm_name || "No data"}</td>
                         <td>{obj.medha_area || "No data"}</td>
