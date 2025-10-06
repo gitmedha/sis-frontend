@@ -368,7 +368,6 @@ export const RowsData = (props) => {
             name="organization"
             options={props.organizationOptions}
             onChange={(selected) => {
-              console.log(selected);
               props.handleChange(
                 selected ? selected.value : null,
                 "organization",

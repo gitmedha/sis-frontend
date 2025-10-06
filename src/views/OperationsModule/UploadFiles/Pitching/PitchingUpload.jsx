@@ -58,7 +58,7 @@ const PitchingUpload = (props) => {
   const [showSpinner, setShowSpinner] = useState(true);
   const [fileName, setFileName] = useState("");
   const [nextDisabled, setNextDisabled] = useState(false);
-  const [uploadSuccesFully, setUploadSuccesFully] = useState("");
+
   const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
   const [assigneOption, setAssigneeOption] = useState([]);
   const [excelData, setExcelData] = useState([]);
@@ -92,9 +92,6 @@ const PitchingUpload = (props) => {
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
-    // if(!data){
-    //   setUploadSuccesFully("No Data")
-    // }
     if (data.length == 0) {
       setNotUploadSuccesFully(
         "File is empty please select file which has data in it"
@@ -151,7 +148,6 @@ const PitchingUpload = (props) => {
     setShowForm(true);
     setFileName(""); // Reset the file name display
     setNextDisabled(false); // Optionally disable the next button
-    setUploadSuccesFully("");
     setNotUploadSuccesFully("");
 
     if (file) {
@@ -171,7 +167,6 @@ const PitchingUpload = (props) => {
       reader.readAsBinaryString(file);
       fileInput.value = "";
     } else {
-      setUploadSuccesFully("The file type should be .xlsx");
     }
   };
 
@@ -214,7 +209,6 @@ const PitchingUpload = (props) => {
       return;
     }
     if (validateColumns(filteredArray, expectedColumns)) {
-      setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(filteredArray);
     }
@@ -257,6 +251,7 @@ const PitchingUpload = (props) => {
       });
   
       const currentUser = localStorage.getItem("user_id");
+      console.log(assigneOption);
       
       const srmcheck = assigneOption.find(
         (user) => user.name === newItem["SRM Name"]
@@ -283,30 +278,30 @@ const PitchingUpload = (props) => {
       const phoneValid = phoneRegex.test(newItem["Phone"]);
       const whatsappValid = phoneRegex.test(newItem["WhatsApp Number"]);
       const emailValid = emailRegex.test(newItem["Email ID"]);
-     
+      console.log(Date,Date.includes("NaN"));
+      console.log(srmcheck);
       
       if (
-        !newItem["Student Name"] ||
-        !newItem["Course Name"] ||
-        !phoneValid ||
-        !instituteId ||
-        !emailValid ||  Date.includes("NaN") ||
-        !isValidProgramName(newItem["Program name"]) ||
-        (newItem["WhatsApp Number"] && !whatsappValid) // WhatsApp is optional but should be valid if provided
-      ) {
+  !newItem["Student Name"] ||
+  !newItem["Course Name"] ||
+  !phoneValid ||
+  !instituteId ||
+  Date.includes("NaN") ||
+  !isValidProgramName(newItem["Program name"]) ||
+  (newItem["WhatsApp Number"] && !whatsappValid) ||
+  (newItem["Email ID"] && !emailValid)
+) {
         
         const errors = [];
         if (!newItem["Student Name"]) errors.push("Student Name is required");
         if (!newItem["Course Name"]) errors.push("Course Name is required");
         if (!phoneValid) errors.push("Phone number must be 10 digits");
-        if (!newItem["Institution"]) errors.push("Invalid or empty Institution name");
+        if (!newItem["Institution"] || typeof newItem["Institution"] !== 'string') errors.push("Invalid or empty Institution name");
         else if (!instituteId) errors.push("Institution name not found");
         if (!emailValid) errors.push("Invalid Email format");
         if (!isValidProgramName(newItem["Program name"])) errors.push("Invalid Program name");
         if (Date.includes("NaN")) errors.push("Invalid Date of Pitching, expected YYYY/MM/DD");
         if (newItem["WhatsApp Number"] && !whatsappValid) errors.push("WhatsApp number must be 10 digits");
-      
-        
         notFoundData.push({
           index: index + 1,
           date_of_pitching: newItem['Date of Pitching'] || "",
@@ -370,18 +365,15 @@ const PitchingUpload = (props) => {
     setUploadNew(false);
     setFileName("");
     setNextDisabled(false);
-    setUploadSuccesFully("");
     setExcelData([]);
     setNotuploadedData([]);
   };
 
   const hideShowModal = () => {
     setShowModalPitching(false);
-    setUploadSuccesFully("");
     setShowForm(true);
     setFileName("");
     setNextDisabled(false);
-    setUploadSuccesFully("");
     setExcelData([]);
     setNotuploadedData([]);
   };

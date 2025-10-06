@@ -25,75 +25,6 @@ const MentorBulkAdd = (props) => {
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
   const [specify_others, setSpecifyOthers] = useState(false);
-  const mentorDomainOptions = [
-    "3D Modeling & CAD Design",
-    "Accounting & Bookkeeping",
-    "Affiliate Marketing",
-    "AR/VR Development",
-    "Artificial Intelligence",
-    "Brand Consulting",
-    "Business Analysis & Market Research",
-    "Business Strategy & Startup Mentorship",
-    "Cake Decorating & Baking",
-    "Calligraphy",
-    "Candle Making",
-    "Career Counseling",
-    "Cloud Computing",
-    "Content Writer",
-    "Cybersecurity",
-    "Dance Instructor",
-    "Data Science & Machine Learning",
-    "DevOps & System Administration",
-    "Digital Marketing (SEO, PPC, Social Media)",
-    "E-commerce (Dropshipping, Print-on-Demand)",
-    "Email Marketing",
-    "Embroidery & Textile Designing",
-    "Ethical Hacking",
-    "Event Management",
-    "Fashion Designing & Styling",
-    "Financial Consulting & Planning",
-    "Fitness Coach",
-    "Floristry & Bouquet Arrangement",
-    "Food Blogging",
-    "Freelance Writing (Blogs, Articles, Copywriting)",
-    "Game Development",
-    "Graphic Design",
-    "Handmade Crafts & DIY Art",
-    "Illustration & Digital Art",
-    "Interior Decoration & Home Styling",
-    "IT Support & Networking",
-    "Jewellery Illustrator",
-    "Jewelry Making & Beading",
-    "Language Translation",
-    "Leather Crafting",
-    "Legal Consulting & Contract Drafting",
-    "Mehndi (Henna) Artist",
-    "Music Production & Audio Editing",
-    "Online Tutoring",
-    "Organic Gardening & Urban Farming",
-    "Origami Artist",
-    "Others",
-    "Photography & Videography",
-    "Podcast",
-    "Pottery",
-    "Radio Jockey",
-    "Social Media Influencing",
-    "Software Development",
-    "Stock Trading & Crypto Investing",
-    "Student",
-    "Tattoo Artist",
-    "Travel Blogging & Local Tour Guide",
-    "UI/UX Design",
-    "Video Editing & Animation",
-    "Virtual Assistance",
-    "Voice Acting & Dubbing",
-    "Voice-over Artist",
-    "Yoga Instructor",
-    "YouTuber"
-  ].map(domain => ({
-    label: domain,
-    value: domain
-  }));
 
   const [classValue, setclassValue] = useState({});
   const [data, setData] = useState([
@@ -113,8 +44,8 @@ const MentorBulkAdd = (props) => {
       medha_area: "",
       status: "",
       program_name: "",
-      contact:"",
-      medha_area:""
+      contact: "",
+      medha_area: ""
     },
   ]);
   const [rows, setRows] = useState([
@@ -135,27 +66,27 @@ const MentorBulkAdd = (props) => {
       status: "",
       program_name: "",
       contact: "",
-      medha_area:""
+      medha_area: ""
     },
   ]);
   const [newRow, setNewRow] = useState({
     id: 1,
     assigned_to: "",
-      mentor_name: "",
-      email: "",
-      mentor_domain: "",
-      mentor_company_name: "",
-      designation: "",
-      mentor_area: "",
-      mentor_state: "",
-      outreach: "",
-      onboarding_date: "",
-      social_media_profile_link: "",
-      medha_area: "",
-      status: "",
-      program_name: "",
-      contact:"",
-      medha_area:""
+    mentor_name: "",
+    email: "",
+    mentor_domain: "",
+    mentor_company_name: "",
+    designation: "",
+    mentor_area: "",
+    mentor_state: "",
+    outreach: "",
+    onboarding_date: "",
+    social_media_profile_link: "",
+    medha_area: "",
+    status: "",
+    program_name: "",
+    contact: "",
+    medha_area: ""
   });
 
   const [showLimit, setshowLimit] = useState(false);
@@ -164,10 +95,10 @@ const MentorBulkAdd = (props) => {
 
     for (const key in obj) {
       if (Object.hasOwnProperty.call(obj, key)) {
-        if(key =='contact' && obj[key].length <10){
+        if (key == 'contact' && obj[key].length < 10) {
           const value = obj[key];
           result[key] = true;
-        }else {
+        } else {
           const value = obj[key];
           const isEmpty = isEmptyValue(value);
           result[key] = isEmpty;
@@ -199,7 +130,7 @@ const MentorBulkAdd = (props) => {
   }
   const addRow = () => {
     let value = checkEmptyValues(rows[rows.length - 1]);
-    if (value ) {
+    if (value) {
       let obj = { ...classValue, [`class${[rows.length - 1]}`]: value };
 
       setclassValue({});
@@ -347,14 +278,14 @@ const MentorBulkAdd = (props) => {
       row.isActive = true;
 
       let value = checkEmptyValuesandplaceNA(row);
-      if (value.contact.length > 10 || value.contact.length <10) {
+      if (value.contact.length > 10 || value.contact.length < 10) {
         value.conatct = null;
       }
       // value.published_at =null
       return value;
     });
 
-    try {
+    try {      
       onHide("mentorship", data);
       setRows([
         {
@@ -394,22 +325,22 @@ const MentorBulkAdd = (props) => {
     });
   }, []);
 
-  
+
   useEffect(() => {
     let isEmptyValuFound = false;
-  
+
     for (let row of rows) {
       for (let key in row) {
-     
+
         const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if((key =="contact" && row[key].length < 10 )){
-          isEmptyValuFound=true
+        if ((key == "contact" && row[key].length < 10)) {
+          isEmptyValuFound = true
         }
-        if((key =="email" && (!emailRegex.test(row[key]) ))){
-          isEmptyValuFound=true
+        if ((key == "email" && (!emailRegex.test(row[key])))) {
+          isEmptyValuFound = true
         }
         if (
-          !(key == "social_media_profile_link") 
+          !(key == "social_media_profile_link")
         ) {
           if (isEmptyValue(row[key])) {
             isEmptyValuFound = true;
@@ -541,27 +472,21 @@ const MentorBulkAdd = (props) => {
                   <th>Mentor Name *</th>
                   <th>Contact *</th>
                   <th>Email *</th>
-                  
+
                   <th>Mentor's Domain *</th>
-                  {specify_others && <th>Specify Others</th> }
-                  
+                  {specify_others && <th>Specify Others</th>}
+
                   <th>Mentor's Company Name * </th>
                   <th>Designation/Title *</th>
                   <th>Mentor's State *</th>
                   <th>Mentor's City * </th>
                   <th>Outreach (Offline/Online) *</th>
-                  <th>Onboarding Date *</th> 
+                  <th>Onboarding Date *</th>
                   <th>Social Media Link </th>
                   <th>Assigned To *</th>
                   <th>Medha Area *</th>
                   <th>Medha Program Name *</th>
                   <th>Status *</th>
-                  
-                  
-                  
-                  
-                  
-
                   {/* <th>Area</th> */}
                 </tr>
               </thead>

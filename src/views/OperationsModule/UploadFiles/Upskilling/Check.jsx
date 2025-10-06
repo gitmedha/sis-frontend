@@ -60,17 +60,19 @@ const Check = (props) => {
                     {props.notUploadedData.map((newItem, index) => (
                       <tr key={index}>
                         <td>{index + 1}</td>
-                        <td className={ newItem.assigned_to.notFound ?"text-danger":""}>{newItem.assigned_to.notFound ? newItem.assigned_to.value:newItem.assigned_to}</td>
-                        <td className={ newItem.student_id.notFound || newItem.student_id =="No Data" ?"text-danger":""}>{newItem.student_id.value || ""}</td>
-                        <td className={ newItem.institution.notFound ?"text-danger":""}>{newItem.institution.notFound ?newItem.institution.value :newItem.institution}</td>
-                        <td className={ newItem.batch.notFound ?"text-danger":""}>{newItem.batch.notFound ? newItem.batch.value :newItem.batch}</td>
-                        <td className={newItem.start_date.notFound ?"text-danger":""}>{newItem.start_date.notFound ? newItem.start_date.value:newItem.start_date}</td>
-                          <td className={ newItem.end_date.notFound ?"text-danger":""}>{newItem.end_date.notFound ?newItem.end_date.value:newItem.end_date}</td>
+                        {console.log(newItem)
+                        }
+                        <td className={ newItem.assigned_to?.notFound ?"text-danger":""}>{newItem.assigned_to?.notFound ? newItem.assigned_to.value:newItem.assigned_to}</td>
+                        <td className={ newItem.student_id?.notFound || newItem?.student_id =="No Data" ?"text-danger":""}>{newItem.student_id.value || newItem.student_id || ""}</td>
+                        <td className={ newItem.institution?.notFound ?"text-danger":""}>{newItem.institution?.notFound ?newItem.institution.value :newItem.institution}</td>
+                        <td className={ newItem.batch?.notFound ?"text-danger":""}>{newItem.batch?.notFound ? newItem.batch.value :newItem.batch}</td>
+                        <td className={newItem.start_date?.notFound ?"text-danger":""}>{newItem.start_date?.notFound ? newItem.start_date.value:newItem.start_date}</td>
+                          <td className={ newItem.end_date?.notFound ?"text-danger":""}>{newItem.end_date?.notFound ?newItem.end_date.value:newItem.end_date}</td>
                           
-                        <td>{newItem.course_name || ""}</td>
-                        <td>{newItem.certificate_received || ""}</td>
-                        <td>{newItem.category || ""}</td>
-                        <td>{newItem.sub_category || ""}</td>
+                        <td  className={ newItem.course_name?.includes('No') ?"text-danger":""}>{newItem.course_name || ""}</td>
+                        <td  className={ newItem.certificate_received.includes('No') ?"text-danger":""}>{newItem.certificate_received || ""}</td>
+                        <td className={ newItem.category.includes('No') ?"text-danger":""}>{newItem.category || ""}</td>
+                        <td className={ newItem.sub_category.includes('No') ?"text-danger":""}>{newItem.sub_category || ""}</td>
                         <td>{newItem.issued_org || ""}</td>
                         <td>{newItem.program_name || ""}</td>
                       </tr>

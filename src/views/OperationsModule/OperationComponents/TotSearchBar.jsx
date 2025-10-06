@@ -10,6 +10,10 @@ import {
 import { getFieldValues } from "./operationsActions";
 import * as Yup from "yup";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
+import Select from "react-select";
+import Modal from 'react-bootstrap/Modal';
+import { getAllSearchSrm } from "src/utils/function/lookupOptions";
+import FilterBox from "./TotSearchBarFilterBox";
 
 const Section = styled.div`
   padding-bottom: 30px;
@@ -64,6 +68,67 @@ const DateRangeContainer = styled.div`
   }
 `;
 
+const MultipleFilterBox = styled.div`
+  .filter-box {
+    border: 1px solid #1a2b3c;
+    border-radius: 8px;
+    padding: 16px;
+    background: #fff;
+    max-width: 100%;
+  }
+
+  .filter-title {
+    margin-bottom: 12px;
+    font-weight: 500;
+  }
+
+  .filter-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    margin-bottom: 16px;
+  }
+
+  .chip {
+    border: 1px solid #c4c4c4;
+    border-radius: 6px;
+    padding: 6px 14px;
+    background: #f8f9fa;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    min-height: 32px;
+  }
+
+  .chip:hover { background: #e2e6ea; }
+  .chip.active { background: #21867a; border-color: #21867a; color: #fff; }
+
+  .filter-inputs {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px;
+    margin-bottom: 16px;
+  }
+
+  .filter-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+  }
+
+  .btn { min-width: 80px; height: 36px; border-radius: 6px; border: none; font-size: 14px; font-weight: 500; cursor: pointer; transition: background 0.2s ease; }
+  .btn.apply { background: #21867a; color: white; }
+  .btn.apply:hover { background: #18645a; }
+  .btn.clear { background: #6c757d; color: white; }
+  .btn.clear:hover { background: #565e64; }
+`;
+
+const SearchButtonContainer = styled.div`
+  display: flex;
+  gap: 12px;
+  margin-top: 22px;
+`;
+
 const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
   const options = [
     { key: 0, value: "city", label: "City" },
@@ -90,6 +155,11 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
   const [selectedSearchFields, setSelectedSearchFields] = useState([null]);
   const [disabled, setDisabled] = useState(true);
   const [counter, setCounter] = useState(1);
+  const [onefilter, setOnefilter] = useState(true);
+  const [appliedFilters, setAppliedFilters] = useState([]);
+  const [persistentFilterValues, setPersistentFilterValues] = useState({});
+  const [showAppliedFilterMessage, setShowAppliedFilterMessage] = useState(false);
+  const [appliedFiltersSummary, setAppliedFiltersSummary] = useState("");
 
   const projectTypeOptions = [
     { key: 0, label: "External", value: "External" },
@@ -125,10 +195,10 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
           then: Yup.date()
             .required("End date is required")
             .when("search_by_value_date", (start, schema) => {
-              return schema.min(
+              return start ? schema.min(
                 start,
                 "End date must be greater than or equal to start date"
-              );
+              ) : schema;
             }),
         }),
         search_by_value_date_end_from: Yup.date().when("search_by_field", {
@@ -140,10 +210,10 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
           then: Yup.date()
             .required("End date is required")
             .when("search_by_value_date_end_from", (start, schema) => {
-              return schema.min(
+              return start ? schema.min(
                 start,
                 "End date must be greater than or equal to start date"
-              );
+              ) : schema;
             }),
         }),
       })
@@ -162,11 +232,18 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     const baseUrl = "users-tots";
     const searchFields = [];
     const searchValues = [];
+    const appliedList = [];
+
+    const fieldLabelMap = options.reduce((acc, cur) => {
+      acc[cur.value] = cur.label;
+      return acc;
+    }, {});
 
     values.searches.forEach((search) => {
       if (search.search_by_field && search.search_by_value) {
         searchFields.push(search.search_by_field);
         searchValues.push(search.search_by_value);
+        appliedList.push({ label: fieldLabelMap[search.search_by_field] || search.search_by_field, value: search.search_by_value });
       } else if (
         search.search_by_field === "start_date" &&
         search.search_by_value_date &&
@@ -174,8 +251,9 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       ) {
         const startDate = formatDate(search.search_by_value_date);
         const endDate = formatDate(search.search_by_value_date_to);
-        searchFields.push(search.search_by_field);
-        searchValues.push({ start: startDate, end: endDate });
+        searchFields.push("start_date_from", "start_date_to");
+        searchValues.push(startDate, endDate);
+        appliedList.push({ label: fieldLabelMap[search.search_by_field] || "Start Date", value: `${startDate} - ${endDate}` });
       } else if (
         search.search_by_field === "end_date" &&
         search.search_by_value_date_end_from &&
@@ -183,8 +261,9 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       ) {
         const startDate = formatDate(search.search_by_value_date_end_from);
         const endDate = formatDate(search.search_by_value_date_end_to);
-        searchFields.push(search.search_by_field);
-        searchValues.push({ start: startDate, end: endDate });
+        searchFields.push("end_date_from", "end_date_to");
+        searchValues.push(startDate, endDate);
+        appliedList.push({ label: fieldLabelMap[search.search_by_field] || "End Date", value: `${startDate} - ${endDate}` });
       }
     });
 
@@ -194,6 +273,9 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
       "prevSearchedPropsAndValues",
       JSON.stringify({ baseUrl, searchData: payload })
     );
+    // Do not show applied filters for single-filter submissions
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
   };
 
   const clear = async (formik) => {
@@ -202,7 +284,45 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchFields([null]);
     setDisabled(true);
     setCounter(1);
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    setAppliedFiltersSummary("");
+    setPersistentFilterValues({});
+    const baseUrl = "users-tots";
+    const searchData = { searchFields: [], searchValues: [] };
+    await searchOperationTab(baseUrl, searchData);
+    await localStorage.setItem(
+      "prevSearchedPropsAndValues",
+      JSON.stringify({ baseUrl, searchData })
+    );
   };
+
+  const closefilterBox = () => {
+    setOnefilter(true);
+  };
+
+  const clearModalFiltersAndClose = async (formik) => {
+    setPersistentFilterValues({});
+    setAppliedFilters([]);
+    setShowAppliedFilterMessage(false);
+    setAppliedFiltersSummary("");
+    await clear(formik);
+    closefilterBox();
+  };
+
+  const filters = [
+    "City",
+    "Project Name", 
+    "Project Department",
+    "State",
+    "Project Type",
+    "Facilitator 1",
+    "Facilitator 2",
+    "Start Date",
+    "End Date",
+    "Gender",
+    "Participant Name",
+  ];
 
   const setSearchItem = (value, index) => {
     const newSelectedSearchFields = [...selectedSearchFields];
@@ -210,17 +330,17 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
     setSelectedSearchFields(newSelectedSearchFields);
     setDisabled(false);
 
-    if (["city", "project_name", "partner_dept", "trainer_1.username", 
-         "trainer_2.username", "state", "gender", "user_name"].includes(value)) {
+    if (["city", "project_name", "partner_dept", "trainer_1.username",
+      "trainer_2.username", "state", "gender", "user_name"].includes(value)) {
       setDropdownValues(value);
     }
-    else if (value === "gender"){
-        setDropdownValues("gender");
+    else if (value === "gender") {
+      setDropdownValues("gender");
     }
-    else if (value === "user_name"){
-        setDropdownValues("user_name");
+    else if (value === "user_name") {
+      setDropdownValues("user_name");
     }
-    
+
   };
 
   const setDropdownValues = async (fieldName) => {
@@ -240,12 +360,6 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
 
       if (setters[fieldName]) {
         setters[fieldName](data);
-      }
-      else if (fieldName === "gender"){
-        setGenderOptions(data);
-      }
-      else if (fieldName === "user_name"){
-        setUserOptions(data);
       }
     } catch (error) {
       console.error(error);
@@ -318,20 +432,23 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                           disabled
                         />
                       )}
-
-                      {selectedSearchFields[index] && 
+                       {console.log(formik.values.searches[index].search_by_value)
+                          }
+                      {selectedSearchFields[index] &&
                         !["start_date", "end_date"].includes(selectedSearchFields[index]) && (
-                        <Input
-                          icon={["city", "project_name", "partner_dept", "trainer_1.username", 
-                                "trainer_2.username", "state", "gender", "user_name"].includes(selectedSearchFields[index]) ? "down" : undefined}
-                          name={`searches[${index}].search_by_value`}
-                          label="Search Value"
-                          control={getOptionsForField(selectedSearchFields[index]).length > 0 ? "lookup" : "input"}
-                          options={getOptionsForField(selectedSearchFields[index])}
-                          className="form-control"
-                          disabled={disabled}
-                        />
-                      )}
+                         
+                          <Input
+                            icon={["city", "project_name", "partner_dept", "trainer_1.username",
+                              "trainer_2.username", "state", "gender", "user_name"].includes(selectedSearchFields[index]) ? "down" : undefined}
+                            name={`searches[${index}].search_by_value`}
+                            label="Search Value"
+                            control={getOptionsForField(selectedSearchFields[index]).length > 0 ? "lookup" : "input"}
+                            options={getOptionsForField(selectedSearchFields[index])}
+                            className="form-control"
+                            value={formik.values.searches[index].search_by_value}
+                            disabled={disabled}
+                          />
+                        )}
 
                       {selectedSearchFields[index] === "start_date" && (
                         <DateRangeContainer>
@@ -343,6 +460,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date || null}
                               disabled={disabled}
                             />
                           </div>
@@ -354,6 +472,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date_to || null}
                               disabled={disabled}
                             />
                           </div>
@@ -370,6 +489,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date_end_from || null}
                               disabled={disabled}
                             />
                           </div>
@@ -381,6 +501,7 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                               control="datepicker"
                               className="form-control"
                               autoComplete="off"
+                              value={formik.values.searches[index]?.search_by_value_date_end_to || null}
                               disabled={disabled}
                             />
                           </div>
@@ -389,37 +510,97 @@ const TotSearchBar = ({ searchOperationTab, resetSearch }) => {
                     </SearchValueContainer>
                   </div>
 
-                  {index === counter - 1 && (
-                    <div className="col-lg-1 col-md-2 col-sm-12">
-                      <IconContainer>
-                        <FaPlusCircle onClick={addSearchRow} title="Add Search Row" />
-                        {counter > 1 && <FaMinusCircle onClick={removeSearchRow} title="Remove Search Row" />}
-                      </IconContainer>
-                    </div>
-                  )}
+                  {/* Icons removed for cleaner UI */}
+                  <SearchButtonContainer>
+                <button
+                  className="btn btn-primary uniform-btn"
+                  type="submit"
+                  disabled={disabled}
+                >
+                  Search
+                </button>
+                <button
+                  className="btn btn-primary uniform-btn"
+                  type="button"
+                  onClick={() => setOnefilter(false)}
+                >
+                  Add Filter
+                </button>
+                <button
+                  className="btn btn-secondary uniform-btn"
+                  type="button"
+                  onClick={() => clear(formik)}
+                >
+                  CLEAR
+                </button>
+              </SearchButtonContainer>
                 </SearchRow>
               ))}
 
-              <div className="row">
-                <div className="col-lg-3 col-md-4 col-sm-12 mt-3 d-flex justify-content-around align-items-center search_buttons_container">
-                  <button
-                    className="btn btn-primary action_button_sec search_bar_action_sec"
-                    type="submit"
-                    disabled={disabled}
-                  >
-                    FIND
-                  </button>
-                  <button
-                    className="btn btn-secondary action_button_sec search_bar_action_sec"
-                    type="button"
-                    onClick={() => clear(formik)}
-                    disabled={disabled}
-                  >
-                    CLEAR
-                  </button>
+              
+
+              {/* Applied Filters Summary */}
+              {/* {showAppliedFilterMessage && appliedFiltersSummary && (
+                <div className="row" style={{ marginBottom: '15px' }}>
+                  <div className="col-12">
+                    <div style={{ 
+                      padding: '10px 15px', 
+                      backgroundColor: '#e8f5e8', 
+                      border: '1px solid #21867a', 
+                      borderRadius: '6px',
+                      color: '#21867a',
+                      fontSize: '14px',
+                      fontWeight: '500'
+                    }}>
+                      {appliedFiltersSummary}
+                    </div>
+                  </div>
                 </div>
-              </div>
+              )} */}
             </Section>
+            {!onefilter && (
+              <FilterBox 
+                initialFilterValues={(() => {
+                  const mapped = { ...persistentFilterValues };
+                  const labelMap = {
+                    "city": "City",
+                    "project_name": "Project Name",
+                    "partner_dept": "Project Department", 
+                    "state": "State",
+                    "project_type": "Project Type",
+                    "trainer_1.username": "Facilitator 1",
+                    "trainer_2.username": "Facilitator 2",
+                    "start_date": "Start Date",
+                    "end_date": "End Date",
+                    "gender": "Gender",
+                    "user_name": "Participant Name",
+                  };
+                  (formik.values.searches || []).forEach((s) => {
+                    if (!s || !s.search_by_field) return;
+                    const key = labelMap[s.search_by_field];
+                    if (!key) return;
+                    if (s.search_by_field === "start_date") {
+                      if (s.search_by_value_date) mapped["Start Date From"] = new Date(s.search_by_value_date);
+                      if (s.search_by_value_date_to) mapped["Start Date To"] = new Date(s.search_by_value_date_to);
+                    } else if (s.search_by_field === "end_date") {
+                      if (s.search_by_value_date_end_from) mapped["End Date From"] = new Date(s.search_by_value_date_end_from);
+                      if (s.search_by_value_date_end_to) mapped["End Date To"] = new Date(s.search_by_value_date_end_to);
+                    } else if (s.search_by_value) {
+                      mapped[key] = s.search_by_value;
+                    }
+                  });
+                  return mapped;
+                })()}
+                closefilterBox={closefilterBox}
+                clearModalFiltersAndClose={clearModalFiltersAndClose}
+                searchOperationTab={searchOperationTab}
+                setPersistentFilterValues={setPersistentFilterValues}
+                setAppliedFilters={setAppliedFilters}
+                setAppliedFiltersSummary={setAppliedFiltersSummary}
+                setShowAppliedFilterMessage={setShowAppliedFilterMessage}
+                appliedFilters={appliedFilters}
+              />
+            )}
           </Form>
         )}
       </Formik>

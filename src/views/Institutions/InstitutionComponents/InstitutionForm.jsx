@@ -18,6 +18,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import api from "../../../apis";
+import { createLatestAcivity, findDifferences, findDifferencesInstitute } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -51,6 +52,7 @@ const InstitutionForm = (props) => {
   const [cityOptions, setCityOptions] = useState([]);
   const [formValues, setFormValues] = useState(null);
   const [isDuplicate, setDuplicate] = useState(false);
+  const [blocked, setBlocked] = useState(false)
   const [sourceOptions] = useState([
     {
       key:0,
@@ -167,6 +169,12 @@ const InstitutionForm = (props) => {
       values.logo = logo;
     }
     setDisableSaveButton(true);
+    let propgramEnrollemntData={};
+    if(props.id ){
+      propgramEnrollemntData={module_name:"institution",activity:"Institution Data Updated",event_id:props.id,updatedby:userId ,changes_in:findDifferencesInstitute(props,values)};
+      await createLatestAcivity(propgramEnrollemntData);
+    }
+    
     await onHide(values);
     setDisableSaveButton(false);
   };
@@ -231,6 +239,18 @@ const InstitutionForm = (props) => {
       console.error("error", error);
     }
   };
+
+  useEffect(() => {
+    let userID = props?.assigned_to?.id;
+    function findUser(users, searchTerm) {
+        return users.find(user => 
+            String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+        ) || false;
+    }
+    let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+    setBlocked(userExistsByIdBoolean.blocked);
+
+}, [props, assigneeOptions]);
 
   return (
     <Modal
@@ -305,6 +325,7 @@ const InstitutionForm = (props) => {
                           className="form-control"
                           placeholder="Assigned To"
                           filterData={filterAssignedTo}
+                          isDisabled={blocked}
                           defaultOptions={assigneeOptions}
                         />
                       ) : (
@@ -700,7 +721,7 @@ const InstitutionForm = (props) => {
                     : null}
                 </div>
 
-                <div className="row justify-content-end mt-1">
+                <div className="row justify-content-end mt-3">
                   <div className="col-auto p-0">
                     <button
                       type="button"

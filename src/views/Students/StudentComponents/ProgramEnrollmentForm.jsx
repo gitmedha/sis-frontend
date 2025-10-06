@@ -410,9 +410,11 @@ const ProgramEnrollmentForm = (props) => {
                       label="Institution"
                       required
                       filterData={filterInstitution}
+                      defaultOptions={props ? institutionOptions : true}
+                      // options={institutionOptions}
                       className="form-control"
                       placeholder="Institution"
-                      defaultOptions={institutionOptions}
+                      // defaultOptions={institutionOptions}
                     />
                     ) : (
                       <Skeleton count={1} height={60} />

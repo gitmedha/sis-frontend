@@ -4,14 +4,10 @@ import { useState, useEffect } from "react";
 import SweetAlert from "react-bootstrap-sweetalert";
 import { useHistory } from "react-router-dom";
 import { connect } from "react-redux";
-import { Dropdown } from 'react-bootstrap';
+import { Dropdown } from "react-bootstrap";
 import { isAdmin } from "../../common/commonFunctions";
 
-import {
-  GET_BATCH,
-  UPDATE_BATCH,
-  GET_BATCH_STUDENTS,
-} from "../../graphql";
+import { GET_BATCH, UPDATE_BATCH, GET_BATCH_STUDENTS } from "../../graphql";
 import { queryBuilder } from "../../apis";
 import Details from "./batchComponents/Details";
 import Sessions from "./batchComponents/Sessions";
@@ -20,23 +16,38 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch,sendReminder } from "./batchActions";
+import {
+  getBatchProgramEnrollments,
+  deleteBatch,
+  updateBatch,
+  getBatchSessions,
+  getBatchSessionAttendanceStats,
+  getBatchStudentAttendances,
+  batchGenerateCertificates,
+  batchEmailCertificates,
+  batchSendLinks,
+  sendEmailOnCreateBatch,
+  sendPreBatchLinks,
+  sendPostBatchLinks,
+  sendReminder
+} from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
-import styled from 'styled-components';
+import styled from "styled-components";
 import { FaCheckCircle } from "react-icons/fa";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
-.button{
-  padding: 6px 43px !important;
-}
-
-@media screen and (max-width: 360px) {
-  .section-badge {
-    margin-left: 2px;
-    padding: 0px 20px !important;
+  .button {
+    padding: 6px 43px !important;
   }
-}
-`
+
+  @media screen and (max-width: 360px) {
+    .section-badge {
+      margin-left: 2px;
+      padding: 0px 20px !important;
+    }
+  }
+`;
 
 const Batch = (props) => {
   const [batchProgramEnrollments, setBatchProgramEnrollments] = useState([]);
@@ -48,10 +59,12 @@ const Batch = (props) => {
   const [showDeleteAlert, setShowDeleteAlert] = useState(false);
   const [sessions, setSessions] = useState([]);
   const history = useHistory();
-  const {setAlert} = props;
-  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState([]);
+  const { setAlert } = props;
+  const [programEnrollmentAggregate, setProgramEnrollmentAggregate] = useState(
+    []
+  );
   const [completeCertifyLoading, setCompleteCertifyLoading] = useState(false);
-  const [clickedSendLink, setClickedSendLink ] =useState(false);
+  const [clickedSendLink, setClickedSendLink] = useState(false);
   const userId = localStorage.getItem("user_id");
 
   const getThisBatch = async () => {
@@ -61,141 +74,165 @@ const Batch = (props) => {
         query: GET_BATCH,
         variables: { id: Number(batchID) },
       });
-     
+
       setBatch(data.batch);
-    } catch (err) {
-   
-    }
+    } catch (err) {}
   };
 
-  const getSessions = async (sortBy = 'created_at', sortOrder = 'desc') => {
-    getBatchSessions(batchID, sortBy, sortOrder).then(async data => {
-      await getAttendanceStats(data.data.data.sessionsConnection.values);
-    }).catch(err => {
-     
-    });
+  const getSessions = async (sortBy = "created_at", sortOrder = "desc") => {
+    getBatchSessions(batchID, sortBy, sortOrder)
+      .then(async (data) => {
+        await getAttendanceStats(data.data.data.sessionsConnection.values);
+      })
+      .catch((err) => {});
   };
 
   const getAttendanceStats = async (sessionsList) => {
-    getBatchSessionAttendanceStats(Number(batchID)).then(async data => {
-      let groupByBatch = data.data.data.programEnrollmentsConnection.groupBy.batch;
-      if (!groupByBatch.length) {
-        return;
-      }
-      const totalStudents = groupByBatch[0].connection.aggregate.studentsEnrolled;
+    getBatchSessionAttendanceStats(Number(batchID))
+      .then(async (data) => {
+        let groupByBatch =
+          data.data.data.programEnrollmentsConnection.groupBy.batch;
+        if (!groupByBatch.length) {
+          return;
+        }
+        const totalStudents =
+          groupByBatch[0].connection.aggregate.studentsEnrolled;
 
-      let attPercentage = data.data.data.attendancesConnection.groupBy.session.map(
-        (sess) => ({
-          id: sess.sessionId,
-          present: sess.connection.aggregate.studentsPresent,
-          percent: (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
-        })
-      );
+        let attPercentage =
+          data.data.data.attendancesConnection.groupBy.session.map((sess) => ({
+            id: sess.sessionId,
+            present: sess.connection.aggregate.studentsPresent,
+            percent:
+              (sess.connection.aggregate.studentsPresent / totalStudents) * 100,
+          }));
 
-      sessionsList = sessionsList.map(session => {
-        let matchedAttPercentage = attPercentage.find(att => att.id === session.id);
-        return {
-          ...session,
-          present: matchedAttPercentage?.present,
-          percent: matchedAttPercentage?.percent,
-        };
+        sessionsList = sessionsList.map((session) => {
+          let matchedAttPercentage = attPercentage.find(
+            (att) => att.id === session.id
+          );
+          return {
+            ...session,
+            present: matchedAttPercentage?.present,
+            percent: matchedAttPercentage?.percent,
+          };
+        });
+
+        await setSessions(sessionsList);
       })
-
-      await setSessions(sessionsList);
-    }).catch(err => {
-      
-    });
+      .catch((err) => {});
   };
 
-  const getStudents = async (sortBy = 'student.full_name', sortOrder = 'desc') => {
+  const getStudents = async (
+    sortBy = "student.full_name",
+    sortOrder = "desc"
+  ) => {
     try {
       const batchID = props.match.params.id;
       let { data } = await queryBuilder({
         query: GET_BATCH_STUDENTS,
         variables: {
           id: Number(batchID),
-          sort: `${sortBy}:${sortOrder}`
+          sort: `${sortBy}:${sortOrder}`,
         },
       });
       let studentsData = data.programEnrollmentsConnection.values;
-      getBatchStudentAttendances(batchID).then(data => {
-        let sessionCount= data.data.data.sessionsConnection.aggregate.count
-        let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
-        let studentsWithAttendance = studentsData.map(student => {
-          let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
+      getBatchStudentAttendances(batchID).then((data) => {
+        let sessionCount = data.data.data.sessionsConnection.aggregate.count;
+        let programEnrollmentAttendances =
+          data.data.data.attendancesConnection.groupBy.program_enrollment;
+        let studentsWithAttendance = studentsData.map((student) => {
+          let studentAttendancePercent = programEnrollmentAttendances.find(
+            (programEnrollment) => programEnrollment.key === student.id
+          );
           return {
             ...student,
-            attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/sessionCount) * 100) : 0,
-          }
+            attendancePercent: studentAttendancePercent
+              ? Math.floor(
+                  (studentAttendancePercent.connection.aggregate.count /
+                    sessionCount) *
+                    100
+                )
+              : 0,
+          };
         });
         setStudents(studentsWithAttendance);
       });
-    } catch (err) {
-    
-    }
+    } catch (err) {}
   };
 
   const markAsCertified = async () => {
     NP.start();
     updateBatch(batch.id, {
-      status: 'Certified'
-    }).then(data => {
-      sendEmailOnCreateBatch('pehli udaan')
-      setAlert("Batch updated successfully.", "success");
-    }).catch(err => {
-      
-      setAlert("Unable to update batch.", "error");
-    }).finally(async () => {
-      NP.done();
-      await getThisBatch();
-      await getProgramEnrollments();
-    });
-  }
+      status: "Certified",
+    })
+      .then((data) => {
+        sendEmailOnCreateBatch("pehli udaan");
+        setAlert("Batch updated successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to update batch.", "error");
+      })
+      .finally(async () => {
+        NP.done();
+        await getThisBatch();
+        await getProgramEnrollments();
+      });
+  };
 
   const generateCertificates = async () => {
     NP.start();
     batchGenerateCertificates(batch.id, {
-      status: 'Complete'
-    }).then(data => {
-      setAlert("Certificate generation in progress. Please check after some time.", "success");
-    }).catch(err => {
-      
-      setAlert("Unable to update batch.", "error");
-    }).finally(async () => {
-      NP.done();
-      await getThisBatch();
-      await getProgramEnrollments();
-    });
-  }
+      status: "Complete",
+    })
+      .then((data) => {
+        setAlert(
+          "Certificate generation in progress. Please check after some time.",
+          "success"
+        );
+      })
+      .catch((err) => {
+        setAlert("Unable to update batch.", "error");
+      })
+      .finally(async () => {
+        NP.done();
+        await getThisBatch();
+        await getProgramEnrollments();
+      });
+  };
 
   const emailCertificates = async () => {
     NP.start();
     batchEmailCertificates(batch.id, {
-      status: 'Certified'
-    }).then(data => {
-      setAlert("Emails sent successfully.", "success");
-    }).catch(err => {
-     
-      setAlert("Unable to update batch.", "error");
-    }).finally(async () => {
-      NP.done();
-      await getThisBatch();
-      await getProgramEnrollments();
-    });
-  }
+      status: "Certified",
+    })
+      .then((data) => {
+        setAlert("Emails sent successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to update batch.", "error");
+      })
+      .finally(async () => {
+        NP.done();
+        await getThisBatch();
+        await getProgramEnrollments();
+      });
+  };
 
   const sendLinks = async () => {
     NP.start();
     batchSendLinks(batch.id, {
-      status: 'Complete'
-    }).then(data => {
-      setAlert("Emails sent successfully.", "success");
-    }).catch(err => {
-      setAlert("Unable to sent mail.", "error");
-    }).finally(async () => {
-      NP.done();
-    });
-  }
+      status: "Complete",
+    })
+      .then((data) => {
+        setAlert("Emails sent successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to sent mail.", "error");
+      })
+      .finally(async () => {
+        NP.done();
+      });
+  };
 
   const done = () => getThisBatch();
 
@@ -205,50 +242,71 @@ const Batch = (props) => {
       return;
     }
 
-    let {id, show, logo, created_at, created_by_frontend, updated_by_frontend, updated_at, ...dataToSave} = data;
+    let {
+      id,
+      show,
+      logo,
+      created_at,
+      created_by_frontend,
+      updated_by_frontend,
+      updated_at,
+      ...dataToSave
+    } = data;
 
-    if(data.institution === null){
-      dataToSave['institution'] = null
+    if (data.institution === null) {
+      dataToSave["institution"] = null;
+    } else if (typeof data.institution === "object") {
+      dataToSave["institution"] = Number(data.institution?.id);
     }
-    else if (typeof data.institution === 'object') {
-      dataToSave['institution'] = Number(data.institution?.id);
+    if (typeof data.program === "object") {
+      dataToSave["program"] = Number(data.program?.id);
     }
-    if (typeof data.program === 'object') {
-      dataToSave['program'] = Number(data.program?.id);
+    if (typeof data.grant === "object") {
+      dataToSave["grant"] = Number(data.grant?.id);
     }
-    if (typeof data.grant === 'object') {
-      dataToSave['grant'] = Number(data.grant?.id);
+    if (typeof data.assigned_to === "object") {
+      dataToSave["assigned_to"] = Number(data.assigned_to?.id);
     }
-    if (typeof data.assigned_to === 'object') {
-      dataToSave['assigned_to'] = Number(data.assigned_to?.id);
-    }
-    dataToSave['start_date'] = moment(data.start_date).format("YYYY-MM-DD");
-    dataToSave['end_date'] = moment(data.end_date).format("YYYY-MM-DD");
+    dataToSave["start_date"] = moment(data.start_date).format("YYYY-MM-DD");
+    dataToSave["end_date"] = moment(data.end_date).format("YYYY-MM-DD");
 
     NP.start();
-    updateBatch(Number(id), dataToSave).then(data => {
-      setAlert("Batch updated successfully.", "success");
-    }).catch(err => {
-      setAlert("Unable to update batch.", "error");
-    }).finally(async () => {
-      NP.done();
-      getThisBatch();
-    });
+    updateBatch(Number(id), dataToSave)
+      .then((data) => {
+        setAlert("Batch updated successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to update batch.", "error");
+      })
+      .finally(async () => {
+        NP.done();
+        getThisBatch();
+      });
     setModalShow(false);
   };
 
   const handleDelete = async () => {
     NP.start();
-    deleteBatch(batch.id).then(data => {
-      setAlert("Batch deleted successfully.", "success");
-    }).catch(err => {
-      
-      setAlert("Unable to delete batch.", "error");
-    }).finally(() => {
-      setShowDeleteAlert(false);
-      NP.done();
-      history.push("/batches");
-    });
+    let data = {
+      module_name: "Batch",
+      activity: "Delete",
+      event_id: batch.id,
+      updatedby: userId,
+      changes_in: batch,
+    };
+    await createLatestAcivity(data);
+    deleteBatch(batch.id)
+      .then((data) => {
+        setAlert("Batch deleted successfully.", "success");
+      })
+      .catch((err) => {
+        setAlert("Unable to delete batch.", "error");
+      })
+      .finally(() => {
+        setShowDeleteAlert(false);
+        NP.done();
+        history.push("/batches");
+      });
   };
 
   useEffect(() => {
@@ -268,16 +326,20 @@ const Batch = (props) => {
   const handleSessionDataUpdate = async () => {
     await getSessions();
     await getStudents();
-  }
+  };
 
   const getProgramEnrollments = async () => {
-    getBatchProgramEnrollments(batchID).then(data => {
-      setBatchProgramEnrollments(data.data.data.programEnrollmentsConnection.values);
-      setProgramEnrollmentAggregate(data?.data?.data?.programEnrollmentsConnection?.aggregate);
-    }).catch(err => {
-     
-    });
-  }
+    getBatchProgramEnrollments(batchID)
+      .then((data) => {
+        setBatchProgramEnrollments(
+          data.data.data.programEnrollmentsConnection.values
+        );
+        setProgramEnrollmentAggregate(
+          data?.data?.data?.programEnrollmentsConnection?.aggregate
+        );
+      })
+      .catch((err) => {});
+  };
 
   const triggerManualReminder = async(id)=>{
     NP.start();
@@ -291,13 +353,40 @@ const Batch = (props) => {
     });
   }
 
+  //for sending pre batch links to students
+
+  const preBatchLinks = async () => {
+    try {
+      NP.start();
+      console.log(batch.id);
+      sendPreBatchLinks(batch.id);
+      NP.done();
+    } catch (error) {
+      console.error(error);
+      NP.done();
+    }
+  };
+
+  //for sending post batch links to students
+
+  const postBatchLinks = async () => {
+    try {
+      NP.start();
+      sendPostBatchLinks(batch.id);
+      NP.done();
+    } catch (error) {
+      console.error(error);
+      NP.done();
+    }
+  };
+  console.log("batch", batch);
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
     return (
       <Styled>
         <>
-          <div className="row" style={{margin: '30px 0 0'}}>
+          <div className="row" style={{ margin: "30px 0 0" }}>
             <div className="col-12 button_container">
               <button
                 onClick={() => setModalShow(true)}
@@ -309,22 +398,104 @@ const Batch = (props) => {
               <button
                 onClick={() => setShowDeleteAlert(true)}
                 className="btn--primary action_button_sec"
-                disabled={!isAdmin() && (batch?.created_by_frontend?.id !== userId || (batch?.status === "In Progress" || batch?.status === "Complete" || batch?.status === "Certified"))}
+                disabled={
+                  !isAdmin() &&
+                  (batch?.created_by_frontend?.id !== userId ||
+                    batch?.status === "In Progress" ||
+                    batch?.status === "Complete" ||
+                    batch?.status === "Certified")
+                }
               >
                 DELETE
               </button>
-              {isAdmin() &&
+              {isAdmin() && (
                 <Dropdown className="d-inline">
                   <Dropdown.Toggle
                     variant="secondary"
                     id="dropdown-basic"
                     className="btn--primary action_button_sec"
-                    disabled={batch?.status == "Enrollment Ongoing"}
+                    // disabled={batch?.status == "Enrollment Ongoing"}
                   >
                     ACTIONS
                   </Dropdown.Toggle>
+               
                   <Dropdown.Menu>
-                    <Dropdown.Item
+                    {batch?.program?.name ===
+                      "Technology Advancement Bootcamp" ||
+                    batch?.program?.name === "Svapoorna" ||
+                    batch?.program?.name === "Swarambh" ||
+                    batch?.program?.name === "Career Advancement Bootcamp" ? (
+                      <Dropdown.Item onClick={() => preBatchLinks()}>
+                        <FaCheckCircle
+                          size="20"
+                          color={
+                            !batch?.pre_batch_email_sent ? "#E0E0E8" : "#207B69"
+                          }
+                          className="mr-2"
+                        />
+                        <span
+                          style={{
+                            color: !batch?.pre_batch_email_sent
+                              ? "#E0E0E8"
+                              : "#000000",
+                          }}
+                        >
+                          &nbsp;&nbsp;Pre survey test
+                        </span>
+                      </Dropdown.Item>
+                    ) : (
+                      <div></div>
+                    )}
+                    {batch?.program?.name ===
+                      "Technology Advancement Bootcamp" ||
+                    batch?.program?.name === "Svapoorna" ||
+                    batch?.program?.name === "Swarambh" ||
+                    batch?.program?.name === "Career Advancement Bootcamp" ? (
+                      <Dropdown.Item onClick={() => postBatchLinks()}>
+                        <FaCheckCircle
+                          size="20"
+                          color={
+                            !batch?.post_batch_email_sent
+                              ? "#E0E0E8"
+                              : "#207B69"
+                          }
+                          className="mr-2"
+                        />
+                        <span
+                          style={{
+                            color: !batch?.post_batch_email_sent
+                              ? "#E0E0E8"
+                              : "#000000",
+                          }}
+                        >
+                          &nbsp;&nbsp;Post survey test
+                        </span>
+                      </Dropdown.Item>
+                    ) : (
+                      <div></div>
+                    )}
+                    {batch?.status === "Complete" && (
+                      <Dropdown.Item
+                        onClick={() => {
+                          sendLinks();
+                          setClickedSendLink(true);
+                        }}
+                        className="d-flex align-items-center"
+                      >
+                        <FaCheckCircle
+                          size="20"
+                          color={
+                            clickedSendLink === false &&
+                            batch?.link_sent_at === null
+                              ? "#E0E0E8"
+                              : "#207B69"
+                          }
+                          className="mr-2"
+                        />
+                        <span>&nbsp;&nbsp;Send a link</span>
+                      </Dropdown.Item>
+                    )}
+                  <Dropdown.Item
                       onClick={() => triggerManualReminder(batch.id)}
                       className="d-flex align-items-center"
                     >
@@ -347,7 +518,13 @@ const Batch = (props) => {
                       onClick={() => markAsCertified()}
                       className="d-flex align-items-center"
                     >
-                      <FaCheckCircle size="20" color={batch?.status === 'Certified' || batch.status === 'Complete – Not to be Certified' ? '#207B69' : '#E0E0E8'} className="mr-2" />
+                      <FaCheckCircle
+                        size="20"
+                        color={
+                          batch?.status === "Certified" ? "#207B69" : "#E0E0E8"
+                        }
+                        className="mr-2"
+                      />
                       <span>&nbsp;&nbsp;Mark as Certified</span>
                     </Dropdown.Item>
                     <Dropdown.Item
@@ -356,25 +533,39 @@ const Batch = (props) => {
                     >
                       <FaCheckCircle
                         size="20"
-                        color={batch?.status === 'Certified' && batch?.certificates_generated_at ? '#207B69' : '#E0E0E8'}
+                        color={
+                          batch?.status === "Certified" &&
+                          batch?.certificates_generated_at
+                            ? "#207B69"
+                            : "#E0E0E8"
+                        }
                         className="mr-2"
                       />
                       <span>&nbsp;&nbsp;Generate Certificates</span>
                     </Dropdown.Item>
                     <Dropdown.Item
                       onClick={() => emailCertificates()}
-                      disabled={batch?.status !== "Certified" || batch?.certificates_generated_at === null}
+                      disabled={
+                        batch?.status !== "Certified" ||
+                        batch?.certificates_generated_at === null
+                      }
                     >
                       <FaCheckCircle
                         size="20"
-                        color={batch?.status === 'Certified' && batch?.certificates_emailed_at > batch?.certificates_generated_at ? '#207B69' : '#E0E0E8'}
+                        color={
+                          batch?.status === "Certified" &&
+                          batch?.certificates_emailed_at >
+                            batch?.certificates_generated_at
+                            ? "#207B69"
+                            : "#E0E0E8"
+                        }
                         className="mr-2"
                       />
                       <span>&nbsp;&nbsp;Email Certificates</span>
                     </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
-              }
+              )}
             </div>
             {batch && (
               <Collapsible

@@ -362,8 +362,9 @@ div::-webkit-scrollbar-thumb {
 }
 
 .form_sec {
-  height: 500px;
-  overflow: scroll;
+  // height: 500px;
+  // overflow: scroll;
+  overflow-y: auto;
   scrollbar-width: none;
   scroll-behavior: smooth;
 }
@@ -377,19 +378,30 @@ div::-webkit-scrollbar-thumb {
   margin: auto auto;
 }
 
-/* Arrow Styling */
-.arrow {
-  font-size: 12px;
-  transition: transform 0.3s;
+// industry changes
+
+.tag-item .search{
+  border-bottom: none;  
 }
-
-.arrow.open {
-  transform: rotate(90deg);
+.tag {
+  background-color: #fff;
+  border:none;
+  padding: 2px 0 2px 2px;
+  border-radius: 2px;
+  display: inline-block;
+  color: #000;
 }
-
-
+.tag-remove {
+  display: none;
+}
+.form-group::after {
+  display: none !important;
+}
+.w-100{
+  width: 100%;
+}
 .dropdown-toggle{
-  color: #000 !important;
+  color: #fff !important;
   text-decoration: none !important ;
 }
 /* Dropdown Container */
@@ -437,6 +449,93 @@ div::-webkit-scrollbar-thumb {
   margin-left: 15px;
   border-left: 2px dashed #ddd;
   padding-left: 6px;
+}
+
+.clone-btn {
+  padding: 6px 16px;
+  background-color: #4a90e2; /* primary blue */
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.clone-btn:hover:not(:disabled) {
+  background-color: #357ab8;
+  transform: translateY(-1px);
+}
+
+.clone-btn:active:not(:disabled) {
+  background-color: #2d6391;
+  transform: translateY(0);
+}
+
+.clone-btn:disabled,
+.clone-btn.btn-disabled {
+  background-color: #e0e0e0;
+  color: #666;
+  cursor: not-allowed;
+}
+
+
+/* Arrow Styling */
+.arrow {
+  font-size: 12px;
+  transition: transform 0.3s;
+}
+
+.arrow.open {
+  transform: rotate(90deg);
+}
+
+
+
+.selectItem {
+  background-color: #e6e6e6;
+  text-align: black;
+  padding: 5px !important;
+}
+
+
+// Latest Activity 
+
+.detail-field-delete {
+    height: auto;
+    display: flex;
+    padding: 4px 12px;
+    border-radius: 5px;
+    align-items: center;
+    letter-spacing: 0.5px;
+    justify-content: center;
+    color: rgb(255, 55, 55) !important;
+    background-color: rgb(255, 205, 205);
+}
+
+.detail-field-create{
+    height: auto;
+    display: flex;
+    padding: 4px 12px;
+    border-radius: 5px;
+    align-items: center;
+    letter-spacing: 0.5px;
+    justify-content: center;
+    color: rgb(14, 198, 43) !important;
+    background-color: rgb(178, 255, 191);
+}
+.text-decor{
+  text-transform: uppercase !important;
+}
+
+
+// Form Container
+
+.form-container {
+  max-height: 90vh !important; /* Adjust as needed */
+  overflow-y: auto !important;
+  position: relative !important;
 }
 @import './media/lg.scss';
 @import './media/md.scss';

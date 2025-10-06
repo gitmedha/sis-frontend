@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from "react";
-import { Modal, Spinner } from "react-bootstrap";
+import React, { useState, useEffect, useRef } from "react";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../../common/commonFunctions";
 import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../../graphql";
-import { queryBuilder } from "../../../../apis";
+import Select from "react-select";
 import { getAllSrmbyname } from "../../../../utils/function/lookupOptions";
 import {
   FaEdit,
@@ -21,11 +21,14 @@ import {
   bulkCreateUsersTots,
   getAllInstitute,
   getTotPickList,
+  UpdatePicklist,
+  useUpdatePicklist,
 } from "../../OperationComponents/operationsActions";
 import CheckTot from "./CheckTot";
 import { isNumber, set } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
 import moment from "moment";
+import { uploadFile } from "src/components/content/Utils";
 
 const expectedColumns = [
   "Full Name",
@@ -226,6 +229,10 @@ const options = [
   { value: "feild_activity", label: "Field Activity" },
   { value: "collegePitch", label: "Pitching" },
 ];
+const filteypeoptions = [
+  { value: "newData", label: "New Data Entry" },
+  { value: "newFileUpload", label: "New File Upload" }
+];
 
 const TotUpload = (props) => {
   const { onHide } = props;
@@ -249,22 +256,42 @@ const TotUpload = (props) => {
   const [showSpinner, setShowSpinner] = useState(true);
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
+  const [uploadType, setUploadType] = useState("newData");
+  // const role =localStorage.getItem('role').toLocaleUpperCase()
+  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
+  // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
+  const [validationResult, setValidationResult] = useState({
+    isValid: false,
+    message: "",
+    headers: []
+  });
+  const [fileForUpload, setFileForUpload] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState("");
+  const [uploadResult, setUploadResult] = useState(null);
+  const [fileNameError, setFileNameError] = useState("");
 
-  // useEffect(() => {
-  //   const getdata = async () => {
-  //     const data = await getAllSrmbyname();
-  //     setAssigneeOption(data);
+  // Create refs for file inputs at the top with your other refs
+  const fileInputRef = useRef(null);
+  const fileInputRefNew = useRef(null);
 
-  //     const instituteData = await getAllInstitute();
-  //     console.log(instituteData);
-      
-  //     setInstituteOptions(instituteData)
-      
-      
-  //   };
+  // ... your existing code
+  const expectedFileName = "ToT-Template.xlsx";
+  useEffect(() => {
+    const getdata = async () => {
+      const data = await getAllSrmbyname();
+      setAssigneeOption(data);
 
-  //   getdata();
-  // }, [props]);
+
+      const instituteData = await getAllInstitute();
+      setInstituteOptions(instituteData)
+
+
+    };
+
+    getdata();
+  }, [props]);
 
   const handleFileChange = (event) => {
     const fileInput = event.target;
@@ -310,36 +337,42 @@ const TotUpload = (props) => {
       });
       return newItem;
     });
-    processFileData(data);
+
+    processFileData(data, "Fileupload");
   };
 
-  const processFileData = (jsonData) => {
-    const validRecords = [];
-    const invalidRecords = [];
-    for (const row of jsonData) {
-      const isRowEmpty = Object.values(row).every(
-        (value) => value === null || value === ""
-      );
+  const processFileData = (jsonData, field = "Fileupload") => {
+    if (field == "Fileupload") {
+      const validRecords = [];
+      const invalidRecords = [];
+      for (const row of jsonData) {
+        const isRowEmpty = Object.values(row).every(
+          (value) => value === null || value === ""
+        );
 
-      if (isRowEmpty) {
-        break;
+        if (isRowEmpty) {
+          break;
+        }
+        validRecords.push(row);
       }
-      validRecords.push(row);
-    }
-    const filteredArray = validRecords.filter((obj) =>
-      Object.values(obj).some((value) => value !== undefined)
-    );
-    if (filteredArray.length == 0) {
-      setNotUploadSuccesFully(
-        "File is empty please select file which has data in it"
+      const filteredArray = validRecords.filter((obj) =>
+        Object.values(obj).some((value) => value !== undefined)
       );
+      if (filteredArray.length == 0) {
+        setNotUploadSuccesFully(
+          "File is empty please select file which has data in it"
+        );
+        return;
+      }
+      if (validateColumns(filteredArray, expectedColumns)) {
+        setUploadSuccesFully(`File Uploaded`);
+        setNextDisabled(true);
+        processParsedData(filteredArray);
+      }
+    } else {
       return;
     }
-    if (validateColumns(filteredArray, expectedColumns)) {
-      setUploadSuccesFully(`File Uploaded`);
-      setNextDisabled(true);
-      processParsedData(filteredArray);
-    }
+
   };
 
   const isValidDate = (dateString) => {
@@ -367,7 +400,7 @@ const TotUpload = (props) => {
   useEffect(() => {
     getTotPickList().then((data) => {
 
-      
+
       // setModuleName(data.module_name.map(item))
       setInstituteOptions(data.TOT_college)
       setModuleName(
@@ -488,33 +521,21 @@ const TotUpload = (props) => {
       });
 
       const currentUser = localStorage.getItem("user_id");
-      const StateCheck = stateOptions.find(
-        (state) => state === newItem["State"]
-      )?.id;
-      
-      const targetCollege = newItem["College Name"].trim().toLowerCase();
+      const errors = [];
 
-const instituteCheck = instituteOptions.find(
-  (i) =>  i.trim().toLowerCase() === targetCollege
-);
+      // 🔍 Validate dropdowns / references
+      const StateCheck = stateOptions.find((state) => state === newItem["State"])?.id;
 
-// console.log("Matched:", instituteCheck);
-
-
-//       console.log("instituteCheck",instituteCheck);
-      
-      const areaCheck = areaOptions.find(
-        (area) => area === newItem["City"]
-      )?.id;
-      const moduleCheck = moduleName.find(
-        (module) => module.value === newItem["Program/Module Name"]
+      const targetCollege = newItem["College Name"]?.trim()?.toLowerCase();
+      const instituteCheck = instituteOptions.find(
+        (i) => i.name.trim().toLowerCase() === targetCollege
       );
 
+      const areaCheck = areaOptions.find((area) => area === newItem["City"])?.id;
+      const moduleCheck = moduleName.find((module) => module.value === newItem["Program/Module Name"]);
       const departMentCheck = partnerDept.find(
-        (department) =>
-          department.value === newItem["Government Department partnered with"]
+        (department) => department.value === newItem["Government Department partnered with"]
       );
-
       const projectCheck = ["Internal", "External"].find(
         (project) => project === newItem["Project Type"]
       );
@@ -522,134 +543,73 @@ const instituteCheck = instituteOptions.find(
         (project) => project === newItem["Project Name"]
       );
 
-      const trainer_1 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 1"]
-      )?.value;
+      const trainer_1 = assigneOption.find((user) => user.label === newItem["Trainer 1"])?.value;
+      const trainer_2 = assigneOption.find((user) => user.label === newItem["Trainer 2"])?.value;
 
-      const trainer_2 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 2"]
-      )?.value;
-
+      // 🔍 Validate dates
       const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
       const endDate = excelSerialDateToJSDate(newItem["End Date"]);
-
       const isStartDateValid = isValidDateFormat(startDate);
       const isEndDateValid = isValidDateFormat(endDate);
-      const createdby = Number(userId);
-      const updatedby = Number(userId);
-      const pattern = /^[0-9]{10}$/;
-      let parseDate;
-      if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
+
+      let parseDate = false;
+      if (isStartDateValid && isEndDateValid) {
         const parsedDate1 = moment(new Date(startDate)).unix();
         const parsedDate2 = moment(new Date(endDate)).unix();
         if (parsedDate2 < parsedDate1) {
           parseDate = true;
+          errors.push("End Date cannot be earlier than Start Date");
         }
       }
 
-      if (
-        !departMentCheck ||
-        !projectCheck ||
-        !moduleCheck ||
-        !isStartDateValid ||
-        !isEndDateValid ||
-        !projectNameCheck ||
-        parseDate ||
-        !newItem["Full Name"] ||
-        !newItem["College Name"] || !instituteCheck
-      ) {
+      // 🔍 Collect validation errors
+      if (!departMentCheck) errors.push("Government Department is invalid or missing");
+      if (!projectCheck) errors.push("Project Type is invalid or missing");
+      if (!moduleCheck) errors.push("Program/Module Name is invalid or missing");
+      if (!isStartDateValid) errors.push("Start Date is invalid or missing");
+      if (!isEndDateValid) errors.push("End Date is invalid or missing");
+      if (!projectNameCheck) errors.push("Project Name is invalid or missing");
+      if (!newItem["Full Name"]) errors.push("Full Name is missing");
+      if (!newItem["College Name"] || !instituteCheck)
+        errors.push("College Name is invalid or missing");
+
+      if (errors.length > 0) {
+        // ❌ Push invalid data
         notFoundData.push({
           index: index + 1,
-          user_name: newItem["Full Name"]
-            ? capitalize(newItem["Full Name"])
-            : "No data",
-          trainer_1: newItem["Trainer 1"],
-          email: newItem["Email id"],
-          project_name: projectCheck
-            ? newItem["Project Name"]
-            : {
-                value: newItem["Project Name"]
-                  ? newItem["Project Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          certificate_given: newItem["Certificate Provided"],
-          module_name: moduleCheck
-            ? newItem["Program/Module Name"]
-            : {
-                value: newItem["Program/Module Name"]
-                  ? newItem["Program/Module Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          project_type: projectCheck
-            ? newItem["Project Type"]
-            : {
-                value: newItem["Project Type"]
-                  ? newItem["Project Type"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          trainer_2: newItem["Trainer 2"],
-          partner_dept: departMentCheck
-            ? newItem["Government Department partnered with"]
-            : {
-                value: newItem["Government Department partnered with"]
-                  ? newItem["Government Department partnered with"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          college: instituteCheck 
-            ? capitalize(newItem["College Name"])
-            :  {
-                value: newItem["College Name"]
-                  ? newItem["College Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          city: newItem["District where training took place"]
-            ? capitalize(newItem["District where training took place"])
-            : "",
-          state: newItem["State"] ? capitalize(newItem["State"]) : "",
-          age: newItem["Age"],
-          gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
-          contact: newItem["Contact Number"],
-          designation: newItem["Designation"],
-          start_date: parseDate
-            ? { value: startDate, notFound: true }
-            : isStartDateValid
-            ? startDate
-            : {
-                value: newItem["Start Date"]
-                  ? newItem["Start Date"]
-                  : "No data",
-                notFound: true,
-              },
-          end_date: parseDate
-            ? { value: endDate, notFound: true }
-            : isEndDateValid
-            ? endDate
-            : {
-                value: newItem["End Date"] ? newItem["End Date"] : "no data",
-                notFound: true,
-              },
-          new_entry: newItem["New Entry"],
+          user_name: newItem["Full Name"] ? capitalize(newItem["Full Name"]) : "",
+          trainer_1: newItem["Trainer 1"] || "",
+          trainer_2: newItem["Trainer 2"] || "",
+          email: newItem["Email id"] || "",
+          project_name: newItem["Project Name"] || "",
+          certificate_given: newItem["Certificate Provided"] || "",
+          module_name: newItem["Program/Module Name"] || "",
+          project_type: newItem["Project Type"] || "",
+          partner_dept: newItem["Government Department partnered with"] || "",
+          college: newItem["College Name"] || "",
+          city: newItem["District where training took place"] || "",
+          state: newItem["State"] || "",
+          age: newItem["Age"] || "",
+          gender: newItem["Gender"] || "",
+          contact: newItem["Contact Number"] || "",
+          designation: newItem["Designation"] || "",
+          start_date: startDate.includes('NaN') ? newItem["Start Date"] : startDate || "",
+          end_date: endDate.includes('NaN') ? newItem["End Date"] : endDate || "",
+          new_entry: newItem["New Entry"] || "",
+          error: errors.join(", "), // 🔑 unified error messages
         });
       } else {
+        // ✅ Push valid data
         formattedData.push({
-          user_name: newItem["Full Name"]
-            ? capitalize(newItem["Full Name"])
-            : "",
+          user_name: newItem["Full Name"] ? capitalize(newItem["Full Name"]) : "",
           trainer_1: Number(trainer_1),
+          trainer_2: Number(trainer_2),
           project_name: newItem["Project Name"],
           certificate_given: newItem["Certificate Provided"],
           module_name: newItem["Program/Module Name"],
           project_type: newItem["Project Type"],
-          trainer_2: Number(trainer_2),
           partner_dept: newItem["Government Department partnered with"],
-          college: newItem["College Name"]
-            ? capitalize(newItem["College Name"])
-            : "",
+          college: newItem["College Name"] ? capitalize(newItem["College Name"]) : "",
           city: newItem["District where training took place"]
             ? capitalize(newItem["District where training took place"])
             : "",
@@ -661,9 +621,9 @@ const instituteCheck = instituteOptions.find(
             ? capitalize(newItem["Designation"])
             : "",
           start_date: startDate,
-          email: newItem["Email id"],
           end_date: endDate,
-          createdby: createdby,
+          email: newItem["Email id"],
+          createdby: Number(userId),
           updatedby: currentUser,
           new_entry: newItem["New Entry"],
         });
@@ -726,7 +686,377 @@ const instituteCheck = instituteOptions.find(
       props.uploadExcel(excelData, "tot");
     }
   };
+  // const [notUploadedData_newfile, setnotUploadedData_newfile] = useState(false);
+  // const [fileName_new, setFileName_new] = useState("")
 
+
+  // ... your existing code
+
+  // Add this function to reset the new file input
+  const resetNewFileInput = () => {
+    if (fileInputRefNew.current) {
+      fileInputRefNew.current.value = "";
+    }
+    setValidationResult({
+      isValid: false,
+      message: "",
+      headers: [],
+      fileName: ""
+    });
+    setFileForUpload(null);
+    setIsUploading(false);
+    setUploadProgress(0);
+    setUploadStatus("");
+    setUploadResult(null);
+    setFileNameError("");
+  };
+
+  // Function to validate file name
+  const validateFileName = (fileName) => {
+    if (fileName !== expectedFileName) {
+      setFileNameError(`File name must be "${expectedFileName}"`);
+      return false;
+    }
+    setFileNameError("");
+    return true;
+  };
+
+  const handleFileChangeNewFile = (event) => {
+    //
+    const fileInput = event.target;
+    const file = fileInput.files[0];
+
+    // Clear previous results when selecting new file
+    setUploadResult(null);
+    setUploadStatus('');
+    setValidationResult(prev => ({ ...prev, message: '' }));
+    setFileNameError('');
+
+    if (!file) {
+      setValidationResult({
+        isValid: false,
+        message: "Please select a valid .xlsx file",
+        headers: [],
+        fileName: "",
+        hasDataRows: false
+      });
+      setFileForUpload(null);
+      setFileNameError("");
+      return;
+    }
+
+    // Validate file name first
+    const isFileNameValid = validateFileName(file.name);
+    if (!isFileNameValid) {
+      setValidationResult({
+        isValid: false,
+        message: "Invalid file name",
+        headers: [],
+        fileName: file.name,
+        hasDataRows: false
+      });
+      setFileForUpload(null);
+      return;
+    }
+
+    // Show loader
+    setIsUploading(true);
+    setUploadStatus("Verifying file...");
+    setUploadProgress(0);
+
+    const reader = new FileReader();
+
+    reader.onload = (e) => {
+      const fileData = e.target.result;
+      try {
+        // Simulate progress for better UX
+        setUploadProgress(30);
+
+        const workbook = XLSX.read(fileData, { type: "binary" });
+        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+
+        setUploadProgress(60);
+
+        // Only read first 101 rows (header + 100 data rows max)
+        const results = XLSX.utils.sheet_to_json(worksheet, {
+          header: 1,
+          range: 0, // Start from row 0
+          blankrows: false // Skip completely blank rows
+        });
+
+        const headers = results[0];
+
+        setUploadProgress(80);
+
+        // Check only first 100 rows for data (rows 1-100)
+        let hasDataRows = false;
+        for (let i = 1; i < Math.min(results.length, 101); i++) {
+          const row = results[i];
+          // Check if this row has any non-empty cells
+          if (row && row.some(cell =>
+            cell !== null &&
+            cell !== undefined &&
+            cell !== "" &&
+            String(cell).trim() !== ""
+          )) {
+            hasDataRows = true;
+            break; // Exit early as soon as we find data
+          }
+        }
+
+        // Reset file input to allow re-uploading the same file
+        if (fileInputRefNew.current) {
+          fileInputRefNew.current.value = "";
+        }
+
+        setUploadProgress(90);
+
+        // Check if file has data rows (should only have headers)
+        if (hasDataRows) {
+          const message = "Please upload the template with headers only.";
+          setValidationResult({
+            isValid: false,
+            message,
+            headers: [],
+            fileName: file.name,
+            hasDataRows: true
+          });
+          setFileForUpload(null);
+          setIsUploading(false);
+          setUploadProgress(0);
+          return;
+        }
+
+        // Your existing validation logic for headers
+        if (!headers || headers.length === 0) {
+          const message = "File does not contain headers.";
+          setValidationResult({
+            isValid: false,
+            message,
+            headers: [],
+            fileName: file.name,
+            hasDataRows: false
+          });
+          setFileForUpload(null);
+          setIsUploading(false);
+          setUploadProgress(0);
+          return;
+        }
+
+        // if (headers.length !== expectedColumns.length) {
+        //   const message = `Column count mismatch. Expected ${expectedColumns.length} columns.`;
+        //   setValidationResult({ 
+        //     isValid: false, 
+        //     message, 
+        //     headers: [], 
+        //     fileName: file.name,
+        //     hasDataRows: false
+        //   });
+        //   setFileForUpload(null);
+        //   setIsUploading(false);
+        //   setUploadProgress(0);
+        //   return;
+        // }
+
+        // Check if all expected columns are present in headers (order doesn't matter)
+        const missingColumns = expectedColumns.filter(col => !headers.includes(col));
+        if (missingColumns.length > 0) {
+          const message = `Missing columns: ${missingColumns.join(', ')}`;
+          setValidationResult({
+            isValid: false,
+            message,
+            headers: [],
+            fileName: file.name,
+            hasDataRows: false
+          });
+          setFileForUpload(null);
+          setIsUploading(false);
+          setUploadProgress(0);
+          return;
+        }
+
+        // Check for extra columns
+        const extraColumns = headers.filter(header => !expectedColumns.includes(header));
+        if (extraColumns.length > 0) {
+          const message = `Extra columns found: ${extraColumns.join(', ')}`;
+          setValidationResult({
+            isValid: false,
+            message,
+            headers: [],
+            fileName: file.name,
+            hasDataRows: false
+          });
+          setFileForUpload(null);
+          setIsUploading(false);
+          setUploadProgress(0);
+          return;
+        }
+
+        setUploadProgress(100);
+
+        // If we reach here, the file is valid
+        setValidationResult({
+          isValid: true,
+          message: "", // Empty message for valid files
+          headers,
+          fileName: file.name,
+          hasDataRows: false
+        });
+        setFileForUpload(file); // Store the file for upload
+
+        // Hide loader after a brief delay to show completion
+        setTimeout(() => {
+          setIsUploading(false);
+          setUploadProgress(0);
+        }, 500);
+
+      } catch (error) {
+        // Reset file input on error too
+        if (fileInputRefNew.current) {
+          fileInputRefNew.current.value = "";
+        }
+        setValidationResult({
+          isValid: false,
+          message: "Error processing file",
+          headers: [],
+          fileName: file.name,
+          hasDataRows: false
+        });
+        setFileForUpload(null);
+        setIsUploading(false);
+        setUploadProgress(0);
+      }
+    };
+
+    reader.onerror = () => {
+      // Reset file input on error
+      if (fileInputRefNew.current) {
+        fileInputRefNew.current.value = "";
+      }
+      setValidationResult({
+        isValid: false,
+        message: "Error reading file",
+        headers: [],
+        fileName: file.name,
+        hasDataRows: false
+      });
+      setFileForUpload(null);
+      setIsUploading(false);
+      setUploadProgress(0);
+    };
+
+    reader.readAsBinaryString(file);
+  };
+
+  // Function to upload file using your existing GraphQL mutation
+  // Function to upload file using your existing GraphQL mutation
+  const uploadFileToServer = async () => {
+    if (!fileForUpload) return;
+
+    // Clear previous results before starting new upload
+    setUploadResult(null);
+    setUploadStatus('');
+    setValidationResult(prev => ({ ...prev, message: '' }));
+
+    setIsUploading(true);
+    setUploadStatus('Uploading file...');
+    setUploadProgress(0);
+    setUploadResult(null);
+
+    try {
+      // Simulate progress
+      const progressInterval = setInterval(() => {
+        setUploadProgress(prev => {
+          if (prev >= 90) {
+            clearInterval(progressInterval);
+            return prev;
+          }
+          return prev + 10;
+        });
+      }, 300);
+
+      // Use your existing uploadFile function
+      const result = await uploadFile(fileForUpload);
+
+      clearInterval(progressInterval);
+      setUploadProgress(100);
+
+      // Based on your example response: { data: { data: { upload: { id: "28316", url: "https://..." } } }
+      if (result.data && result.data.data && result.data.data.upload) {
+        const uploadData = result.data.data.upload;
+
+        if (uploadData.id && uploadData.url) {
+          setUploadStatus('File successfully uploaded!');
+          setUploadResult(uploadData);
+
+          // console.log("Uploaded file ID:", uploadData.id);
+          // console.log("Uploaded file URL:", uploadData.url);
+
+          // Store the file info in your database or state as needed
+          props.updateToturl(uploadData.url)
+          UpdatePicklist(56, [uploadData.url])
+          storeFileInfoInDatabase(uploadData);
+          // resetNewFileInput();
+        } else {
+          throw new Error('Upload failed: Missing id or url in response');
+        }
+      } else {
+        console.error("Unexpected response structure:", result);
+        throw new Error('Upload failed: Unexpected response structure from server');
+      }
+
+    } catch (error) {
+      console.error('Upload error:', error);
+      setUploadStatus(`Upload failed: ${error.message}`);
+      setUploadProgress(0);
+    } finally {
+      setIsUploading(false);
+    }
+  };
+
+  // Function to store file info in your database
+  const storeFileInfoInDatabase = async (fileInfo) => {
+    try {
+      // Here you would make another API call to store the file information
+      // in your database along with any metadata you need
+
+      // Example: You might want to associate this file with the current user,
+      // add timestamps, or link it to specific data
+      // await yourApiCallToStoreFileInfo(fileInfo);
+
+    } catch (error) {
+      console.error('Database storage error:', error);
+    }
+  };
+
+  const isUploadButtonEnabled = validationResult.isValid &&
+    !fileNameError &&
+    fileForUpload &&
+    !isUploading;
+
+  const cancelNewfileupload = () => {
+    // Reset all state values related to file upload
+    setValidationResult({
+      isValid: false,
+      message: "",
+      headers: [],
+      fileName: ""
+    });
+    setFileForUpload(null);
+    setIsUploading(false);
+    setUploadProgress(0);
+    setUploadStatus("");
+    setUploadResult(null);
+    setFileNameError("");
+
+    // Clear the file input
+    if (fileInputRefNew.current) {
+      fileInputRefNew.current.value = "";
+    }
+
+    // Switch back to new data entry mode
+    setUploadType('newData');
+  }
   return (
     <>
       <Modal
@@ -745,8 +1075,24 @@ const instituteCheck = instituteOptions.find(
           >
             <h1 className="text--primary bebas-thick mb-0">Upload Data TOT</h1>
           </Modal.Title>
-        </Modal.Header>
-        <Styled>
+        </Modal.Header> <div className="mb-4  col-3" style={{ marginLeft: '2rem' }}>
+          <label htmlFor="uploadType" className="text--primary bebas">
+            Select Upload Type
+          </label>
+          <Select
+            id="uploadType"
+            className="basic-single"
+            classNamePrefix="select"
+            value={filteypeoptions?.find((option) => option.value === uploadType) || null}
+            onChange={(selectedOption) => {
+              setUploadType(selectedOption?.value || '');
+            }}
+            options={filteypeoptions || []}
+            placeholder="Choose upload type..."
+          />
+        </div>
+
+        {uploadType == "newData" && <Styled>
           {showForm ? (
             <Modal.Body className="bg-white">
               {showSpinner ? (
@@ -890,7 +1236,139 @@ const instituteCheck = instituteOptions.find(
               </div>
             </Modal.Body>
           )}
-        </Styled>
+        </Styled>}
+
+        {uploadType !== "newData" && (
+          <Styled>
+            <Modal.Body className="bg-white">
+              <div className="uploader-container">
+                <div className="imageUploader">
+                  <p className="upload-helper-text">Click Here To Upload</p>
+                  <div className="upload-helper-icon">
+                    <FaFileUpload size={30} color={"#257b69"} />
+                  </div>
+                  <input
+                    ref={fileInputRefNew}
+                    accept=".xlsx"
+                    type="file"
+                    multiple={false}
+                    name="file-uploader"
+                    onChange={handleFileChangeNewFile}
+                    className="uploaderInput"
+                    disabled={isUploading} // Disable during verification
+                  />
+                </div>
+                <label className="text--primary latto-bold text-center">
+                  Upload File
+                </label>
+              </div>
+
+              {/* Show single loader for entire process */}
+              {isUploading && (
+                <div className="mt-3">
+                  <div className="d-flex justify-content-center align-items-center">
+                    <Spinner animation="border" variant="success" size="sm" className="me-2" />
+                    <span>
+                      {uploadStatus === "Verifying file..." ? "Validating file..." :
+                        uploadStatus === "Uploading file..." ? "Uploading file..." :
+                          uploadStatus === "Validation complete. Ready to upload." ? "Ready to upload" :
+                            uploadStatus}
+                      {uploadProgress > 0 ? ` ${uploadProgress}%` : ''}
+                    </span>
+                  </div>
+                  {uploadProgress > 0 && (
+                    <div className="progress mt-2">
+                      <div
+                        className="progress-bar progress-bar-striped progress-bar-animated"
+                        role="progressbar"
+                        style={{ width: `${uploadProgress}%` }}
+                        aria-valuenow={uploadProgress}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                      >
+                        {uploadProgress}%
+                      </div>
+                    </div>
+                  )}
+                </div>
+              )}
+
+              <div className="d-flex justify-content-center gap-2 mt-3">
+                <Button
+                  variant="btn btn-danger "
+                  onClick={() => cancelNewfileupload()}
+                  disabled={isUploading} // Disable during verification
+                >
+                  Cancel
+                </Button>
+
+                <Button
+                  variant="success"
+                  onClick={uploadFileToServer}
+                  disabled={!isUploadButtonEnabled || isUploading} // Disable during verification
+                >
+                  Upload File
+                </Button>
+              </div>
+
+
+              {validationResult.fileName && (
+                <div className="mt-3 ">
+                  <h6 className="text--primary text-center">File: {validationResult.fileName}</h6>
+
+                  {/* Show file name error if exists */}
+                  {/* Combined error display */}
+                  {(fileNameError || validationResult.message) && (
+                    <div className={`alert ${fileNameError ? 'alert-danger' : validationResult.isValid ? 'alert-success' : 'alert-danger'}`}>
+                      <i className={`fas ${fileNameError || !validationResult.isValid ? 'fa-exclamation-triangle' : 'fa-check-circle'} me-2`}></i>
+                      {fileNameError || validationResult.message}
+                    </div>
+                  )}
+
+                  {/* Show upload button only when file is valid AND name is correct */}
+
+                  {validationResult.isValid && !isUploading && !uploadResult && (
+                    <div className="text-center mt-3">
+
+                      {!isUploadButtonEnabled && !fileNameError && (
+                        <p className="text-muted small mt-2">
+                          Please fix all validation issues before uploading
+                        </p>
+                      )}
+                    </div>
+                  )}
+
+                  {/* Show success message after upload */}
+                  {uploadResult && (
+                    <div className="alert alert-success mt-3">
+                      <i className="fas fa-check-circle"></i>
+                      File successfully uploaded!
+
+                    </div>
+                  )}
+
+                  {/* Show error message if upload failed */}
+                  {uploadStatus.includes('failed') && (
+                    <div className="alert alert-danger mt-3">
+                      <i className="fas fa-exclamation-triangle me-2"></i>
+                      {uploadStatus}
+                    </div>
+                  )}
+
+                  <button
+                    className="btn btn-secondary mt-2"
+                    onClick={resetNewFileInput}
+                    disabled={isUploading}
+                  >
+                    <i className="fas fa-redo"></i> Upload Different File
+                  </button>
+                </div>
+              )}
+            </Modal.Body>
+          </Styled>
+        )}
+
+
       </Modal>
 
       <CheckTot
