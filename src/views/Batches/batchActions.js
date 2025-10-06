@@ -360,7 +360,7 @@ export const searchStudents = async(searchValue)=>{
 /* Send Emails on Creation and Updation */
 
 export const sendEmailOnCreateBatch = async (batchInfo) => {
-  let url = `batch/sendEmailONCreationAndUpdate`;
+  let url = `batches/sendEmailOnCreationAndCompletion`;
   return await api.post(url, {
     data:batchInfo
   }).then(data => {

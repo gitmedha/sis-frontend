@@ -10,8 +10,7 @@ import { useHistory } from "react-router-dom";
 import {
   createBatch,
   getBatchesPickList,
-  getStudentCountByBatch,
-  sendEmailOnCreateBatch,
+  getStudentCountByBatch
 } from "./batchActions";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
