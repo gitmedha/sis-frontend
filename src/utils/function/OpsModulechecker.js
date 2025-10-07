@@ -37,9 +37,11 @@ export const checkEmptyValuesandplaceNA = (obj) => {
       
       const value = obj[key];
       const isEmpty = isEmptyValue(value);
-      if (isEmpty) {
+
+      if (isEmpty  &&  key !='trainer_2' ) {
         result[key] = "N/A";
-      } else {
+      } 
+      else {
         result[key] = value;
       }
     }

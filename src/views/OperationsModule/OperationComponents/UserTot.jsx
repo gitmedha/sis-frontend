@@ -1,5 +1,5 @@
 import React from "react";
-import { Modal} from "react-bootstrap";
+import { Modal } from "react-bootstrap";
 import { useState, useEffect } from "react";
 import { setAlert } from "../../../store/reducers/Notifications/actions";
 import { FaPlusCircle, FaMinusCircle } from "react-icons/fa";
@@ -8,7 +8,7 @@ import {
   getStateDistricts,
 } from "../../Address/addressActions";
 import { connect } from "react-redux";
-import { searchInstitutions,searchBatches} from "./operationsActions";
+import { searchInstitutions, searchBatches } from "./operationsActions";
 import UserTotRowdata from "./UserTotRowdata";
 import { checkEmptyValuesandplaceNA } from "../../../utils/function/OpsModulechecker";
 
@@ -16,7 +16,7 @@ const UserTot = (props) => {
   let { onHide, show } = props;
   const { setAlert } = props;
   let iconStyles = { color: "#257b69", fontSize: "1.5em" };
-  const [classValue,setclassValue]=useState({})
+  const [classValue, setclassValue] = useState({})
   const [data, setData] = useState([
     {
       id: 1,
@@ -35,11 +35,11 @@ const UserTot = (props) => {
       gender: "",
       contact: "",
       designation: "",
-      start_date:"",
-      end_date:"",
-      email:"",
-      institution: "",
-      new_entry:""
+      start_date: "",
+      end_date: "",
+      email: "",
+      college: "",
+      new_entry: ""
     },
   ]);
   const [rows, setRows] = useState([
@@ -60,10 +60,10 @@ const UserTot = (props) => {
       gender: "",
       contact: "",
       designation: "",
-      start_date:"",
-      end_date:"",
-      email:"",
-      new_entry:""
+      start_date: "",
+      end_date: "",
+      email: "",
+      new_entry: ""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -83,17 +83,17 @@ const UserTot = (props) => {
     gender: "",
     contact: "",
     designation: "",
-    start_date:"",
-    end_date:"",
-    email:"",
-    new_entry:""
+    start_date: "",
+    end_date: "",
+    email: "",
+    new_entry: ""
   });
-  
+
   const [showLimit, setshowLimit] = useState(false);
-  
+
   function checkEmptyValues(obj) {
     const result = {};
-  
+
     for (const key in obj) {
       if (Object.hasOwnProperty.call(obj, key)) {
         const value = obj[key];
@@ -101,50 +101,50 @@ const UserTot = (props) => {
         result[key] = isEmpty;
       }
     }
-  
+
     return result;
   }
-  
+
   function isEmptyValue(value) {
     if (value === null || value === undefined) {
       return true;
     }
-  
+
     if (typeof value === 'string' && value.trim() === '') {
       return true;
     }
-  
+
     if (Array.isArray(value) && value.length === 0) {
       return true;
     }
-  
+
     if (typeof value === 'object' && Object.keys(value).length === 0) {
       return true;
     }
-  
+
     return false;
   }
 
   // Function to check if mandatory fields are filled for cloning
   const areMandatoryFieldsFilled = (row) => {
     const mandatoryFields = [
-      'user_name', 'state', 'city', 'project_name', 
-      'start_date', 'end_date', 'trainer_1', 
+      'user_name', 'state', 'city', 'project_name',
+      'start_date', 'end_date', 'trainer_1',
       'certificate_given', 'project_type'
     ];
-    
+
     const emptyValues = checkEmptyValues(row);
-    
+
     return mandatoryFields.every(field => !emptyValues[field]);
   };
 
   const addRow = () => {
-    let value = checkEmptyValues(rows[rows.length-1])
-    if(value.student_name || value.gender){
-      let obj={...classValue,[`class${[rows.length-1]}`]:value}
+    let value = checkEmptyValues(rows[rows.length - 1])
+    if (value.student_name || value.gender) {
+      let obj = { ...classValue, [`class${[rows.length - 1]}`]: value }
       return setclassValue(obj)
     }
-   
+
     if (rows.length >= 10) {
       setAlert("You can't Add more than 10 items.", "error");
     } else {
@@ -170,7 +170,7 @@ const UserTot = (props) => {
     }
     updateRow(rowid, key, options?.value);
   };
-  
+
   const updateRow = (id, field, value) => {
     const updatedRows = rows.map((row) => {
       if (row.id === id) {
@@ -256,36 +256,47 @@ const UserTot = (props) => {
     );
   };
 
+  // useEffect(() => {
+  //   let isEmptyValuFound=false
+
+  //   for (let row of rows) {
+  //     for(let key in row){
+  //       if(!(key =='age') && !(key == 'gender') && !(key == 'contact') && !(key == 'id') && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2') ){
+  //         if(isEmptyValue(row[key])){
+  //           isEmptyValuFound=true
+  //         }
+  //       }
+  //     }
+  //   }
+  //   setDisableSaveButton(isEmptyValuFound)
+  // }, [rows]);
+
   useEffect(() => {
-    let isEmptyValuFound=false
-    
-    for (let row of rows) {
-      for(let key in row){
-        if(!(key =='age') && !(key == 'gender') && !(key == 'contact') && !(key == 'id') && !(key=='designation') && !(key =='college') && !(key =='partner_dept') &&  !(key=='module_name') && !(key == 'trainer_2') ){
-          if(isEmptyValue(row[key])){
-            isEmptyValuFound=true
-          }
-        }
-      }
-    }
-    setDisableSaveButton(isEmptyValuFound)
+    const requiredFields = ['user_name', 'trainer_1', 'project_name', 'certificate_given', 'project_type', 'city', 'state', 'start_date', 'end_date', 'email','college'];
+
+    const hasEmptyRequiredFields = rows.some(row =>
+      requiredFields.some(field => isEmptyValue(row[field]))
+    );
+
+    setDisableSaveButton(hasEmptyRequiredFields);
   }, [rows]);
+
 
   const onSubmit = async () => {
     let data = rows.map((row) => {
       delete row["id"];
       delete row["name"];
-      row.trainer_1 = Number(row.trainer_1 );
-      row.trainer_2 = Number(row.trainer_2);
-      row.isActive = true;
+      row.trainer_1 = Number(row.trainer_1);
+      row.trainer_2 = row.trainer_2 ? Number(row.trainer_2) : null; // FIX: Use null instead of ""
+      row.isactive = true;
       row.createdby = Number(userId);
       row.updatedby = Number(userId);
-      let value = checkEmptyValuesandplaceNA(row)
+      let value = checkEmptyValuesandplaceNA(row);
       return value;
     });
 
     try {
-      onHide('tot',data)
+      onHide('tot', data);
       setRows([
         {
           id: 1,
@@ -304,10 +315,10 @@ const UserTot = (props) => {
           gender: "",
           contact: "",
           designation: "",
-          start_date:"",
-          end_date:"",
-          email:" ",
-          institution: ""
+          start_date: "",
+          end_date: "",
+          email: " ",
+          college: ""
         },
       ]);
     } catch (error) {
@@ -345,7 +356,7 @@ const UserTot = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      const {data} = await searchInstitutions(filterValue);
+      const { data } = await searchInstitutions(filterValue);
 
       let filterData = data.institutionsConnection.values.map((institution) => {
         return {
@@ -364,7 +375,7 @@ const UserTot = (props) => {
 
   const filterBatch = async (filterValue) => {
     try {
-      const {data} = await searchBatches(filterValue);
+      const { data } = await searchBatches(filterValue);
 
       let filterData = data.batchesConnection.values.map((batch) => {
         return {
@@ -396,7 +407,7 @@ const UserTot = (props) => {
 
     // Get the last row
     const lastRow = rows[rows.length - 1];
-    
+
     // Check if mandatory fields are filled using existing checkEmptyValues function
     if (!areMandatoryFieldsFilled(lastRow)) {
       setAlert("Please fill all mandatory fields in the previous row before cloning.", "error");
@@ -472,28 +483,28 @@ const UserTot = (props) => {
                 />
               </button>
             )}
-           
+
           </div>
           <div className="table-container">
             <table className="create_data_table">
               <thead>
                 <tr>
                   <th>Participant Name *</th>
-                  <th>Email id</th>
-                  <th>Age </th>
-                  <th>Gender </th>
-                  <th>Mobile no.  </th>
+                  <th>Email id *</th>
+                  <th>Age</th>
+                  <th>Gender</th>
+                  <th>Mobile no.</th>
                   <th>State *</th>
                   <th>District where training took place *</th>
-                  <th>Designation </th>
-                  <th>College Name</th>
+                  <th>Designation</th>
+                  <th>College Name *</th>
                   <th>Project Name *</th>
                   <th>Partner Department</th>
                   <th>Module Name</th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
                   <th>Facilitator 1 *</th>
-                  <th>Facilitator 2 </th>
+                  <th>Facilitator 2</th>
                   <th>Certificate Given *</th>
                   <th>Project Type *</th>
                 </tr>
@@ -518,8 +529,8 @@ const UserTot = (props) => {
                 ))}
               </tbody>
             </table>
-            <div className="d-flex justify-content-end" style={{position:'relative', left:'140vw', marginTop:'15px'}}>
-              <button 
+            <div className="d-flex justify-content-end" style={{ position: 'relative', left: '140vw', marginTop: '15px' }}>
+              <button
                 onClick={CloneTheValues}
                 disabled={isCloneDisabled}
                 className={`clone-btn ${isCloneDisabled ? "btn-disabled" : ""}`}
