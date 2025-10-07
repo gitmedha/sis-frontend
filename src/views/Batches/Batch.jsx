@@ -521,48 +521,48 @@ const Batch = (props) => {
                       <FaCheckCircle
                         size="20"
                         color={
-                          batch?.status === "Certified" ? "#207B69" : "#E0E0E8"
+                          batch?.status === "Certified" || batch?.status === 'Complete – Not to be Certified' ? "#207B69" : "#E0E0E8"
                         }
                         className="mr-2"
                       />
                       <span>&nbsp;&nbsp;Mark as Certified</span>
                     </Dropdown.Item>
                     <Dropdown.Item
-                      onClick={() => generateCertificates()}
-                      disabled={batch?.status !== "Certified"}
-                    >
-                      <FaCheckCircle
-                        size="20"
-                        color={
-                          batch?.status === "Certified" &&
-                          batch?.certificates_generated_at
-                            ? "#207B69"
-                            : "#E0E0E8"
-                        }
-                        className="mr-2"
-                      />
-                      <span>&nbsp;&nbsp;Generate Certificates</span>
-                    </Dropdown.Item>
-                    <Dropdown.Item
-                      onClick={() => emailCertificates()}
-                      disabled={
-                        batch?.status !== "Certified" ||
-                        batch?.certificates_generated_at === null
-                      }
-                    >
-                      <FaCheckCircle
-                        size="20"
-                        color={
-                          batch?.status === "Certified" &&
-                          batch?.certificates_emailed_at >
+                        onClick={() => generateCertificates()}
+                        disabled={batch?.status !== "Certified" && batch?.status !== "Complete – Not to be Certified"}
+                      >
+                        <FaCheckCircle
+                          size="20"
+                          color={
+                            (batch?.status === "Certified" || batch?.status === "Complete – Not to be Certified") &&
                             batch?.certificates_generated_at
-                            ? "#207B69"
-                            : "#E0E0E8"
+                              ? "#207B69"
+                              : "#E0E0E8"
+                          }
+                          className="mr-2"
+                        />
+                        <span>&nbsp;&nbsp;Generate Certificates</span>
+                      </Dropdown.Item>
+                      <Dropdown.Item
+                        onClick={() => emailCertificates()}
+                        disabled={
+                          (batch?.status !== "Certified" && batch?.status !== "Complete – Not to be Certified") || 
+                          batch?.certificates_generated_at === null
                         }
-                        className="mr-2"
-                      />
-                      <span>&nbsp;&nbsp;Email Certificates</span>
-                    </Dropdown.Item>
+                      >
+                        <FaCheckCircle
+                          size="20"
+                          color={
+                            (batch?.status === "Certified" || batch?.status === "Complete – Not to be Certified") &&
+                            batch?.certificates_emailed_at >
+                              batch?.certificates_generated_at
+                              ? "#207B69"
+                              : "#E0E0E8"
+                          }
+                          className="mr-2"
+                        />
+                        <span>&nbsp;&nbsp;Email Certificates</span>
+                      </Dropdown.Item>
                   </Dropdown.Menu>
                 </Dropdown>
               )}
