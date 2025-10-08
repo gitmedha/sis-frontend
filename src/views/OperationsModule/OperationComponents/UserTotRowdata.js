@@ -23,47 +23,8 @@ const certificateoptions = [
 ];
 
 const UserTotRowdata = (props) => {
-  const [selectedState, setSelectedState] = useState(null);
-  const [selectedProjectName, setSelectedProjectName] = useState(null);
-
-  const stateWiseProjects = {
-    "Uttarakhand": [
-      { value: "Dakshata", label: "Dakshata", department: "Directorate of Training and Employment" }
-    ],
-    "Haryana": [
-      { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
-      { value: "Dual System of Training", label: "Dual System of Training", department: "Department of Skill Development and Industrial Training" },
-      { value: "Samarth", label: "Samarth", department: "Department of Higher Education" }
-    ],
-    "Uttar Pradesh": [
-      { value: "ISTEUP", label: "ISTEUP", department: "Department of Technical Education" },
-      { value: "Svapoorna", label: "Svapoorna", department: "Department of Secondary Education" },
-      { value: "ITI transformation", label: "ITI transformation", department: "Department of Vocational Education, Skill Development and Entrepreneurship (DVESDE, UP)" }
-    ],
-    "Bihar": [
-      { value: "Swayam", label: "Swayam", department: "Department of Labor and Resource" }
-    ]
-  };
-
-  const getProjectOptions = (state) => {
-    return stateWiseProjects[state].map((proj) => ({
-      value: proj.value,
-      label: proj.label,
-    }));
-  };
-
-  const getDepartmentOptions = (state, selectedProjectName) => {
-    return stateWiseProjects[state]
-      .filter(proj => proj.value === selectedProjectName?.value)
-      .map((proj) => ({
-        value: proj.department,
-        label: proj.department,
-      }));
-  };
-
-  const [row, setRowData] = useState(props.row);
-  const [startDate, setStartDate] = useState('');
-  const [endDate, setEndDate] = useState(new Date());
+  const { row, handleChange, updateRow, classValue, statedata } = props;
+  
   const [areaOptions, setAreaOptions] = useState([]);
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [srmOption, setsrmOption] = useState([]);
@@ -71,13 +32,25 @@ const UserTotRowdata = (props) => {
   const [moduleName, setModuleName] = useState([]);
   const [partnerDept, setPartnerDept] = useState([]);
   const [projectName, setProjectName] = useState([]);
-  const userName = useRef(null);
-  const designation = useRef(null);
-  const college = useRef(null);
+  const [stateDisabled, setStateDisabled] = useState(true);
+  
+  // Refs for input fields
+  const userNameRef = useRef(null);
+  const designationRef = useRef(null);
+  const collegeRef = useRef(null);
+  const emailRef = useRef(null);
+  const ageRef = useRef(null);
+  const contactRef = useRef(null);
 
-  const [state, setstate] = useState(true);
-  const [filteredColleges, setFilteredColleges] = useState([]);
-  const [collegeName, setCollegeName] = useState("");
+  // Initialize input fields with row data
+  useEffect(() => {
+    if (userNameRef.current) userNameRef.current.value = row.user_name || '';
+    if (designationRef.current) designationRef.current.value = row.designation || '';
+    if (collegeRef.current) collegeRef.current.value = row.college || '';
+    if (emailRef.current) emailRef.current.value = row.email || '';
+    if (ageRef.current) ageRef.current.value = row.age || '';
+    if (contactRef.current) contactRef.current.value = row.contact || '';
+  }, [row]);
 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -92,8 +65,8 @@ const UserTotRowdata = (props) => {
           .sort((a, b) => a.label.localeCompare(b.label))
       );
     });
-    props.handleChange(value, "state", row.id);
-    setstate(false);
+    handleChange(value, "state", row.id);
+    setStateDisabled(false);
   };
 
   useEffect(() => {
@@ -126,7 +99,7 @@ const UserTotRowdata = (props) => {
         }))
       );
     });
-  }, [props]);
+  }, []);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -154,20 +127,15 @@ const UserTotRowdata = (props) => {
           label: item,
         }))
       );
-    })
+    });
   }, []);
 
-  const updateRow = (id, field, value) => {
-    row[field] = value;
-    
-  };
-  const handleInputChange = (id,data,value) => {
-    const input = value.current;
+  const handleInputChange = (id, field, ref) => {
+    const input = ref.current;
     if (input) {
-      input.value = capitalizeFirstLetter(input.value);;
-      props.updateRow(id,data,input.value)
+      input.value = capitalizeFirstLetter(input.value);
+      updateRow(id, field, input.value);
     }
-   
   };
 
   const capitalizeFirstLetter = (text) => {
@@ -183,306 +151,210 @@ const UserTotRowdata = (props) => {
       .join(' ');
   };
 
-  const handleProjectChange = async (selectedOption, rowId) => {
-    props.handleChange(selectedOption, "project_name", rowId);
-    setSelectedProjectName(selectedOption);
-    
-    if (selectedOption && selectedOption.value && selectedState) {
-      try {
-        // Fetch colleges filtered by both state and project name
-        const colleges = await getCollegesByProjectName(selectedOption.value, selectedState);
-        setFilteredColleges(colleges);
-      } catch (error) {
-        console.error("Error fetching colleges:", error);
-        setFilteredColleges([]);
-      }
-    } else {
-      setFilteredColleges([]);
-      props.updateRow(rowId, "college", "");
-    }
-  };
-
-  const handleStateChange = (e, rowId) => {
-    if(['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(e.value)) {
-      setSelectedState(e.value);
-      // Reset project and college when state changes
-      setSelectedProjectName(null);
-      setFilteredColleges([]);
-      props.updateRow(rowId, "project_name", "");
-      props.updateRow(rowId, "college", "");
-      onStateChange(e, rowId, "state");
-    } else {
-      setSelectedState(null);
-      setSelectedProjectName(null);
-      setFilteredColleges([]);
-      onStateChange(e, rowId, "state");
-    }
+  // Helper function to get selected value for Select components
+  const getSelectedValue = (options, value) => {
+    if (!value) return null;
+    return options.find(option => option.value === value) || null;
   };
 
   return (
-    <>
-      <tr key={row.id}>
-        <td>
-          <input
-            className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.user_name
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            type="text"
-            onKeyPress={handleKeyPresscharandspecialchar}
-            ref={userName}
-            onChange={(e) => handleInputChange(row.id, "user_name", userName)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onChange={(e) => props.updateRow(row.id, "email", e.target.value)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input h-2"
-            type="number"
-            onChange={(e) => props.updateRow(row.id, "age", e.target.value)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.gender
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="gender"
-            options={genderOptions}
-            onChange={(e) => props.handleChange(e, "gender", row.id)}
-          />
-        </td>
-        <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={mobileNochecker}
-            onChange={(e) => props.updateRow(row.id, "contact", e.target.value)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.state
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="state"
-            options={props.statedata}
-            onChange={(e) => handleStateChange(e, row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input  ${
-              props.classValue[`class${row.id - 1}`]?.area
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="area"
-            options={areaOptions}
-            isDisabled={state}
-            onChange={(e) => props.handleChange(e, "city", row.id)}
-          />
-        </td>
-         <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            onKeyPress={handleKeyPress}
-            ref={designation}
-            onChange={(e) => handleInputChange(row.id, "designation",designation)}
-          />
-        </td>
-        <td>
-          <Select
-            className="table-input h-2"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="college"
-            options={filteredColleges}
-            value={filteredColleges.find(option => option.value === collegeName) || null}
-            onChange={(e) => {
-              props.handleChange(e, "college", row.id)
-              setCollegeName(e.value);
-            }}
-            isDisabled={!selectedProjectName}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.project_name
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="project_name"
-            options={
-              ['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState)
-                ? getProjectOptions(selectedState)
-                : projectName
-            }
-            onChange={(e) => handleProjectChange(e, row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.partner_dept
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="partner_dept"
-            options={
-              ['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState)
-                ? getDepartmentOptions(selectedState, selectedProjectName)
-                : partnerDept
-            }
-            onChange={(e) => props.handleChange(e, "partner_dept", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.module_name
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="module_name"
-            options={moduleName}
-            onChange={(e) => props.handleChange(e, "module_name", row.id)}
-          />
-        </td>
-        <td>
-          <input
-            type="date"
-            className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.start_date
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            defaultValue={startDate}
-            onChange={(e) => {
-              setStartDate(e.target.value);
-              props.updateRow(row.id, "start_date", e.target.value);
-            }}
-          />
-        </td>
-        <td>
-          <input
-            type="date"
-            className={`table-input h-2 ${
-              props.classValue[`class${row.id - 1}`]?.end_date
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            min={startDate}
-            value={endDate}
-            disabled={!startDate ? true : false}
-            onChange={(event) => {
-              const date = event.target.value;
-              setEndDate(date);
-              props.updateRow(row.id, "end_date", date);
-            }}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.trainer_1
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="trainer_1"
-            options={srmOption}
-            onChange={(e) => props.handleChange(e, "trainer_1", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className="table-input h-2"
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="trainer_2"
-            options={srmOption}
-            onChange={(e) => props.handleChange(e, "trainer_2", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.certificate_given
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="certificate_given"
-            options={certificateoptions}
-            onChange={(e) => props.handleChange(e, "certificate_given", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input ${
-              props.classValue[`class${row.id - 1}`]?.project_type
-                ? `border-red`
-                : "table-input h-2"
-            }`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="project_type"
-            options={projecttypeoptions}
-            onChange={(e) => props.handleChange(e, "project_type", row.id)}
-          />
-        </td>
-        <td>
-          <Select
-            className={`table-input h-2`}
-            classNamePrefix="select"
-            isClearable={true}
-            isSearchable={true}
-            name="New Entry"
-            options={certificateoptions}
-            onChange={(e) => props.handleChange(e, "new_entry", row.id)}
-          />
-        </td>
-      </tr>
-    </>
+    <tr key={row.id}>
+      <td>
+        <input
+          className={`table-input h-2 ${classValue[`class${row.id - 1}`]?.user_name ? `border-red` : ""}`}
+          type="text"
+          onKeyPress={handleKeyPresscharandspecialchar}
+          ref={userNameRef}
+          onChange={(e) => handleInputChange(row.id, "user_name", userNameRef)}
+        />
+      </td>
+      <td>
+        <input
+          className="table-input h-2"
+          type="text"
+          ref={emailRef}
+          onChange={(e) => updateRow(row.id, "email", e.target.value)}
+        />
+      </td>
+      <td>
+        <input
+          className="table-input h-2"
+          type="number"
+          ref={ageRef}
+          onChange={(e) => updateRow(row.id, "age", e.target.value)}
+        />
+      </td>
+      <td>
+        <Select
+          className={`table-input ${classValue[`class${row.id - 1}`]?.gender ? `border-red` : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="gender"
+          options={genderOptions}
+          value={getSelectedValue(genderOptions, row.gender)}
+          onChange={(e) => handleChange(e, "gender", row.id)}
+        />
+      </td>
+      <td>
+        <input
+          className="table-input h-2"
+          type="text"
+          onKeyPress={mobileNochecker}
+          ref={contactRef}
+          onChange={(e) => updateRow(row.id, "contact", e.target.value)}
+        />
+      </td>
+      <td>
+        <Select
+          className={`table-input ${classValue[`class${row.id - 1}`]?.state ? `border-red` : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="state"
+          options={statedata}
+          value={getSelectedValue(statedata, row.state)}
+          onChange={(e) => onStateChange(e, row.id, "state")}
+        />
+      </td>
+      <td>
+        <Select
+          className={`table-input ${classValue[`class${row.id - 1}`]?.area ? `border-red` : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="area"
+          options={areaOptions}
+          value={getSelectedValue(areaOptions, row.city)}
+          isDisabled={stateDisabled}
+          onChange={(e) => handleChange(e, "city", row.id)}
+        />
+      </td>
+      <td>
+        <input
+          className="table-input h-2"
+          type="text"
+          onKeyPress={handleKeyPress}
+          ref={designationRef}
+          onChange={(e) => handleInputChange(row.id, "designation", designationRef)}
+        />
+      </td>
+      <td>
+        <input
+          className="table-input h-2"
+          type="text"
+          onKeyPress={handleKeyPress}
+          ref={collegeRef}
+          onChange={(e) => handleInputChange(row.id, "college", collegeRef)}
+        />
+      </td>
+      <td>
+        <Select
+          className="table-input h-2"
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="project_name"
+          options={projectName}
+          value={getSelectedValue(projectName, row.project_name)}
+          onChange={(e) => handleChange(e, "project_name", row.id)}
+        />
+      </td>
+      <td>
+        <Select
+          className="table-input"
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="partner_dept"
+          options={partnerDept}
+          value={getSelectedValue(partnerDept, row.partner_dept)}
+          onChange={(e) => handleChange(e, "partner_dept", row.id)}
+        />
+      </td>
+      <td>
+        <Select
+          className="table-input h-2"
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="module_name"
+          options={moduleName}
+          value={getSelectedValue(moduleName, row.module_name)}
+          onChange={(e) => handleChange(e, "module_name", row.id)}
+        />
+      </td>
+      <td>
+        <input
+          type="date"
+          className={`table-input h-2 ${classValue[`class${row.id - 1}`]?.start_date ? `border-red` : ""}`}
+          value={row.start_date || ''}
+          onChange={(e) => {
+            updateRow(row.id, "start_date", e.target.value);
+          }}
+        />
+      </td>
+      <td>
+        <input
+          type="date"
+          className={`table-input h-2 ${classValue[`class${row.id - 1}`]?.end_date ? `border-red` : ""}`}
+          min={row.start_date}
+          value={row.end_date || ''}
+          disabled={!row.start_date}
+          onChange={(e) => {
+            updateRow(row.id, "end_date", e.target.value);
+          }}
+        />
+      </td>
+      <td>
+        <Select
+          className={`table-input ${classValue[`class${row.id - 1}`]?.trainer_1 ? `border-red` : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="tariner_1"
+          options={srmOption}
+          value={getSelectedValue(srmOption, row.trainer_1)}
+          onChange={(e) => handleChange(e, "trainer_1", row.id)}
+        />
+      </td>
+      <td>
+        <Select
+          className="basic-single table-input"
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="trainer_2"
+          options={srmOption}
+          value={getSelectedValue(srmOption, row.trainer_2)}
+          onChange={(e) => handleChange(e, "trainer_2", row.id)}
+        />
+      </td>
+      <td>
+        <Select
+          className={`table-input ${classValue[`class${row.id - 1}`]?.certificate_given ? `border-red` : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="certificate_given"
+          options={certificateoptions}
+          value={getSelectedValue(certificateoptions, row.certificate_given)}
+          onChange={(e) => handleChange(e, "certificate_given", row.id)}
+        />
+      </td>
+      <td>
+        <Select
+          className={`table-input ${classValue[`class${row.id - 1}`]?.project_type ? `border-red` : ""}`}
+          classNamePrefix="select"
+          isClearable={true}
+          isSearchable={true}
+          name="project_type"
+          options={projecttypeoptions}
+          value={getSelectedValue(projecttypeoptions, row.project_type)}
+          onChange={(e) => handleChange(e, "project_type", row.id)}
+        />
+      </td>
+    </tr>
   );
 };
 

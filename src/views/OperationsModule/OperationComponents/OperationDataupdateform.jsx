@@ -20,6 +20,10 @@ import { getOpsPickList, updateOpsActivity } from "./operationsActions";
 import * as Yup from "yup";
 import { numberChecker } from "../../../utils/function/OpsModulechecker";
 import { searchBatches, searchInstitutions } from "./operationsActions";
+import {
+  compareObjects,
+  createLatestAcivity,
+} from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -59,7 +63,7 @@ const options = [
   { value: "No", label: "No" },
 ];
 const Activityoptions = [
-  { value: "Industry talk/Expert talk", label: "Industry talk/Expert talk" },
+  { value: "Industry Talk/Expert Talk", label: "Industry Talk/Expert T  alk" },
   {
     value: "Industry Visit/Exposure Visit",
     label: "Industry Visit/Exposure Visit",
@@ -82,7 +86,9 @@ const OperationDataupdateform = (props) => {
   const [institutionOptions, setInstitutionOptions] = useState([]);
   const [programeName, setProgramName] = useState([]);
   const [disablevalue, setdisablevalue] = useState(false);
+  const [activityoption, setActivityOption] = useState([]);
   const [validationErrors, setValidationErrors] = useState({});
+  const [blocked, setBlocked] = useState(false);
 
   useEffect(() => {
     getDefaultAssigneeOptions().then((data) => {
@@ -185,6 +191,39 @@ const OperationDataupdateform = (props) => {
       );
     });
   };
+  function findDifferences(obj1, obj2) {
+    const changes = {};
+
+    function compareObjects(o1, o2, path) {
+      for (const key in o1) {
+        const currentPath = path ? `${path}.${key}` : key;
+
+        if (!(key in o2)) {
+          changes[currentPath] = { old: o1[key], new: undefined };
+        } else if (
+          typeof o1[key] === "object" &&
+          o1[key] !== null &&
+          typeof o2[key] === "object" &&
+          o2[key] !== null
+        ) {
+          compareObjects(o1[key], o2[key], currentPath);
+        } else if (o1[key] !== o2[key]) {
+          changes[currentPath] = { old: o1[key], new: o2[key] };
+        }
+      }
+
+      for (const key in o2) {
+        const currentPath = path ? `${path}.${key}` : key;
+
+        if (!(key in o1)) {
+          changes[currentPath] = { old: undefined, new: o2[key] };
+        }
+      }
+    }
+
+    compareObjects(obj1, obj2, "");
+    return changes;
+  }
 
   const onSubmit = async (values) => {
     const newValueObject = { ...values };
@@ -203,7 +242,31 @@ const OperationDataupdateform = (props) => {
     delete newValueObject["updated_at"];
     delete newValueObject["created_at"];
     delete newValueObject["institute_name"];
-
+    let valuesdata = {
+      batch: Number(props?.batch?.id),
+      institution: Number(props.institution?.id),
+      topic: props.topic,
+      activity_type: props?.activity_type,
+      assigned_to: Number(props?.assigned_to?.id),
+      program_name: props.program_name,
+      start_date: new Date(props.start_date),
+      end_date: new Date(props.end_date),
+      students_attended: props?.students_attended,
+      organization: props.organization,
+      designation: props.designation,
+      guest: props.guest,
+      state: props.state ? props.state : null,
+      donor: props.donor ? "Yes" : "No",
+      area: props.area ? props.area : null,
+    };
+    let datavaluesforlatestcreate = {
+      module_name: "operations",
+      activity: "Field Activity Data Updated",
+      event_id: "",
+      updatedby: userId,
+      changes_in: compareObjects(newValueObject, valuesdata),
+    };
+    await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateOpsActivity(Number(props.id), newValueObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -260,8 +323,8 @@ const OperationDataupdateform = (props) => {
   }, []);
 
   const operationvalidation = Yup.object().shape({
-    start_date: Yup.date().required("Start date is required"),
-    end_date: Yup.date()
+    start_date: Yup.date().nullable().required("Start date is required"),
+    end_date: Yup.date().nullable()
       .required("End date is required")
       .when("start_date", (start, schema) => {
         return schema.min(
@@ -269,8 +332,21 @@ const OperationDataupdateform = (props) => {
           "End date must be greater than or equal to start date"
         );
       }),
+    assigned_to: Yup.string().required("Assigned To is required"),
+    activity_type: Yup.string().required("Activity Type is required"),
+    institution: Yup.number().required("Institution is required"),
+    state: Yup.string().required("State is required"),
+    area: Yup.string().required("Medha Area is required"),
+    batch: Yup.number().required("Batch Name is required"),
+    topic: Yup.string().required("Session Topic is required"),
+    students_attended: Yup.number().required("No. Of Participants is required").min(0, "No. Of Participants cannot be negative"),
   });
   useEffect(async () => {
+    let activityOption = await getOpsPickList().then((data) => {
+      return data.activity_type.map((value) => value);
+    });
+
+    setActivityOption(activityOption);
     let data = await getOpsPickList().then((data) => {
       return data.program_name.map((value) => ({
         key: value,
@@ -281,8 +357,20 @@ const OperationDataupdateform = (props) => {
 
     setProgramName(data);
 
-    
+
   }, []);
+
+   useEffect(() => {
+      let userID = props?.assigned_to?.id;
+      function findUser(users, searchTerm) {
+          return users.find(user => 
+              String(user.value) === String(searchTerm) // Convert searchTerm to string for comparison
+          ) || false;
+      }
+      let userExistsByIdBoolean = findUser(assigneeOptions, userID);
+      setBlocked(userExistsByIdBoolean.blocked);
+  
+  }, [props, assigneeOptions]);
 
   return (
     <>
@@ -333,13 +421,14 @@ const OperationDataupdateform = (props) => {
                             name="activity_type"
                             label="Activity Type"
                             required
-                            options={Activityoptions}
+                            options={activityoption}
                             className="form-control"
                             placeholder="Activity Type"
                           />
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
+                          
                           {assigneeOptions.length && (
                             <Input
                               control="lookupAsync"
@@ -349,7 +438,11 @@ const OperationDataupdateform = (props) => {
                               placeholder="Assigned To"
                               filterData={filterAssignedTo}
                               defaultOptions={assigneeOptions}
+                              isDisabled={blocked}
+                              required
                             />
+                          
+                            
                           )}
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -375,6 +468,7 @@ const OperationDataupdateform = (props) => {
                               defaultOptions={batchOptions}
                               className="form-control1"
                               placeholder="Batch"
+                              required
                             />
                           )}
                         </div>
@@ -382,14 +476,16 @@ const OperationDataupdateform = (props) => {
                         <div className="col-md-6 col-sm-12 mb-2">
                           {institutionOptions.length && (
                             <Input
-                              control="lookup"
+                              control="lookupAsync"
                               name="institution"
                               label="Institution"
-                              // filterData={filterInstitution}
-                              Options={institutionOptions}
+                              filterData={filterInstitution}
+                              // Options={institutionOptions}
+                              defaultOptions={institutionOptions}
                               placeholder="Institution"
                               className="form-control"
-                              // isClearable
+                              required
+                            // isClearable
                             />
                           )}
                         </div>
@@ -398,7 +494,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             name="start_date"
                             label="Start Date "
-                            //
+                            required
                             placeholder="Date of Birth"
                             control="datepicker"
                             className="form-control"
@@ -409,6 +505,7 @@ const OperationDataupdateform = (props) => {
                           <Input
                             name="end_date"
                             label="End Date"
+                            required
                             placeholder="Date of Birth"
                             control="datepicker"
                             className="form-control"
@@ -435,6 +532,7 @@ const OperationDataupdateform = (props) => {
                             label="Topic"
                             className="form-control"
                             placeholder="Topic"
+                            required
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
@@ -476,6 +574,7 @@ const OperationDataupdateform = (props) => {
                             className="form-control"
                             autoComplete="off"
                             onKeyPress={numberChecker}
+                            required
                           />
                         </div>
                       </div>
@@ -494,6 +593,7 @@ const OperationDataupdateform = (props) => {
                               onChange={onStateChange}
                               placeholder="State"
                               className="form-control"
+                              required
                             />
                           ) : (
                             <Skeleton count={1} height={45} />
@@ -509,6 +609,7 @@ const OperationDataupdateform = (props) => {
                               options={areaOptions}
                               placeholder="Area"
                               className="form-control"
+                              required
                             />
                           ) : (
                             <>

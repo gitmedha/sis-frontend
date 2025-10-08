@@ -1,17 +1,11 @@
 import React from "react";
 import { Modal } from "react-bootstrap";
 import { isAdmin, isSRM } from "../../../../common/commonFunctions";
-import { useState, useEffect } from "react";
 import Table from "react-bootstrap/Table";
-import styled from "styled-components";
 
 const Check = (props) => {
   let { onHide } = props;
 
-  const isValidContact=(contact) =>{
-    const pattern = /^[0-9]{10}$/; // Regex for 10-digit number
-    return contact && pattern.test(contact);
-  }
   return (
     <>
       <Modal
@@ -46,6 +40,7 @@ const Check = (props) => {
                       <th>Mentor Name</th>
                       <th>Email</th>
                       <th>Mentor Domain</th>
+                      <th>Specify Other's</th>
                       <th>Mentor Company Name</th>
                       <th>Designation</th>
                       <th>Mentor Area</th>
@@ -63,49 +58,50 @@ const Check = (props) => {
                     {props.notUploadedData.map((obj, i) => (
                       <tr key={i}>
                         <td>{obj.index}</td>
-                        <td className={obj.isAssignedToInvalid ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Assigned To") ? "text-danger" : ""}>
                           {obj.assigned_to || "No data"}
                         </td>
-                        <td className={obj.isMentorNameInvalid ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Mentor Name") ? "text-danger" : ""}>
                           {obj.mentor_name || "No data"}
                         </td>
-                        <td className={obj.isEmailInvalid ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Email") ? "text-danger" : ""}>
                           {obj.email || "No data"}
                         </td>
-                        <td className={obj.isDomainInvalid ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Domain") ? "text-danger" : ""}>
                           {obj.mentor_domain || "No data"}
                         </td>
-                        <td className={obj.isCompanyNameInvalid ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Specify 'Others'") ? "text-danger" : ""}>
+                          {obj.specify_other || "No data"}
+                        </td>
+                        <td className={obj.error?.includes("Company Name") ? "text-danger" : ""}>
                           {obj.mentor_company_name || "No data"}
                         </td>
-                        <td className={obj.isDesignationInvalid ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Designation") ? "text-danger" : ""}>
                           {obj.designation || "No data"}
                         </td>
-                        <td className={!obj.mentor_area ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Mentor Area") ? "text-danger" : ""}>
                           {obj.mentor_area || "No data"}
                         </td>
-                        <td className={!obj.mentor_state ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Mentor State") ? "text-danger" : ""}>
                           {obj.mentor_state || "No data"}
                         </td>
-                        <td className={!obj.outreach ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Outreach") ? "text-danger" : ""}>
                           {obj.outreach || "No data"}
                         </td>
-                        <td className={!obj.onboarding_date ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Onboarding Date") ? "text-danger" : ""}>
                           {obj.onboarding_date || "No data"}
                         </td>
-                        <td>
-                          {obj.social_media_profile_link || "No data"}
-                        </td>
-                        <td className={!obj.medha_area ? "text-danger" : ""}>
+                        <td>{obj.social_media_profile_link || "No data"}</td>
+                        <td className={obj.error?.includes("Medha Area") ? "text-danger" : ""}>
                           {obj.medha_area || "No data"}
                         </td>
-                        <td className={!obj.status ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Status") ? "text-danger" : ""}>
                           {obj.status || "No data"}
                         </td>
-                        <td className={!obj.program_name ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Program Name") ? "text-danger" : ""}>
                           {obj.program_name || "No data"}
                         </td>
-                        <td className={obj.isContactInvalid ? "text-danger" : ""}>
+                        <td className={obj.error?.includes("Contact") ? "text-danger" : ""}>
                           {obj.contact || "No data"}
                         </td>
                       </tr>
@@ -115,7 +111,7 @@ const Check = (props) => {
               </>
             ) : (
               <div className="d-flex justify-content-center align-content-center">
-                <h2 className="text--primary bebas-thick mb-0"></h2>
+                <h2 className="text--primary bebas-thick mb-0">No data found</h2>
               </div>
             )}
           </div>

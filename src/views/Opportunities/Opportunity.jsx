@@ -21,6 +21,7 @@ import { FaBlackTie, FaBriefcase } from "react-icons/fa";
 import Location from "./OpportunityComponents/Location";
 import { deleteFile} from "../../common/commonActions";
 import {isAdmin,getUser } from "../../common/commonFunctions";
+import { createLatestAcivity } from "src/utils/LatestChange/Api";
 
 const Styled = styled.div`
   .button {
@@ -53,6 +54,7 @@ const Opportunity = (props) => {
     setOpportunityEmploymentConnections,
   ] = useState([]);
   const { setAlert } = props;
+  const userId = parseInt(localStorage.getItem('user_id'))
   const history = useHistory();
   const opportunityId = props.match.params.id;
 
@@ -184,6 +186,19 @@ const Opportunity = (props) => {
     }
   }
 
+  // setShowDeleteAlert(true)
+  const handleOpprtunityDelete=async ()=>{
+    console.log(opportunityData);
+    setShowDeleteAlert(true);
+    let opportunityDatatoupload = {
+      module_name: "opportunity",
+      activity: "Opportunity Data Deleted",
+      event_id: opportunityId,
+      updatedby: userId,
+      changes_in: {name:opportunityData.role_or_designation},
+    };
+    await createLatestAcivity(opportunityDatatoupload);
+  }
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -200,7 +215,7 @@ const Opportunity = (props) => {
                 EDIT
               </button>
               <button
-                onClick={() => setShowDeleteAlert(true)}
+                onClick={() => handleOpprtunityDelete()}
                 className="btn--primary action_button_sec"
               >
                 DELETE

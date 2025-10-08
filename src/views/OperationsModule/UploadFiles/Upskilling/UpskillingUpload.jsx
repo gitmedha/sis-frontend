@@ -265,11 +265,13 @@ const UpskillingUpload = (props) => {
             student.data?.studentsConnection.values[0].id,
             10
           );
-          studentExists = student?.data?.studentsConnection?.values.length > 0;
+          studentExists = student?.data?.studentsConnection?.values.filter((val)=>val.student_id == studentId).length > 0 ;
         } catch (err) {
           console.error(`Error fetching student with ID: ${studentId}`, err);
         }
       }
+      console.log(studentExists);
+      
       const createdby = Number(userId);
       const updatedby = Number(userId);
       if (
@@ -293,7 +295,7 @@ const UpskillingUpload = (props) => {
               },
           student_id: studentExists
             ? newItem["Student ID"]
-            : { value: newItem["Student ID"], notFound: true } || "No Data",
+            : { value: newItem["Student ID"] || "NO Data", notFound: true } || "No Data",
           institution: institute
             ? institute.name
             : {
@@ -314,16 +316,16 @@ const UpskillingUpload = (props) => {
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: startDate ? startDate : "No data", notFound: true },
+            : { value: newItem['Start Date'] ? newItem['Start Date'] : "No data", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: endDate ? endDate : "no data", notFound: true },
-          course_name: newItem["Certificate Course Name"] || "",
-          certificate_received: newItem["Certificate Received"] || "",
-          category: newItem["Category"] || "",
-          sub_category: newItem["Sub Category"] || "",
+            : { value: newItem['End Date'] ? newItem['End Date'] : "no data", notFound: true },
+          course_name: newItem["Certificate Course Name"]? newItem["Certificate Course Name"] :"No Data" || "",
+          certificate_received: newItem["Certificate Received"] ? newItem["Certificate Received"] :"No Data" || "",
+          category: newItem["Category"]? newItem["Category"] :"No Data" || "",
+          sub_category: newItem["Sub Category"] ? newItem["Sub Category"]:"No Data" || "",
           issued_org: newItem["Issuing Organization"] || "",
           program_name: newItem["Program Name"] || "",
         });

@@ -338,6 +338,8 @@ export const searchPrograms = async(searchValue)=>{
 
 export const searchStudents = async(searchValue)=>{
   try {
+    console.log('searchValue',searchValue);
+    
     const {data}= await api.post('/graphql', {
       query:SEARCH_BY_STUDENTS,
       variables:{
@@ -358,7 +360,7 @@ export const searchStudents = async(searchValue)=>{
 /* Send Emails on Creation and Updation */
 
 export const sendEmailOnCreateBatch = async (batchInfo) => {
-  let url = `batch/sendEmailONCreationAndUpdate`;
+  let url = `batches/sendEmailOnCreationAndCompletion`;
   return await api.post(url, {
     data:batchInfo
   }).then(data => {
@@ -367,6 +369,26 @@ export const sendEmailOnCreateBatch = async (batchInfo) => {
     return Promise.reject(error);
   });
 };
+
+export const sendPreBatchLinks = async(id) =>{
+  try{
+    const data = await api.get(`batch/${id}/send-pre-batch-link`);
+    return data;
+  }
+  catch(error){
+    throw error;
+  }
+}
+
+export const sendPostBatchLinks = async(id)=>{
+  try{
+    const data = await api.get(`batch/${id}/send-post-batch-link`);
+    return data;
+  }
+  catch(error){
+    throw error;
+  }
+}
 
 export const sendReminder = async(id)=>{
   let url = `${process.env.REACT_APP_STRAPI_API_BASEURL}/batch/sendReminderEmail/${id}`;

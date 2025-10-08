@@ -86,6 +86,8 @@ const EmploymentConnection = (props) => {
               <DetailField label="Opportunity" value={employmentConnection.opportunity ? employmentConnection.opportunity.role_or_designation : ''} />
               {employmentConnection?.opportunity?.type && employmentConnection.opportunity.type === "Freelance" ? <DetailField label="Earning Type" value={employmentConnection.earning_type ? employmentConnection.earning_type :''} /> : ''} 
               <DetailField label="Opportunity Type" value={employmentConnection.opportunity ? <Badge value={employmentConnection.opportunity.type} pickList={opportunitiesPickList.type} /> : ''} />
+              {employmentConnection?.opportunity?.type && employmentConnection.opportunity.type === "Freelance" ? <DetailField label="Earning Type" value={employmentConnection.earning_type ? employmentConnection.earning_type :''} /> : ''}
+
               <DetailField label="Status" value={<Badge value={employmentConnection.status} pickList={employmentConnectionsPickList.status} />} />
               <DetailField label="Work Engagement" value={employmentConnection.work_engagement} />
               {employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && <DetailField label="No. of internship hours" value={employmentConnection.number_of_internship_hours} />}

@@ -467,13 +467,11 @@ const processParsedData = async (data) => {
         console.log(studentId);
         
         const student = await searchStudents(studentId);
-        console.log(student);
-        
         studentIdNum = parseInt(
           student.data?.studentsConnection.values[0]?.id,
           10
         );
-        // console.log(student);
+        console.log(student);
         
         studentExists = student?.data?.studentsConnection?.values.length > 0;
 

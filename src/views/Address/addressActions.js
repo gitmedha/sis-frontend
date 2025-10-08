@@ -1,6 +1,6 @@
 import { values } from "lodash";
 import api from "../../../src/apis";
-import { GET_ALL_ADDRESS, GET_ALL_DISTRICTS } from "../../graphql/address";
+import { GET_ALL_ADDRESS, GET_ALL_CITIES, GET_ALL_DISTRICTS } from "../../graphql/address";
 
 export const getAddressOptions = async () => {
   return await api.post('/graphql', {
@@ -24,6 +24,8 @@ export const getStateDistricts = async (value) => {
     return Promise.reject(error);
   });
 };
+
+
 export const getCities = async (value) => {
   const limit = 500;  // Number of records per request
   let allData = [];
@@ -47,11 +49,12 @@ export const getCities = async (value) => {
       }
     `;
 
+    // First request to get the total count of cities (excluding null cities)
     const countResponse = await api.post('/graphql', {
       query: GET_ALL_CITIES,
       variables: {
         start: 0,
-        limit: 1,  
+        limit: 1,  // Fetch only 1 record to get the total count
       },
     });
 
@@ -70,13 +73,14 @@ export const getCities = async (value) => {
       const data = response?.data?.data?.geographies;
 
       if (data && data.length) {
-        allData = [...allData, ...data];  
+        allData = [...allData, ...data];  // Accumulate the records
       }
 
-      start += limit;  
+      start += limit;  // Move to the next batch
     }
-    return allData; 
+    return allData;  // Return all accumulated records
   } catch (error) {
-    return Promise.reject(error);  
+    return Promise.reject(error);  // Handle errors
   }
 };
+
