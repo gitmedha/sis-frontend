@@ -210,6 +210,7 @@ const UserTotRowdata = (props) => {
       setFilteredColleges([]);
       props.updateRow(rowId, "project_name", "");
       props.updateRow(rowId, "college", "");
+      onStateChange(e, rowId, "state");
     } else {
       setSelectedState(null);
       setSelectedProjectName(null);
