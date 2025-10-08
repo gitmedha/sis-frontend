@@ -33,6 +33,32 @@ const UserTotRowdata = (props) => {
   const [partnerDept, setPartnerDept] = useState([]);
   const [projectName, setProjectName] = useState([]);
   const [stateDisabled, setStateDisabled] = useState(true);
+  const [selectedState, setSelectedState] = useState(null);
+  const [selectedProjectName, setSelectedProjectName] = useState(null);
+  const [filteredColleges, setFilteredColleges] = useState([]);
+  const [collegeName, setCollegeName] = useState("");
+
+
+    const stateWiseProjects = {
+    "Uttarakhand": [
+      { value: "Dakshata", label: "Dakshata", department: "Directorate of Training and Employment" }
+    ],
+    "Haryana": [
+      { value: "DTE", label: "DTE", department: "Directorate of Technical Education" },
+      { value: "Dual System of Training", label: "Dual System of Training", department: "Department of Skill Development and Industrial Training" },
+      { value: "Samarth", label: "Samarth", department: "Department of Higher Education" }
+    ],
+    "Uttar Pradesh": [
+      { value: "ISTEUP", label: "ISTEUP", department: "Department of Technical Education" },
+      { value: "Svapoorna", label: "Svapoorna", department: "Department of Secondary Education" },
+      { value: "ITI transformation", label: "ITI transformation", department: "Department of Vocational Education, Skill Development and Entrepreneurship (DVESDE, UP)" }
+    ],
+    "Bihar": [
+      { value: "Swayam", label: "Swayam", department: "Department of Labor and Resource" }
+    ]
+  };
+
+
   
   // Refs for input fields
   const userNameRef = useRef(null);
@@ -41,6 +67,8 @@ const UserTotRowdata = (props) => {
   const emailRef = useRef(null);
   const ageRef = useRef(null);
   const contactRef = useRef(null);
+
+
 
   // Initialize input fields with row data
   useEffect(() => {
@@ -51,6 +79,23 @@ const UserTotRowdata = (props) => {
     if (ageRef.current) ageRef.current.value = row.age || '';
     if (contactRef.current) contactRef.current.value = row.contact || '';
   }, [row]);
+
+    const getProjectOptions = (state) => {
+    return stateWiseProjects[state].map((proj) => ({
+      value: proj.value,
+      label: proj.label,
+    }));
+  };
+
+  const getDepartmentOptions = (state, selectedProjectName) => {
+    return stateWiseProjects[state]
+      .filter(proj => proj.value === selectedProjectName?.value)
+      .map((proj) => ({
+        value: proj.department,
+        label: proj.department,
+      }));
+  };
+
 
   const onStateChange = (value, rowid, field) => {
     getStateDistricts(value).then((data) => {
@@ -157,6 +202,42 @@ const UserTotRowdata = (props) => {
     return options.find(option => option.value === value) || null;
   };
 
+    const handleProjectChange = async (selectedOption, rowId) => {
+    props.handleChange(selectedOption, "project_name", rowId);
+    setSelectedProjectName(selectedOption);
+    
+    if (selectedOption && selectedOption.value && selectedState) {
+      try {
+        // Fetch colleges filtered by both state and project name
+        const colleges = await getCollegesByProjectName(selectedOption.value, selectedState);
+        setFilteredColleges(colleges);
+      } catch (error) {
+        console.error("Error fetching colleges:", error);
+        setFilteredColleges([]);
+      }
+    } else {
+      setFilteredColleges([]);
+      props.updateRow(rowId, "college", "");
+    }
+  };
+
+  const handleStateChange = (e, rowId) => {
+    if(['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(e.value)) {
+      setSelectedState(e.value);
+      // Reset project and college when state changes
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      props.updateRow(rowId, "project_name", "");
+      props.updateRow(rowId, "college", "");
+      onStateChange(e, rowId, "state");
+    } else {
+      setSelectedState(null);
+      setSelectedProjectName(null);
+      setFilteredColleges([]);
+      onStateChange(e, rowId, "state");
+    }
+  };
+
   return (
     <tr key={row.id}>
       <td>
@@ -206,16 +287,20 @@ const UserTotRowdata = (props) => {
         />
       </td>
       <td>
-        <Select
-          className={`table-input ${classValue[`class${row.id - 1}`]?.state ? `border-red` : ""}`}
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="state"
-          options={statedata}
-          value={getSelectedValue(statedata, row.state)}
-          onChange={(e) => onStateChange(e, row.id, "state")}
-        />
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.state
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="state"
+            options={props.statedata}
+            onChange={(e) => handleStateChange(e, row.id)}
+          />
+
       </td>
       <td>
         <Select
@@ -240,37 +325,58 @@ const UserTotRowdata = (props) => {
         />
       </td>
       <td>
-        <input
-          className="table-input h-2"
-          type="text"
-          onKeyPress={handleKeyPress}
-          ref={collegeRef}
-          onChange={(e) => handleInputChange(row.id, "college", collegeRef)}
-        />
+          <Select
+            className="table-input h-2"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="college"
+            options={filteredColleges}
+            value={filteredColleges.find(option => option.value === collegeName) || null}
+            onChange={(e) => {
+              props.handleChange(e, "college", row.id)
+              setCollegeName(e.value);
+            }}
+            isDisabled={!selectedProjectName}
+          />
       </td>
       <td>
-        <Select
-          className="table-input h-2"
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="project_name"
-          options={projectName}
-          value={getSelectedValue(projectName, row.project_name)}
-          onChange={(e) => handleChange(e, "project_name", row.id)}
-        />
+          <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.project_name
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="project_name"
+            options={
+              ['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState)
+                ? getProjectOptions(selectedState)
+                : projectName
+            }
+            onChange={(e) => handleProjectChange(e, row.id)}
+          />
       </td>
       <td>
-        <Select
-          className="table-input"
-          classNamePrefix="select"
-          isClearable={true}
-          isSearchable={true}
-          name="partner_dept"
-          options={partnerDept}
-          value={getSelectedValue(partnerDept, row.partner_dept)}
-          onChange={(e) => handleChange(e, "partner_dept", row.id)}
-        />
+                <Select
+            className={`table-input ${
+              props.classValue[`class${row.id - 1}`]?.partner_dept
+                ? `border-red`
+                : "table-input h-2"
+            }`}
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="partner_dept"
+            options={
+              ['Uttarakhand', 'Haryana', 'Uttar Pradesh', 'Bihar'].includes(selectedState)
+                ? getDepartmentOptions(selectedState, selectedProjectName)
+                : partnerDept
+            }
+            onChange={(e) => props.handleChange(e, "partner_dept", row.id)}
+          />
       </td>
       <td>
         <Select
