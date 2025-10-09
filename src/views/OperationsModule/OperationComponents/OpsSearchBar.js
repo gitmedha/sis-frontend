@@ -220,6 +220,7 @@ const OpsSearchDropdown = ({ searchOperationTab, resetSearch }) => {
     console.log('Modal clear called with formik:', formik);
 
     setPersistentFilterValues({}); // Clear persistent values
+    setAppliedFilters([]); // Clear applied filter chips
     const searchData = {
       searchFields: [],
       searchValues: [],

@@ -230,8 +230,8 @@ const options = [
   { value: "collegePitch", label: "Pitching" },
 ];
 const filteypeoptions = [
-  { value: "newData", label: "New Data Entry" },
-  { value: "newFileUpload", label: "New File Upload" }
+  { value: "newFileUpload", label: "New File Upload" },
+  { value: "newData", label: "New Data Entry" }
 ];
 
 const TotUpload = (props) => {
@@ -257,27 +257,7 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const [uploadType, setUploadType] = useState("newData");
-  // const role =localStorage.getItem('role').toLocaleUpperCase()
-  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
-  // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
-  const [validationResult, setValidationResult] = useState({
-    isValid: false,
-    message: "",
-    headers: []
-  });
-  const [fileForUpload, setFileForUpload] = useState(null);
-  const [isUploading, setIsUploading] = useState(false);
-  const [uploadProgress, setUploadProgress] = useState(0);
-  const [uploadStatus, setUploadStatus] = useState("");
-  const [uploadResult, setUploadResult] = useState(null);
-  const [fileNameError, setFileNameError] = useState("");
-
-  // Create refs for file inputs at the top with your other refs
-  const fileInputRef = useRef(null);
-  const fileInputRefNew = useRef(null);
-
-  // ... your existing code
-  const expectedFileName = "ToT-Template.xlsx";
+  const role =localStorage.getItem('role').toLocaleUpperCase()
   useEffect(() => {
     const getdata = async () => {
       const data = await getAllSrmbyname();
@@ -342,7 +322,7 @@ const TotUpload = (props) => {
   };
 
   const processFileData = (jsonData, field = "Fileupload") => {
-    if (field == "Fileupload") {
+    if (field == "fileUpload") {
       const validRecords = [];
       const invalidRecords = [];
       for (const row of jsonData) {
@@ -688,7 +668,26 @@ const TotUpload = (props) => {
   };
   // const [notUploadedData_newfile, setnotUploadedData_newfile] = useState(false);
   // const [fileName_new, setFileName_new] = useState("")
+  const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
+  // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
+  const [validationResult, setValidationResult] = useState({
+    isValid: false,
+    message: "",
+    headers: []
+  });
+  const [fileForUpload, setFileForUpload] = useState(null);
+  const [isUploading, setIsUploading] = useState(false);
+  const [uploadProgress, setUploadProgress] = useState(0);
+  const [uploadStatus, setUploadStatus] = useState("");
+  const [uploadResult, setUploadResult] = useState(null);
+  const [fileNameError, setFileNameError] = useState("");
 
+  // Create refs for file inputs at the top with your other refs
+  const fileInputRef = useRef(null);
+  const fileInputRefNew = useRef(null);
+
+  // ... your existing code
+  const expectedFileName = "ToT-Template.xlsx";
 
   // ... your existing code
 
@@ -721,221 +720,196 @@ const TotUpload = (props) => {
     return true;
   };
 
-  const handleFileChangeNewFile = (event) => {
-    //
-    const fileInput = event.target;
-    const file = fileInput.files[0];
+const handleFileChangeNewFile = (event) => {
+  const fileInput = event.target;
+  const file = fileInput.files[0];
 
-    // Clear previous results when selecting new file
-    setUploadResult(null);
-    setUploadStatus('');
-    setValidationResult(prev => ({ ...prev, message: '' }));
-    setFileNameError('');
+  if (!file) {
+    setValidationResult({
+      isValid: false,
+      message: "Please select a valid .xlsx file",
+      headers: [],
+      fileName: "",
+      hasDataRows: false
+    });
+    setFileForUpload(null);
+    setFileNameError("");
+    return;
+  }
 
-    if (!file) {
-      setValidationResult({
-        isValid: false,
-        message: "Please select a valid .xlsx file",
-        headers: [],
-        fileName: "",
-        hasDataRows: false
+  // Validate file name first
+  const isFileNameValid = validateFileName(file.name);
+  if (!isFileNameValid) {
+    setValidationResult({
+      isValid: false,
+      message: "Invalid file name",
+      headers: [],
+      fileName: file.name,
+      hasDataRows: false
+    });
+    setFileForUpload(null);
+    return;
+  }
+
+  // Show loader
+  setIsUploading(true);
+  setUploadStatus("Verifying file...");
+  setUploadProgress(0);
+
+  const reader = new FileReader();
+
+  reader.onload = (e) => {
+    const fileData = e.target.result;
+    try {
+      // Simulate progress for better UX
+      setUploadProgress(30);
+      
+      const workbook = XLSX.read(fileData, { type: "binary" });
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      
+      setUploadProgress(60);
+      
+      // Only read first 101 rows (header + 100 data rows max)
+      const results = XLSX.utils.sheet_to_json(worksheet, { 
+        header: 1, 
+        range: 0, // Start from row 0
+        blankrows: false // Skip completely blank rows
       });
-      setFileForUpload(null);
-      setFileNameError("");
-      return;
-    }
 
-    // Validate file name first
-    const isFileNameValid = validateFileName(file.name);
-    if (!isFileNameValid) {
-      setValidationResult({
-        isValid: false,
-        message: "Invalid file name",
-        headers: [],
-        fileName: file.name,
-        hasDataRows: false
-      });
-      setFileForUpload(null);
-      return;
-    }
-
-    // Show loader
-    setIsUploading(true);
-    setUploadStatus("Verifying file...");
-    setUploadProgress(0);
-
-    const reader = new FileReader();
-
-    reader.onload = (e) => {
-      const fileData = e.target.result;
-      try {
-        // Simulate progress for better UX
-        setUploadProgress(30);
-
-        const workbook = XLSX.read(fileData, { type: "binary" });
-        const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-
-        setUploadProgress(60);
-
-        // Only read first 101 rows (header + 100 data rows max)
-        const results = XLSX.utils.sheet_to_json(worksheet, {
-          header: 1,
-          range: 0, // Start from row 0
-          blankrows: false // Skip completely blank rows
-        });
-
-        const headers = results[0];
-
-        setUploadProgress(80);
-
-        // Check only first 100 rows for data (rows 1-100)
-        let hasDataRows = false;
-        for (let i = 1; i < Math.min(results.length, 101); i++) {
-          const row = results[i];
-          // Check if this row has any non-empty cells
-          if (row && row.some(cell =>
-            cell !== null &&
-            cell !== undefined &&
-            cell !== "" &&
-            String(cell).trim() !== ""
-          )) {
-            hasDataRows = true;
-            break; // Exit early as soon as we find data
-          }
+      const headers = results[0];
+      
+      setUploadProgress(80);
+      
+      // Check only first 100 rows for data (rows 1-100)
+      let hasDataRows = false;
+      for (let i = 1; i < Math.min(results.length, 101); i++) {
+        const row = results[i];
+        // Check if this row has any non-empty cells
+        if (row && row.some(cell => 
+          cell !== null && 
+          cell !== undefined && 
+          cell !== "" && 
+          String(cell).trim() !== ""
+        )) {
+          hasDataRows = true;
+          break; // Exit early as soon as we find data
         }
+      }
+      
+      // Reset file input to allow re-uploading the same file
+      if (fileInputRefNew.current) {
+        fileInputRefNew.current.value = "";
+      }
 
-        // Reset file input to allow re-uploading the same file
-        if (fileInputRefNew.current) {
-          fileInputRefNew.current.value = "";
-        }
+      setUploadProgress(90);
 
-        setUploadProgress(90);
-
-        // Check if file has data rows (should only have headers)
-        if (hasDataRows) {
-          const message = "Please upload the template with headers only.";
-          setValidationResult({
-            isValid: false,
-            message,
-            headers: [],
-            fileName: file.name,
-            hasDataRows: true
-          });
-          setFileForUpload(null);
-          setIsUploading(false);
-          setUploadProgress(0);
-          return;
-        }
-
-        // Your existing validation logic for headers
-        if (!headers || headers.length === 0) {
-          const message = "File does not contain headers.";
-          setValidationResult({
-            isValid: false,
-            message,
-            headers: [],
-            fileName: file.name,
-            hasDataRows: false
-          });
-          setFileForUpload(null);
-          setIsUploading(false);
-          setUploadProgress(0);
-          return;
-        }
-
-        // if (headers.length !== expectedColumns.length) {
-        //   const message = `Column count mismatch. Expected ${expectedColumns.length} columns.`;
-        //   setValidationResult({ 
-        //     isValid: false, 
-        //     message, 
-        //     headers: [], 
-        //     fileName: file.name,
-        //     hasDataRows: false
-        //   });
-        //   setFileForUpload(null);
-        //   setIsUploading(false);
-        //   setUploadProgress(0);
-        //   return;
-        // }
-
-        // Check if all expected columns are present in headers (order doesn't matter)
-        const missingColumns = expectedColumns.filter(col => !headers.includes(col));
-        if (missingColumns.length > 0) {
-          const message = `Missing columns: ${missingColumns.join(', ')}`;
-          setValidationResult({
-            isValid: false,
-            message,
-            headers: [],
-            fileName: file.name,
-            hasDataRows: false
-          });
-          setFileForUpload(null);
-          setIsUploading(false);
-          setUploadProgress(0);
-          return;
-        }
-
-        // Check for extra columns
-        const extraColumns = headers.filter(header => !expectedColumns.includes(header));
-        if (extraColumns.length > 0) {
-          const message = `Extra columns found: ${extraColumns.join(', ')}`;
-          setValidationResult({
-            isValid: false,
-            message,
-            headers: [],
-            fileName: file.name,
-            hasDataRows: false
-          });
-          setFileForUpload(null);
-          setIsUploading(false);
-          setUploadProgress(0);
-          return;
-        }
-
-        setUploadProgress(100);
-
-        // If we reach here, the file is valid
-        setValidationResult({
-          isValid: true,
-          message: "", // Empty message for valid files
-          headers,
+      // Check if file has data rows (should only have headers)
+      if (hasDataRows) {
+        const message = "Please upload only the template with headers only.";
+        setValidationResult({ 
+          isValid: false, 
+          message, 
+          headers: [], 
           fileName: file.name,
-          hasDataRows: false
+          hasDataRows: true
         });
-        setFileForUpload(file); // Store the file for upload
+        setFileForUpload(null);
+        setIsUploading(false);
+        setUploadProgress(0);
+        return;
+      }
 
-        // Hide loader after a brief delay to show completion
-        setTimeout(() => {
-          setIsUploading(false);
-          setUploadProgress(0);
-        }, 500);
-
-      } catch (error) {
-        // Reset file input on error too
-        if (fileInputRefNew.current) {
-          fileInputRefNew.current.value = "";
-        }
-        setValidationResult({
-          isValid: false,
-          message: "Error processing file",
-          headers: [],
+      // Your existing validation logic for headers
+      if (!headers || headers.length === 0) {
+        const message = "File does not contain headers.";
+        setValidationResult({ 
+          isValid: false, 
+          message, 
+          headers: [], 
           fileName: file.name,
           hasDataRows: false
         });
         setFileForUpload(null);
         setIsUploading(false);
         setUploadProgress(0);
+        return;
       }
-    };
 
-    reader.onerror = () => {
-      // Reset file input on error
+      if (headers.length !== expectedColumns.length) {
+        const message = `Column count mismatch. Expected ${expectedColumns.length} columns.`;
+        setValidationResult({ 
+          isValid: false, 
+          message, 
+          headers: [], 
+          fileName: file.name,
+          hasDataRows: false
+        });
+        setFileForUpload(null);
+        setIsUploading(false);
+        setUploadProgress(0);
+        return;
+      }
+
+      // Check if all expected columns are present in headers (order doesn't matter)
+      const missingColumns = expectedColumns.filter(col => !headers.includes(col));
+      if (missingColumns.length > 0) {
+        const message = `Missing columns: ${missingColumns.join(', ')}`;
+        setValidationResult({ 
+          isValid: false, 
+          message, 
+          headers: [], 
+          fileName: file.name,
+          hasDataRows: false
+        });
+        setFileForUpload(null);
+        setIsUploading(false);
+        setUploadProgress(0);
+        return;
+      }
+
+      // Check for extra columns
+      const extraColumns = headers.filter(header => !expectedColumns.includes(header));
+      if (extraColumns.length > 0) {
+        const message = `Extra columns found: ${extraColumns.join(', ')}`;
+        setValidationResult({ 
+          isValid: false, 
+          message, 
+          headers: [], 
+          fileName: file.name,
+          hasDataRows: false
+        });
+        setFileForUpload(null);
+        setIsUploading(false);
+        setUploadProgress(0);
+        return;
+      }
+
+      setUploadProgress(100);
+
+      // If we reach here, the file is valid
+      setValidationResult({ 
+        isValid: true, 
+        message: "", // Empty message for valid files
+        headers, 
+        fileName: file.name,
+        hasDataRows: false
+      });
+      setFileForUpload(file); // Store the file for upload
+      
+      // Hide loader after a brief delay to show completion
+      setTimeout(() => {
+        setIsUploading(false);
+        setUploadProgress(0);
+      }, 500);
+
+    } catch (error) {
+      // Reset file input on error too
       if (fileInputRefNew.current) {
         fileInputRefNew.current.value = "";
       }
       setValidationResult({
         isValid: false,
-        message: "Error reading file",
+        message: "Error processing file",
         headers: [],
         fileName: file.name,
         hasDataRows: false
@@ -943,23 +917,36 @@ const TotUpload = (props) => {
       setFileForUpload(null);
       setIsUploading(false);
       setUploadProgress(0);
-    };
-
-    reader.readAsBinaryString(file);
+    }
   };
+
+  reader.onerror = () => {
+    // Reset file input on error
+    if (fileInputRefNew.current) {
+      fileInputRefNew.current.value = "";
+    }
+    setValidationResult({
+      isValid: false,
+      message: "Error reading file",
+      headers: [],
+      fileName: file.name,
+      hasDataRows: false
+    });
+    setFileForUpload(null);
+    setIsUploading(false);
+    setUploadProgress(0);
+  };
+
+  reader.readAsBinaryString(file);
+};
 
   // Function to upload file using your existing GraphQL mutation
   // Function to upload file using your existing GraphQL mutation
   const uploadFileToServer = async () => {
     if (!fileForUpload) return;
 
-    // Clear previous results before starting new upload
-    setUploadResult(null);
-    setUploadStatus('');
-    setValidationResult(prev => ({ ...prev, message: '' }));
-
     setIsUploading(true);
-    setUploadStatus('Uploading file...');
+    setUploadStatus("Uploading file...");
     setUploadProgress(0);
     setUploadResult(null);
 
@@ -981,12 +968,12 @@ const TotUpload = (props) => {
       clearInterval(progressInterval);
       setUploadProgress(100);
 
-      // Based on your example response: { data: { data: { upload: { id: "28316", url: "https://..." } } }
+      // Based on your example response: { data: { data: { upload: { id: "28316", url: "https://..." } } } }
       if (result.data && result.data.data && result.data.data.upload) {
         const uploadData = result.data.data.upload;
 
         if (uploadData.id && uploadData.url) {
-          setUploadStatus('File successfully uploaded!');
+          setUploadStatus("File successfully uploaded!");
           setUploadResult(uploadData);
 
           // console.log("Uploaded file ID:", uploadData.id);
@@ -994,9 +981,8 @@ const TotUpload = (props) => {
 
           // Store the file info in your database or state as needed
           props.updateToturl(uploadData.url)
-          UpdatePicklist(56, [uploadData.url])
+          UpdatePicklist(56,[uploadData.url])
           storeFileInfoInDatabase(uploadData);
-          // resetNewFileInput();
         } else {
           throw new Error('Upload failed: Missing id or url in response');
         }
@@ -1083,15 +1069,15 @@ const TotUpload = (props) => {
             id="uploadType"
             className="basic-single"
             classNamePrefix="select"
-            value={filteypeoptions?.find((option) => option.value === uploadType) || null}
+            value={options.find((option) => option.value === uploadType)}
             onChange={(selectedOption) => {
-              setUploadType(selectedOption?.value || '');
+              setUploadType(selectedOption.value);
             }}
-            options={filteypeoptions || []}
+            options={filteypeoptions}
             placeholder="Choose upload type..."
           />
-        </div>
-
+        </div> 
+        
         {uploadType == "newData" && <Styled>
           {showForm ? (
             <Modal.Body className="bg-white">
@@ -1239,77 +1225,69 @@ const TotUpload = (props) => {
         </Styled>}
 
         {uploadType !== "newData" && (
-          <Styled>
-            <Modal.Body className="bg-white">
-              <div className="uploader-container">
-                <div className="imageUploader">
-                  <p className="upload-helper-text">Click Here To Upload</p>
-                  <div className="upload-helper-icon">
-                    <FaFileUpload size={30} color={"#257b69"} />
-                  </div>
-                  <input
-                    ref={fileInputRefNew}
-                    accept=".xlsx"
-                    type="file"
-                    multiple={false}
-                    name="file-uploader"
-                    onChange={handleFileChangeNewFile}
-                    className="uploaderInput"
-                    disabled={isUploading} // Disable during verification
-                  />
-                </div>
-                <label className="text--primary latto-bold text-center">
-                  Upload File
-                </label>
-              </div>
+  <Styled>
+    <Modal.Body className="bg-white">
+      <div className="uploader-container">
+        <div className="imageUploader">
+          <p className="upload-helper-text">Click Here To Upload</p>
+          <div className="upload-helper-icon">
+            <FaFileUpload size={30} color={"#257b69"} />
+          </div>
+          <input
+            ref={fileInputRefNew}
+            accept=".xlsx"
+            type="file"
+            multiple={false}
+            name="file-uploader"
+            onChange={handleFileChangeNewFile}
+            className="uploaderInput"
+            disabled={isUploading} // Disable during verification
+          />
+        </div>
+        <label className="text--primary latto-bold text-center">
+          Upload File
+        </label>
+      </div>
+      
+      {/* Show verification loader */}
+      {isUploading && uploadStatus === "Verifying file..." && (
+        <div className="mt-3">
+          <div className="d-flex justify-content-center align-items-center">
+            <Spinner animation="border" variant="success" size="sm" className="me-2" />
+            <span>{uploadStatus} {uploadProgress}%</span>
+          </div>
+          <div className="progress mt-2">
+            <div
+              className="progress-bar progress-bar-striped progress-bar-animated"
+              role="progressbar"
+              style={{ width: `${uploadProgress}%` }}
+              aria-valuenow={uploadProgress}
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              {uploadProgress}%
+            </div>
+          </div>
+        </div>
+      )}
+      
+      <div className="d-flex justify-content-center gap-2 mt-3">
+        <Button
+          variant="btn btn-danger "
+          onClick={() => cancelNewfileupload()}
+          disabled={isUploading} // Disable during verification
+        >
+          Cancel
+        </Button>
 
-              {/* Show single loader for entire process */}
-              {isUploading && (
-                <div className="mt-3">
-                  <div className="d-flex justify-content-center align-items-center">
-                    <Spinner animation="border" variant="success" size="sm" className="me-2" />
-                    <span>
-                      {uploadStatus === "Verifying file..." ? "Validating file..." :
-                        uploadStatus === "Uploading file..." ? "Uploading file..." :
-                          uploadStatus === "Validation complete. Ready to upload." ? "Ready to upload" :
-                            uploadStatus}
-                      {uploadProgress > 0 ? ` ${uploadProgress}%` : ''}
-                    </span>
-                  </div>
-                  {uploadProgress > 0 && (
-                    <div className="progress mt-2">
-                      <div
-                        className="progress-bar progress-bar-striped progress-bar-animated"
-                        role="progressbar"
-                        style={{ width: `${uploadProgress}%` }}
-                        aria-valuenow={uploadProgress}
-                        aria-valuemin="0"
-                        aria-valuemax="100"
-                      >
-                        {uploadProgress}%
-                      </div>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              <div className="d-flex justify-content-center gap-2 mt-3">
-                <Button
-                  variant="btn btn-danger "
-                  onClick={() => cancelNewfileupload()}
-                  disabled={isUploading} // Disable during verification
-                >
-                  Cancel
-                </Button>
-
-                <Button
-                  variant="success"
-                  onClick={uploadFileToServer}
-                  disabled={!isUploadButtonEnabled || isUploading} // Disable during verification
-                >
-                  Upload File
-                </Button>
-              </div>
+        <Button
+          variant="success"
+          onClick={uploadFileToServer}
+          disabled={!isUploadButtonEnabled || isUploading} // Disable during verification
+        >
+          Upload File
+        </Button>
+      </div>
 
 
               {validationResult.fileName && (
@@ -1338,12 +1316,40 @@ const TotUpload = (props) => {
                     </div>
                   )}
 
+                  {/* Show progress when uploading */}
+                  {(isUploading ) && (
+                    <div className="mt-3">
+                      <div className="progress">
+                        <div
+                          className="progress-bar progress-bar-striped progress-bar-animated"
+                          role="progressbar"
+                          style={{ width: `${uploadProgress}%` }}
+                          aria-valuenow={uploadProgress}
+                          aria-valuemin="0"
+                          aria-valuemax="100"
+                        >
+                          {uploadProgress}%
+                        </div>
+                      </div>
+                      <p className="text-center mt-2">{uploadStatus}</p>
+                    </div>
+                  )}
+
                   {/* Show success message after upload */}
                   {uploadResult && (
                     <div className="alert alert-success mt-3">
                       <i className="fas fa-check-circle"></i>
                       File successfully uploaded!
-
+                      <div className="mt-2">
+                        <small>File ID: {uploadResult.id}</small>
+                        <br />
+                        {/* <small>
+                        File URL:{" "}
+                        <a href={uploadResult.url} target="_blank" rel="noopener noreferrer">
+                          {uploadResult.url}
+                        </a>
+                      </small> */}
+                      </div>
                     </div>
                   )}
 

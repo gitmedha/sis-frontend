@@ -31,7 +31,6 @@ import {
   mobileNochecker,
   numberChecker,
 } from "../../../utils/function/OpsModulechecker";
-import { compareObjects, createLatestAcivity } from "src/utils/LatestChange/Api";
 import { filter } from "lodash";
 
 const Section = styled.div`
@@ -199,8 +198,8 @@ const TotEdit = (props) => {
 
     newObject.published_at = new Date().toISOString();
     delete values["published_at"];
-    let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
-    await createLatestAcivity(datavaluesforlatestcreate);
+    // let datavaluesforlatestcreate={module_name:"Operation",activity:"User Tot Data Updated",event_id:"",updatedby:userId ,changes_in:compareObjects(newObject,initialValues)};
+    // await createLatestAcivity(datavaluesforlatestcreate);
     const value = await updateUserTot(Number(props.id), newObject);
     refreshTableOnDataSaving();
     setDisableSaveButton(true);
@@ -253,6 +252,7 @@ const TotEdit = (props) => {
     initialValues["city"] = props.city;
     initialValues["certificate_given"] = props.certificate_given;
     initialValues["email"] = props?.email;
+    initialValues["new_entry"] = props.new_entry;
   }
 
   useEffect(() => {
@@ -381,241 +381,50 @@ const TotEdit = (props) => {
               {({ values, setFieldValue }) => (
                 <Form>
                   <div className="row form_sec">
-                  <Section>
-                    <h3 className="section-header">Basic Info</h3>
-                    <div className="row">
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="user_name"
-                          label="Participant Name"
-                          required
-                          className="form-control"
-                          placeholder="Participant Name"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          control="input"
-                          name="email"
-                          label="Email id"
-                          required
-                          className="form-control"
-                          placeholder="Email id"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                       
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="project_name"
-                          label="Project Name"
-                          required
-                          options={projectName}
-                          className="form-control"
-                          placeholder="Project Name"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="trainer_1"
-                          label="Facilitator 1"
-                          required
-                          options={srmOption}
-                          className="form-control"
-                          placeholder="Facilitator 1"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="trainer_2"
-                          label="Facilitator 2"
-                          required
-                          options={srmOption}
-                          className="form-control"
-                          placeholder="Facilitator 2"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="module_name"
-                          label="Module Name"
-                          required
-                          options={moduleName}
-                          className="form-control"
-                          placeholder="Module Name"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="new_entry"
-                          label="New Entry"
-                          required
-                          options={options}
-                          className="form-control"
-                          placeholder="New Entry"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="start_date"
-                          label="Start Date "
-                          required
-                          placeholder="Start Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          name="end_date"
-                          label="End Date"
-                          required
-                          placeholder="End Date"
-                          control="datepicker"
-                          className="form-control"
-                          autoComplete="off"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="project_type"
-                          label="Project Type"
-                          required
-                          options={projecttypeoptions}
-                          className="form-control"
-                          placeholder="Project Type"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="certificate_given"
-                          label="Certificate Given"
-                          required
-                          options={certificateoptions}
-                          className="form-control"
-                          placeholder="Certificate Given"
-                        />
-                      </div>
-
-                      <div className="col-md-6 col-sm-12 mb-2">
-                       
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="partner_dept"
-                          label="Partner Department"
-                          required
-                          options={partnerDept}
-                          className="form-control"
-                          placeholder="Partner Department"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                            control="lookupAsync"
-                            name="college"
-                            label="College"
-                            // onKeyPress={handleKeyPress}
-                            className="form-control"
-                            defaultOptions={institutionOptions}
-                            filterData={filterInstitution}
-                            placeholder="College"
-                          />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="age"
-                          label="Age"
-                          onKeyPress={numberChecker}
-                          className="form-control"
-                          placeholder="Age"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="lookup"
-                          name="gender"
-                          label="Gender"
-                          required
-                          options={genderOptions}
-                          className="form-control"
-                          placeholder="Gender"
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="contact"
-                          label="Contact"
-                          required
-                          className="form-control"
-                          placeholder="Contact"
-                          onKeyPress={mobileNochecker}
-                        />
-                      </div>
-                      <div className="col-md-6 col-sm-12 mb-2">
-                        <Input
-                          icon="down"
-                          control="input"
-                          name="designation"
-                          label="Designation"
-                          className="form-control"
-                          placeholder="Designation"
-                          onKeyPress={handleKeyPress}
-                        />
-                      </div>
-                    </div>
-                  </Section>
-                  <Section>
-                    <h3 className="section-header">Address</h3>
-                    <div className="row">
+                    <Section>
+                      <h3 className="section-header">Basic Info</h3>
+                      <div className="row">
                         <div className="col-md-6 col-sm-12 mb-2">
-                        {stateOptions.length ? (
+                          <Input
+                            control="input"
+                            name="user_name"
+                            label="Participant Name"
+                            className="form-control"
+                            placeholder="Participant Name"
+                          />
+                        </div>
+
+                        <div className="col-md-6 col-sm-12 mb-2">
+                          <Input
+                            control="input"
+                            name="email"
+                            label="Email id"
+                            className="form-control"
+                            placeholder="Email id"
+                          />
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
+
                           <Input
                             icon="down"
-                            name="state"
-                            label="State "
                             control="lookup"
-                            options={stateOptions}
+                            name="project_name"
+                            label="Project Name"
                             required
-                            onChange={onStateChange}
-                            placeholder="State"
+                            options={projectName}
                             className="form-control"
+                            placeholder="Project Name"
                           />
-                        ) : (
-                          <Skeleton count={1} height={45} />
-                        )}
-                      </div>
+                        </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             icon="down"
                             control="lookup"
-                            options={areaOptions}
+                            name="trainer_1"
+                            label="Facilitator 1"
                             required
+                            options={srmOption}
                             className="form-control"
                             placeholder="Facilitator 1"
                           />
@@ -626,7 +435,6 @@ const TotEdit = (props) => {
                             control="lookup"
                             name="trainer_2"
                             label="Facilitator 2"
-                            required
                             options={srmOption}
                             className="form-control"
                             placeholder="Facilitator 2"
