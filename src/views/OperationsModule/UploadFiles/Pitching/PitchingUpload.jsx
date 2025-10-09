@@ -1,27 +1,12 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { Modal, Spinner } from "react-bootstrap";
-import {
-  FaEdit,
-  FaFileUpload,
-  FaCheckCircle,
-  FaRegCheckCircle,
-} from "react-icons/fa";
-import { isAdmin, isSRM } from "src/common/commonFunctions";
-import { getAllMedhaUsers, getAllSrmbyname } from "src/utils/function/lookupOptions";
-import {
-  getAddressOptions,
-  getStateDistricts,
-} from "src/views/Address/addressActions";
+import { FaFileUpload, FaCheckCircle, FaRegCheckCircle, FaEdit } from "react-icons/fa";
+import { getAllMedhaUsers } from "src/utils/function/lookupOptions";
 import * as XLSX from "xlsx";
 import Check from "./Check";
-import { isValidContact, isValidEmail } from "src/common/commonFunctions";
-import { GET_INSTITUTE_NAME } from "src/graphql";
-import api from "src/apis";
-import {
-  getAllInstitute,
-  searchPrograms,
-} from "../../OperationComponents/operationsActions";
-import { create } from "lodash";
+import { getAllInstitute, searchPrograms } from "../../OperationComponents/operationsActions";
+import PropTypes from 'prop-types';
+import { isAdmin, isSRM } from "src/common/commonFunctions";
 
 const expectedColumns = [
   "Date of Pitching",
@@ -52,33 +37,61 @@ const requiredColumns = [
   "Medha Area",
 ];
 
-const PitchingUpload = (props) => {
-  const { onHide } = props;
-  const [showForm, setShowForm] = useState(true);
-  const [showSpinner, setShowSpinner] = useState(true);
-  const [fileName, setFileName] = useState("");
-  const [nextDisabled, setNextDisabled] = useState(false);
+const PitchingUpload = ({ onHide, uploadExcel }) => {
+  const [state, setState] = useState({
+    showForm: true,
+    showSpinner: true,
+    fileName: "",
+    nextDisabled: false,
+    errorMessage: "",
+    excelData: [],
+    notUploadedData: [],
+    uploadNew: false,
+    showModalPitching: false,
+  });
 
-  const [notuploadSuccesFully, setNotUploadSuccesFully] = useState("");
-  const [assigneOption, setAssigneeOption] = useState([]);
-  const [excelData, setExcelData] = useState([]);
-  const [notUploadedData, setNotuploadedData] = useState([]);
-  const [uploadNew, setUploadNew] = useState(false);
-  const [showModalPitching, setShowModalPitching] = useState(false);
-  const [instituteOptions, setInstituteOptions] = useState([]);
-  const [programOption, setProgramOption] = useState([]);
+  const [data, setData] = useState({
+    assigneeOptions: [],
+    instituteOptions: [],
+    programOptions: [],
+  });
 
-  useEffect(async () => {
-     const data = await getAllMedhaUsers();
-          setAssigneeOption(data);
-    let instituteData = await getAllInstitute();
-    // console.log(instituteData);
-    setInstituteOptions(instituteData);
-    const timer = setTimeout(() => {
-      setShowSpinner(false);
-    }, 3000);
-    return () => clearTimeout(timer);
+  const { showForm, showSpinner, fileName, nextDisabled, errorMessage, excelData, notUploadedData, uploadNew, showModalPitching } = state;
+  const { assigneeOptions, instituteOptions, programOptions } = data;
+
+  const updateState = useCallback((updates) => {
+    setState(prev => ({ ...prev, ...updates }));
   }, []);
+
+  const updateData = useCallback((updates) => {
+    setData(prev => ({ ...prev, ...updates }));
+  }, []);
+
+  const showError = useCallback((message) => {
+    updateState({ errorMessage: message });
+  }, [updateState]);
+
+  useEffect(() => {
+    const fetchInitialData = async () => {
+      try {
+        const [users, institutes] = await Promise.all([
+          getAllMedhaUsers(),
+          getAllInstitute()
+        ]);
+        updateData({ 
+          assigneeOptions: users || [],
+          instituteOptions: institutes || [] 
+        });
+      } catch (error) {
+        showError('Failed to load initial data. Please refresh the page.');
+      } finally {
+        const timer = setTimeout(() => updateState({ showSpinner: false }), 1000);
+        return () => clearTimeout(timer);
+      }
+    };
+
+    fetchInitialData();
+  }, [updateData, updateState, showError]);
 
   const isValidDateFormat = (dateStr) => {
     const datePattern = /^\d{4}\/\d{2}\/\d{2}$/;
@@ -90,159 +103,188 @@ const PitchingUpload = (props) => {
     return null;
   };
 
-  const validateColumns = (data, expectedColumns) => {
-    const fileColumns = Object.keys(data[0]);
-    if (data.length == 0) {
-      setNotUploadSuccesFully(
-        "File is empty please select file which has data in it"
-      );
+  const validateColumns = useCallback((data, expectedColumns) => {
+    if (!data || !Array.isArray(data) || data.length === 0) {
+      showError("File is empty or invalid. Please select a valid file with data.");
       return false;
     }
-    if (!data) {
-      setNotUploadSuccesFully(
-        "Some data fields are empty or not properly initialized"
-      );
-      return false;
-    }
-    const missingColumns = requiredColumns.filter((col) => {
-      return !fileColumns.includes(col.trim());
-    });
-    const extraColumns = fileColumns.filter(
-      (col) => !expectedColumns.includes(col.trim())
-    );
-    const incompleteColumns = requiredColumns.filter((col) =>
-      data.every(
-        (row) => row[col] === null || row[col] === "" || row[col] === undefined
-      )
+
+    const fileColumns = Object.keys(data[0] || {});
+    
+    const missingColumns = requiredColumns.filter(col => !fileColumns.includes(col.trim()));
+    const extraColumns = fileColumns.filter(col => !expectedColumns.includes(col.trim()));
+    
+    const incompleteColumns = requiredColumns.filter(col => 
+      data.every(row => !row[col] && row[col] !== 0)
     );
 
     if (incompleteColumns.length > 0) {
-      setNotUploadSuccesFully(
-        `Columns with missing data: ${incompleteColumns.join(", ")}`
-      );
+      showError(`Required columns are missing data: ${incompleteColumns.join(", ")}`);
       return false;
     }
 
-    if (data.length > 0 && data.length > 200) {
-      setNotUploadSuccesFully(`Number of rows should be less than 200`);
+    if (data.length > 200) {
+      showError("Maximum 200 rows allowed per upload");
+      return false;
     }
 
     if (missingColumns.length > 0) {
-      console.error(`Missing columns: ${missingColumns.join(", ")}`);
-      setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
+      showError(`Missing required columns: ${missingColumns.join(", ")}`);
       return false;
     }
 
     if (extraColumns.length > 0) {
-      console.error(`Extra columns: ${extraColumns.join(", ")}`);
-      setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
+      showError(`Unexpected columns found: ${extraColumns.join(", ")}`);
       return false;
     }
+    
     return true;
-  };
+  }, [showError]);
 
-  const handleFileChange = (event) => {
-    const fileInput = event.target;
-    const file = fileInput.files[0];
-
-    setShowForm(true);
-    setFileName(""); // Reset the file name display
-    setNextDisabled(false); // Optionally disable the next button
-    setNotUploadSuccesFully("");
-
-    if (file) {
-      setFileName(`${file.name} Uploaded`);
-
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        const fileData = reader.result;
-        try {
-          convertExcel(fileData);
-        } catch (error) {
-          setNotUploadSuccesFully(error?.message);
-        }
-      };
-
-      reader.readAsBinaryString(file);
-      fileInput.value = "";
-    } else {
-    }
-  };
-
-  const convertExcel = (excelData) => {
-    const workbook = XLSX.read(excelData, { type: "binary" });
-    const worksheet = workbook.Sheets[workbook.SheetNames[0]];
-    const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
-
-    const headers = results[0];
-    const data = results.slice(1).map((row) => {
-      const newItem = {};
-      headers.forEach((header, i) => {
-        newItem[header.trim()] = row[i];
-      });
-      return newItem;
+  const handleFileChange = useCallback((event) => {
+    const file = event.target.files[0];
+    
+    updateState({
+      showForm: true,
+      fileName: "",
+      nextDisabled: false,
+      errorMessage: ""
     });
-    processFileData(data);
-  };
 
-  const processFileData = (jsonData) => {
-    const validRecords = [];
-    const invalidRecords = [];
-    for (const row of jsonData) {
-      const isRowEmpty = Object.values(row).every(
-        (value) => value === null || value === ""
-      );
-
-      if (isRowEmpty) {
-        break;
-      }
-      validRecords.push(row);
-    }
-    const filteredArray = validRecords.filter((obj) =>
-      Object.values(obj).some((value) => value !== undefined)
-    );
-    if (filteredArray.length == 0) {
-      setNotUploadSuccesFully(
-        "File is empty please select file which has data in it"
-      );
+    if (!file) {
+      showError("No file selected");
       return;
     }
-    if (validateColumns(filteredArray, expectedColumns)) {
-      setNextDisabled(true);
-      processParsedData(filteredArray);
+
+    if (!file.name.endsWith('.xlsx') && !file.name.endsWith('.xls')) {
+      showError("Only Excel (.xlsx, .xls) files are allowed");
+      return;
     }
-  };
 
-  const excelSerialDateToJSDate = (serial) => {
-    const excelEpoch = new Date(Date.UTC(1899, 11, 30));
-    const date = new Date(excelEpoch.getTime() + serial * 86400000);
-    const year = date.getUTCFullYear();
-    const month = String(date.getUTCMonth() + 1).padStart(2, "0");
-    const day = String(date.getUTCDate()).padStart(2, "0");
-    return `${year}-${month}-${day}`;
-  };
+    updateState({ fileName: `${file.name} Uploaded` });
 
-  const filterProgram = async (filterValue) => {
+    const reader = new FileReader();
+    reader.onload = (e) => {
+      try {
+        convertExcel(e.target.result);
+      } catch (error) {
+        showError(error?.message || "Error processing the file");
+      }
+    };
+    reader.onerror = () => showError("Error reading the file");
+    reader.readAsBinaryString(file);
+    
+    // Reset file input
+    event.target.value = "";
+  }, [showError, updateState]);
+
+  const convertExcel = useCallback((excelData) => {
+    try {
+      const workbook = XLSX.read(excelData, { type: "binary" });
+      const worksheet = workbook.Sheets[workbook.SheetNames[0]];
+      const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+
+      if (results.length < 2) {
+        throw new Error("The file is empty or has no data");
+      }
+
+      const headers = results[0].map(header => header?.toString().trim() || '');
+      const data = [];
+
+      for (let i = 1; i < results.length; i++) {
+        const row = results[i];
+        if (!row || row.every(cell => cell === null || cell === undefined || cell === '')) continue;
+        
+        const newItem = {};
+        headers.forEach((header, index) => {
+          if (header) {
+            newItem[header] = row[index] !== undefined ? row[index] : "";
+          }
+        });
+        data.push(newItem);
+      }
+
+      processFileData(data);
+    } catch (error) {
+      throw new Error(`Error parsing Excel file: ${error.message}`);
+    }
+  }, []);
+
+  const processFileData = useCallback((jsonData) => {
+    if (!jsonData || !Array.isArray(jsonData)) {
+      showError("Invalid data format");
+      return;
+    }
+
+    const validRecords = jsonData.filter(row => 
+      row && Object.values(row).some(value => 
+        value !== null && value !== undefined && value !== ""
+      )
+    );
+
+    if (validRecords.length === 0) {
+      showError("No valid data found in the file");
+      return;
+    }
+
+    if (validateColumns(validRecords, expectedColumns)) {
+      updateState({ nextDisabled: true });
+      processParsedData(validRecords);
+    }
+  }, [showError, updateState, validateColumns]);
+
+  const excelSerialDateToJSDate = useCallback((serial) => {
+    try {
+      if (!serial && serial !== 0) return "";
+      
+      // If it's already a date string, return it
+      if (typeof serial === 'string' && !isNaN(Date.parse(serial))) {
+        const date = new Date(serial);
+        return date.toISOString().split('T')[0];
+      }
+      
+      // Handle Excel serial date
+      const excelEpoch = new Date(Date.UTC(1899, 11, 30));
+      const date = new Date(excelEpoch.getTime() + (serial - 1) * 86400000);
+      
+      // Handle Excel's leap year bug (1900 is not a leap year)
+      if (serial >= 60) {
+        date.setDate(date.getDate() - 1);
+      }
+      
+      const year = date.getUTCFullYear();
+      const month = String(date.getUTCMonth() + 1).padStart(2, "0");
+      const day = String(date.getUTCDate()).padStart(2, "0");
+      
+      return `${year}-${month}-${day}`;
+    } catch (error) {
+      return "";
+    }
+  }, []);
+
+  const filterProgram = useCallback(async (filterValue = '') => {
     try {
       const { data } = await searchPrograms(filterValue);
-      return data.programsConnection.values.map((program) => {
-        return program.name;
-      });
+      const programs = data?.programsConnection?.values?.map(program => program.name) || [];
+      updateData({ programOptions: programs });
+      return programs;
     } catch (error) {
-      console.error(error);
+      showError('Failed to load program data. Please try again.');
+      return [];
     }
-  };
+  }, [showError, updateData]);
 
   const processParsedData = async (data) => {
     const formattedData = [];
     const notFoundData = [];
-    const userId = localStorage.getItem("user_id");
-    let validProgramNames = await filterProgram();
-    setProgramOption(validProgramNames);
-  
-    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
-    const phoneRegex = /^\d{10}$/;
+    
+    try {
+      const userId = localStorage.getItem("user_id") || '';
+      const validProgramNames = await filterProgram();
+      updateData({ programOptions: validProgramNames });
+    
+      const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+      const phoneRegex = /^\d{10}$/;
   
     data.forEach((item, index) => {
       const newItem = {};
@@ -251,11 +293,9 @@ const PitchingUpload = (props) => {
       });
   
       const currentUser = localStorage.getItem("user_id");
-      console.log(assigneOption);
-      
-      const srmcheck = assigneOption.find(
+      const srmcheck = assigneeOptions.find(
         (user) => user.name === newItem["SRM Name"]
-      )?.id;
+      )?.id || '';
   
       const onboardingDate = excelSerialDateToJSDate(newItem["Onboarding Date"]);
       const createdby = Number(userId);
@@ -278,8 +318,6 @@ const PitchingUpload = (props) => {
       const phoneValid = phoneRegex.test(newItem["Phone"]);
       const whatsappValid = phoneRegex.test(newItem["WhatsApp Number"]);
       const emailValid = emailRegex.test(newItem["Email ID"]);
-      console.log(Date,Date.includes("NaN"));
-      console.log(srmcheck);
       
       if (
   !newItem["Student Name"] ||
@@ -338,45 +376,51 @@ const PitchingUpload = (props) => {
       }
     });
     
-    setExcelData(formattedData);
-    setNotuploadedData(notFoundData);
+      updateState({
+        excelData: formattedData,
+        notUploadedData: notFoundData
+      });
+    } catch (error) {
+      showError('An error occurred while processing the file. Please try again.');
+    }
   };
   
 
-  const uploadDirect = () => {
+  const uploadDirect = useCallback(() => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
-      setShowForm(false);
+      updateState({ showForm: false });
     } else {
-      setShowModalPitching(true);
+      updateState({ showModalPitching: true });
     }
-  };
+  }, [notUploadedData.length, excelData.length, updateState]);
 
-  const proceedData = async () => {
-    if (notUploadedData.length === 0 && excelData.length > 0) {
-      setUploadNew(true);
-      if (!uploadNew) {
-        props.uploadExcel(excelData, "pitching");
-      }
+  const proceedData = useCallback(() => {
+    if (notUploadedData.length === 0 && excelData.length > 0 && !uploadNew) {
+      updateState({ uploadNew: true });
+      uploadExcel(excelData, "pitching");
     }
-  };
+  }, [notUploadedData.length, excelData.length, uploadNew, uploadExcel]);
 
-  const uploadNewData = () => {
-    setShowForm(true);
-    setUploadNew(false);
-    setFileName("");
-    setNextDisabled(false);
-    setExcelData([]);
-    setNotuploadedData([]);
-  };
+  const resetForm = useCallback(() => {
+    updateState({
+      showForm: true,
+      fileName: "",
+      nextDisabled: false,
+      excelData: [],
+      notUploadedData: [],
+      errorMessage: ""
+    });
+  }, [updateState]);
 
-  const hideShowModal = () => {
-    setShowModalPitching(false);
-    setShowForm(true);
-    setFileName("");
-    setNextDisabled(false);
-    setExcelData([]);
-    setNotuploadedData([]);
-  };
+  const uploadNewData = useCallback(() => {
+    updateState({ uploadNew: false });
+    resetForm();
+  }, [resetForm, updateState]);
+
+  const hideShowModal = useCallback(() => {
+    updateState({ showModalPitching: false });
+    resetForm();
+  }, [resetForm, updateState]);
   return (
     <>
       <Modal
@@ -434,19 +478,13 @@ const PitchingUpload = (props) => {
                     </label>
                   </div>
                   <div className="d-flex  flex-column  ">
-                    {notuploadSuccesFully ? (
-                      <div
-                        className={`text-danger  d-flex justify-content-center `}
-                      >
-                        {" "}
-                        {notuploadSuccesFully}{" "}
+                    {errorMessage ? (
+                      <div className="text-danger d-flex justify-content-center">
+                        {errorMessage}
                       </div>
                     ) : (
-                      <div
-                        className={`text-success d-flex justify-content-center `}
-                      >
-                        {" "}
-                        {fileName}{" "}
+                      <div className="text-success d-flex justify-content-center">
+                        {fileName}
                       </div>
                     )}
                     {(isSRM() || isAdmin()) && (
@@ -454,7 +492,7 @@ const PitchingUpload = (props) => {
                         <div className="col-md-12 d-flex justify-content-center">
                           <button
                             type="button"
-                            onClick={() => props.closeThepopus()}
+                            onClick={onHide}
                             className="btn btn-danger px-4 mx-4 mt-2"
                             style={{ height: "2.5rem" }}
                           >
@@ -511,7 +549,7 @@ const PitchingUpload = (props) => {
               <div className="col-md-12 d-flex justify-content-center">
                 <button
                   type="button"
-                  onClick={() =>  props.closeThepopus()}
+                  onClick={onHide}
                   className="btn btn-danger px-4 mx-4 mt-2"
                   style={{ height: "2.5rem" }}
                 >
@@ -547,15 +585,20 @@ const PitchingUpload = (props) => {
 
       <Check
         show={showModalPitching}
-        onHide={() => hideShowModal()}
+        onHide={hideShowModal}
         instituteData={instituteOptions}
-        programOption={programOption}
+        programOption={programOptions}
         notFoundData={notUploadedData}
         excelData={excelData}
-        uploadExcel={props.uploadExcel}
+        uploadExcel={uploadExcel}
       />
     </>
   );
 };
 
-export default PitchingUpload;
+PitchingUpload.propTypes = {
+  onHide: PropTypes.func.isRequired,
+  uploadExcel: PropTypes.func.isRequired
+};
+
+export default React.memo(PitchingUpload);

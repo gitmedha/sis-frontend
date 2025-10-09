@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Button, Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../../common/commonFunctions";
@@ -257,6 +257,7 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const [uploadType, setUploadType] = useState("newData");
+<<<<<<< Updated upstream
   // const role =localStorage.getItem('role').toLocaleUpperCase()
   const [notUploadSuccesFully_newfile, setNotUploadSuccesFully_newfile] = useState('')
   // const [UploadSuccesFully_newfile,setUploadSuccesFully_newfile]=useState('')
@@ -278,50 +279,65 @@ const TotUpload = (props) => {
 
   // ... your existing code
   const expectedFileName = "ToT-Template.xlsx";
+=======
+  const role = localStorage.getItem('role')?.toUpperCase() || '';
+  
+>>>>>>> Stashed changes
   useEffect(() => {
-    const getdata = async () => {
-      const data = await getAllSrmbyname();
-      setAssigneeOption(data);
-
-
-      const instituteData = await getAllInstitute();
-      setInstituteOptions(instituteData)
-
-
+    const fetchInitialData = async () => {
+      try {
+        const [srmData, instituteData] = await Promise.all([
+          getAllSrmbyname(),
+          getAllInstitute()
+        ]);
+        
+        setAssigneeOption(srmData);
+        setInstituteOptions(instituteData);
+      } catch (error) {
+        setNotUploadSuccesFully('Failed to load initial data. Please refresh the page.');
+      }
     };
 
-    getdata();
-  }, [props]);
+    fetchInitialData();
+  }, []);
 
   const handleFileChange = (event) => {
-    const fileInput = event.target;
-    const file = fileInput.files[0];
-
+    const file = event.target.files[0];
+    
+    // Reset states
     setShowForm(true);
-    setFileName(""); // Reset the file name display
-    setNextDisabled(false); // Optionally disable the next button
+    setFileName("");
+    setNextDisabled(false);
     setUploadSuccesFully("");
     setNotUploadSuccesFully("");
 
-    if (file) {
-      setFileName(`${file.name} Uploaded`);
-
-      const reader = new FileReader();
-
-      reader.onload = () => {
-        const fileData = reader.result;
-        try {
-          convertExcel(fileData);
-        } catch (error) {
-          setNotUploadSuccesFully(error?.message);
-        }
-      };
-
-      reader.readAsBinaryString(file);
-      fileInput.value = "";
-    } else {
-      setUploadSuccesFully("The file type should be .xlsx");
+    if (!file) {
+      setNotUploadSuccesFully("No file selected.");
+      return;
     }
+
+    if (!file.name.endsWith('.xlsx')) {
+      setNotUploadSuccesFully("Please upload an Excel (.xlsx) file.");
+      return;
+    }
+
+    setFileName(`${file.name} Uploaded`);
+    const reader = new FileReader();
+
+    reader.onload = () => {
+      try {
+        convertExcel(reader.result);
+      } catch (error) {
+        setNotUploadSuccesFully(error?.message || "Error processing the file.");
+      }
+    };
+
+    reader.onerror = () => {
+      setNotUploadSuccesFully("Error reading the file.");
+    };
+
+    reader.readAsBinaryString(file);
+    event.target.value = "";
   };
 
   const convertExcel = (excelData) => {
@@ -342,6 +358,7 @@ const TotUpload = (props) => {
   };
 
   const processFileData = (jsonData, field = "Fileupload") => {
+<<<<<<< Updated upstream
     if (field == "Fileupload") {
       const validRecords = [];
       const invalidRecords = [];
@@ -349,30 +366,29 @@ const TotUpload = (props) => {
         const isRowEmpty = Object.values(row).every(
           (value) => value === null || value === ""
         );
+=======
+    if (field == "FileUpload") return;
+>>>>>>> Stashed changes
 
-        if (isRowEmpty) {
-          break;
-        }
-        validRecords.push(row);
-      }
-      const filteredArray = validRecords.filter((obj) =>
-        Object.values(obj).some((value) => value !== undefined)
-      );
-      if (filteredArray.length == 0) {
-        setNotUploadSuccesFully(
-          "File is empty please select file which has data in it"
-        );
-        return;
-      }
-      if (validateColumns(filteredArray, expectedColumns)) {
-        setUploadSuccesFully(`File Uploaded`);
-        setNextDisabled(true);
-        processParsedData(filteredArray);
-      }
-    } else {
+    const validRecords = jsonData.filter(row => {
+      const values = Object.values(row);
+      return values.some(value => value !== null && value !== "");
+    });
+
+    const filteredArray = validRecords.filter(obj => 
+      Object.values(obj).some(value => value !== undefined)
+    );
+
+    if (filteredArray.length === 0) {
+      setNotUploadSuccesFully("File is empty. Please select a file with data.");
       return;
     }
 
+    if (validateColumns(filteredArray, expectedColumns)) {
+      setUploadSuccesFully("File Uploaded");
+      setNextDisabled(true);
+      processParsedData(filteredArray);
+    }
   };
 
   const isValidDate = (dateString) => {
@@ -496,13 +512,11 @@ const TotUpload = (props) => {
     }
 
     if (missingColumns.length > 0) {
-      console.error(`Missing columns: ${missingColumns.join(", ")}`);
       setNotUploadSuccesFully(`Missing columns: ${missingColumns.join(", ")}`);
       return false;
     }
 
     if (extraColumns.length > 0) {
-      console.error(`Extra columns: ${extraColumns.join(", ")}`);
       setNotUploadSuccesFully(`Extra columns: ${extraColumns.join(", ")}`);
       return false;
     }
@@ -512,13 +526,10 @@ const TotUpload = (props) => {
   const processParsedData = (data) => {
     const formattedData = [];
     const notFoundData = [];
-    const userId = localStorage.getItem("user_id");
+    const userId = localStorage.getItem("user_id") || '';
 
     data.forEach((item, index) => {
-      const newItem = {};
-      Object.keys(item).forEach((key) => {
-        newItem[key] = item[key];
-      });
+      const newItem = { ...item }; // Create a shallow copy of the item
 
       const currentUser = localStorage.getItem("user_id");
       const errors = [];
@@ -649,22 +660,22 @@ const TotUpload = (props) => {
     }
   }, [notUploadedData]);
 
-  const hideShowModal = () => {
+  const hideShowModal = useCallback(() => {
     setShowModalTOT(false);
-    setUploadSuccesFully("");
     setShowForm(true);
-    setFileName(""); // Reset the file name display
-    setNextDisabled(false); // Optionally disable the next button
+    setFileName("");
+    setNextDisabled(false);
     setUploadSuccesFully("");
-  };
+    setNotUploadSuccesFully("");
+  }, []);
 
-  const uploadDirect = () => {
+  const uploadDirect = useCallback(() => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setShowForm(false);
     } else {
       setShowModalTOT(true);
     }
-  };
+  }, [notUploadedData.length, excelData.length]);
   useEffect(() => {
     const timer = setTimeout(() => {
       setShowSpinner(false);
@@ -680,12 +691,12 @@ const TotUpload = (props) => {
     setUploadSuccesFully("");
   };
 
-  const proceedData = async () => {
+  const proceedData = useCallback(() => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setUploadNew(true);
       props.uploadExcel(excelData, "tot");
     }
-  };
+  }, [notUploadedData.length, excelData.length, props.uploadExcel]);
   // const [notUploadedData_newfile, setnotUploadedData_newfile] = useState(false);
   // const [fileName_new, setFileName_new] = useState("")
 
@@ -1017,15 +1028,10 @@ const TotUpload = (props) => {
   // Function to store file info in your database
   const storeFileInfoInDatabase = async (fileInfo) => {
     try {
-      // Here you would make another API call to store the file information
-      // in your database along with any metadata you need
-
-      // Example: You might want to associate this file with the current user,
-      // add timestamps, or link it to specific data
-      // await yourApiCallToStoreFileInfo(fileInfo);
-
+      // Implementation for storing file info in database
+      // This is a placeholder for actual implementation
     } catch (error) {
-      console.error('Database storage error:', error);
+      setNotUploadSuccesFully('Failed to store file information.');
     }
   };
 
@@ -1239,6 +1245,7 @@ const TotUpload = (props) => {
         </Styled>}
 
         {uploadType !== "newData" && (
+<<<<<<< Updated upstream
           <Styled>
             <Modal.Body className="bg-white">
               <div className="uploader-container">
@@ -1262,6 +1269,62 @@ const TotUpload = (props) => {
                   Upload File
                 </label>
               </div>
+=======
+  <Styled>
+    <Modal.Body className="bg-white">
+      <div className="uploader-container">
+        <div className="imageUploader">
+          <p className="upload-helper-text">Click Here To Upload</p>
+          <div className="upload-helper-icon">
+            <FaFileUpload size={30} color={"#257b69"} />
+          </div>
+          <input
+            ref={fileInputRefNew}
+            accept=".xlsx"
+            type="file"
+            multiple={false}
+            name="file-uploader"
+            onChange={handleFileChangeNewFile}
+            className="uploaderInput"
+            disabled={isUploading} // Disable during verification
+          />
+        </div>
+        <label className="text--primary latto-bold text-center">
+          Upload File
+        </label>
+      </div>
+      
+      {/* Show verification loader */}
+      {/* {isUploading && uploadStatus === "Verifying file..." && (
+        <div className="mt-3">
+          <div className="d-flex justify-content-center align-items-center">
+            <Spinner animation="border" variant="success" size="sm" className="me-2" />
+            <span>{uploadStatus} {uploadProgress}%</span>
+          </div>
+          <div className="progress mt-2">
+            <div
+              className="progress-bar progress-bar-striped progress-bar-animated"
+              role="progressbar"
+              style={{ width: `${uploadProgress}%` }}
+              aria-valuenow={uploadProgress}
+              aria-valuemin="0"
+              aria-valuemax="100"
+            >
+              {uploadProgress}%
+            </div>
+          </div>
+        </div>
+      )} */}
+      
+      <div className="d-flex justify-content-center gap-2 mt-3">
+        <Button
+          variant="btn btn-danger "
+          onClick={() => cancelNewfileupload()}
+          disabled={isUploading} // Disable during verification
+        >
+          Cancel
+        </Button>
+>>>>>>> Stashed changes
 
               {/* Show single loader for entire process */}
               {isUploading && (
