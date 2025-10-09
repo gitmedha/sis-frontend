@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT } from "../../../graphql";
+import { GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT, UPDATE_PICKLIST } from "../../../graphql";
 import NP from "nprogress";
 import {
   GET_OPERATIONS,
@@ -967,3 +967,22 @@ export const getCollegesByProjectName = async (projectName) => {
     throw error;
   }
 }
+
+
+export const UpdatePicklist = async (id, values) => {
+  return await api
+    .post("/graphql", {
+      query: UPDATE_PICKLIST,
+      variables: {
+        id,
+        values,
+      },
+    })
+    .then((res) => {
+      return res.data?.data?.updatePicklistFieldConfig?.picklistFieldConfig || null;
+    })
+    .catch((error) => {
+      console.error("Error updating picklist:", error);
+      return Promise.reject(error);
+    });
+};
