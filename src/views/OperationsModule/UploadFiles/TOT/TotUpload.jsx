@@ -257,7 +257,7 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const [uploadType, setUploadType] = useState("newData");
-  const role =localStorage.getItem('role').toLocaleUpperCase()
+  // const role =localStorage.getItem('role').toLocaleUpperCase()
   useEffect(() => {
     const getdata = async () => {
       const data = await getAllSrmbyname();
