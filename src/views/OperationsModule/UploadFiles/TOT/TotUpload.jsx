@@ -257,7 +257,6 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const [uploadType, setUploadType] = useState("newData");
-  // const role =localStorage.getItem('role').toLocaleUpperCase()
   useEffect(() => {
     const getdata = async () => {
       const data = await getAllSrmbyname();
@@ -284,6 +283,7 @@ const TotUpload = (props) => {
     setNotUploadSuccesFully("");
 
     if (file) {
+      
       setFileName(`${file.name} Uploaded`);
 
       const reader = new FileReader();
@@ -293,6 +293,7 @@ const TotUpload = (props) => {
         try {
           convertExcel(fileData);
         } catch (error) {
+          // console.log("error",error)
           setNotUploadSuccesFully(error?.message);
         }
       };
@@ -309,6 +310,7 @@ const TotUpload = (props) => {
     const worksheet = workbook.Sheets[workbook.SheetNames[0]];
     const results = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
 
+
     const headers = results[0];
     const data = results.slice(1).map((row) => {
       const newItem = {};
@@ -322,7 +324,7 @@ const TotUpload = (props) => {
   };
 
   const processFileData = (jsonData, field = "Fileupload") => {
-    if (field == "fileUpload") {
+    if (field === "Fileupload") {
       const validRecords = [];
       const invalidRecords = [];
       for (const row of jsonData) {
