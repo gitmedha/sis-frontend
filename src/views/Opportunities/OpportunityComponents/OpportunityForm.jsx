@@ -211,32 +211,66 @@ const OpportunityForm = (props) => {
     }
   }
 
-  const onSubmit = async (values) => {      
-  values.city = values.city[0].toUpperCase() + values.city.slice(1);
-  values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
- delete values.updated_at
-  values.skills_required = values.skills_required
-    .split(",")
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(" ")
-  values.role_description = values.role_description
-    .split(",")
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(" ")
-  values.address = values.address
-    .split(" ")
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(" ")
+  const onSubmit = async (values) => {
+    
+    // Safely capitalize city
+    if (values.city && values.city.trim()) {
+      values.city = values.city[0].toUpperCase() + values.city.slice(1);
+    }
+    
+    // Safely capitalize role_or_designation
+    if (values.role_or_designation && values.role_or_designation.trim()) {
+      values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
+    }
+    
+    delete values.updated_at;
+    
+    // Safely capitalize skills_required
+    if (values.skills_required && values.skills_required.trim()) {
+      values.skills_required = values.skills_required
+        .split(",")
+        .map((word) => {
+          const trimmedWord = word.trim();
+          return trimmedWord ? trimmedWord[0].toUpperCase() + trimmedWord.substring(1) : '';
+        })
+        .filter(word => word !== '')
+        .join(" ");
+    }
+    
+    // Safely capitalize role_description
+    if (values.role_description && values.role_description.trim()) {
+      values.role_description = values.role_description
+        .split(",")
+        .map((word) => {
+          const trimmedWord = word.trim();
+          return trimmedWord ? trimmedWord[0].toUpperCase() + trimmedWord.substring(1) : '';
+        })
+        .filter(word => word !== '')
+        .join(" ");
+    }
+    
+    // Safely capitalize address
+    if (values.address && values.address.trim()) {
+      values.address = values.address
+        .split(" ")
+        .map((word) => {
+          const trimmedWord = word.trim();
+          return trimmedWord ? trimmedWord[0].toUpperCase() + trimmedWord.substring(1) : '';
+        })
+        .filter(word => word !== '')
+        .join(" ");
+    }
+    
     if (values.type !== 'Freelance') {
       values.earning_type = null;
-  }
+    }
+    
     onHide(values);
   };
+  
 
-  const handleEmployerChange = (employer) => {
+
+const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
       employer: employer.value || '',
