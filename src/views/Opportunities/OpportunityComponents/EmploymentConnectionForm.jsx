@@ -364,10 +364,10 @@ const EnrollmentConnectionForm = (props) => {
                       type="number"
                       name="salary_offered"
                       control="input"
-                      label="Monthly Salary"
+                      label="Salary Offered"
                       required
                       className="form-control"
-                      placeholder="Monthly Salary"
+                      placeholder="Salary Offered"
                     />
                   </div>
                   {showEndDate && (

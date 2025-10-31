@@ -127,7 +127,7 @@ const EmploymentConnection = (props) => {
               <DetailField label="End Date" value={endDate} />
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
               {employmentConnection.reason_if_rejected_other && <DetailField label="Specify rejection reason" value={employmentConnection.reason_if_rejected_other} />}
-              <DetailField label="Monthly Salary" value={employmentConnection.salary_offered} />
+              <DetailField label="Salary Offered" value={employmentConnection.salary_offered} />
               <DetailField label="Source" value={<Badge value={employmentConnection.source} pickList={employmentConnectionsPickList.source} />} />
               <DetailField label="Upload Certificate" value= {
               employmentConnection.experience_certificate &&
