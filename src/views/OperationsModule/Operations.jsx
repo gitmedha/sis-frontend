@@ -1643,7 +1643,9 @@ const Operations = ({
 useEffect(async() => {
 
   let data = await getTotPickList();
-  setupdatedUrl(data.totLink[0]);
+  if (data?.totLink?.length) {
+    setupdatedUrl(data.totLink[0]);
+  }
 }, [])
 
   const handleDownloadClick =()=>{

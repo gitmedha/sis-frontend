@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useMemo } from "react";
 import { Button, Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
 import { isAdmin, isSRM } from "../../../../common/commonFunctions";
@@ -229,15 +229,18 @@ const options = [
   { value: "feild_activity", label: "Field Activity" },
   { value: "collegePitch", label: "Pitching" },
 ];
-const filteypeoptions = [
-  { value: "newFileUpload", label: "New File Upload" },
-  { value: "newData", label: "New Data Entry" }
-];
 
 const TotUpload = (props) => {
   const { onHide } = props;
   const [file, setFile] = useState(null);
   const handler = (data) => setFile(data);
+  const filteypeoptions = useMemo(() => {
+    const options = [{ value: "newData", label: "New Data Entry" }];
+    if (isAdmin()) {
+      options.unshift({ value: "newFileUpload", label: "New Template Upload" });
+    }
+    return options;
+  }, []);
   const [assigneOption, setAssigneeOption] = useState([]);
   const [instituteOptions, setInstituteOptions] = useState([]);
   const [excelData, setExcelData] = useState([]);
