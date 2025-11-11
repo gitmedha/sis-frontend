@@ -1632,7 +1632,7 @@ const Operations = ({
             window.URL.revokeObjectURL(blobUrl);
             
             console.log("Download successful");
-            return; // Success, exit function
+            return; 
         } catch (err) {
             console.error(`Attempt ${i + 1} failed:`, err);
             if (i === retries - 1) throw err; // If last attempt, rethrow error
@@ -1648,20 +1648,24 @@ useEffect(async() => {
   }
 }, [])
 
-  const handleDownloadClick =()=>{
-  SampleFile()
+  const handleDownloadClick =(event)=>{
+    if (activeTab.key === "useTot") {
+      event.preventDefault();
+      handleDownload();
+      return;
+    }
+
+    SampleFile();
+  }
   
-}
 
 const SampleFile = () => {
     switch (activeTab.key) {
       case "my_data":
         return 'https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx';
-      // case "useTot":
-      //   return totfile;
+      
        case "useTot":
-        handleDownload();   // trigger download
-        return "";  
+        return "";
       case "mentorship":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Mentorship-Template.xlsx";
       case "upskilling":
