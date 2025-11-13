@@ -972,7 +972,7 @@ const handleFileChangeNewFile = (event) => {
 
       clearInterval(progressInterval);
       setUploadProgress(100);
-
+      console.log(result, "result");
       // Based on your example response: { data: { data: { upload: { id: "28316", url: "https://..." } } } }
       if (result.data && result.data.data && result.data.data.upload) {
         const uploadData = result.data.data.upload;
@@ -986,7 +986,7 @@ const handleFileChangeNewFile = (event) => {
 
           // Store the file info in your database or state as needed
           props.updateToturl(uploadData.url)
-          UpdatePicklist(56,[uploadData.url])
+          UpdatePicklist(52,[uploadData.url])
           storeFileInfoInDatabase(uploadData);
         } else {
           throw new Error('Upload failed: Missing id or url in response');
