@@ -119,7 +119,7 @@ const Styled = styled.div`
   }
 `;
 
-const totfile = `https://medhasisstg.s3.ap-south-1.amazonaws.com/ToT-Template.xlsx`;
+const totfile = `https://medhasisstg.s3.ap-south-1.amazonaws.com/To_T_Template_88ec357002.xlsx`;
 const feildActivityFIle =
   "https://medhasisstg.s3.ap-south-1.amazonaws.com/Field-Activities-Template.xlsx";
 const mentorshipFile =
@@ -1640,13 +1640,20 @@ const Operations = ({
         }
     }
 };
-useEffect(async() => {
 
-  let data = await getTotPickList();
-  if (data?.totLink?.length) {
-    setupdatedUrl(data.totLink[0]);
-  }
-}, [])
+
+useEffect(() => {
+  const fetchLatestTotLink = async () => {
+    const data = await getTotPickList();
+    if (data?.totLink?.length) {
+      const latestLink = data.totLink[data.totLink.length - 1];
+      setupdatedUrl(latestLink);
+    }
+  };
+
+  fetchLatestTotLink();
+}, []);
+
 
   const handleDownloadClick =(event)=>{
     if (activeTab.key === "useTot") {
