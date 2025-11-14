@@ -972,11 +972,10 @@ console.log(fileForUpload, "fileForUpload");
     console.log(result, "upload result");
       clearInterval(progressInterval);
       setUploadProgress(100);
-      console.log(result, "result");
       // Based on your example response: { data: { data: { upload: { id: "28316", url: "https://..." } } } }
       if (result.data && result.data.data && result.data.data.upload) {
         const uploadData = result.data.data.upload;
-
+        console.log(uploadData, "uploadData");
         if (uploadData.id && uploadData.url) {
           setUploadStatus("File successfully uploaded!");
           setUploadResult(uploadData);
