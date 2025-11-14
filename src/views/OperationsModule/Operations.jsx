@@ -1645,9 +1645,10 @@ const Operations = ({
 useEffect(() => {
   const fetchLatestTotLink = async () => {
     const data = await getTotPickList();
+    console.log(data,"picklist data");
     if (data?.totLink?.length) {
       const latestLink = data.totLink[data.totLink.length - 1];
-      setupdatedUrl(latestLink);
+      setupdatedUrl("https://medhasisstg.s3.ap-south-1.amazonaws.com/To_T_Template_88ec357002.xlsx");
     }
   };
 

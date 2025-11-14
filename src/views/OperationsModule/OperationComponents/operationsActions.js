@@ -979,6 +979,7 @@ export const UpdatePicklist = async (id, values) => {
       },
     })
     .then((res) => {
+      console.log(res, "piklist response");
       return res.data?.data?.updatePicklistFieldConfig?.picklistFieldConfig || null;
     })
     .catch((error) => {
