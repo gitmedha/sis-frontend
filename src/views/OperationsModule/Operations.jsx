@@ -1645,6 +1645,7 @@ const Operations = ({
 useEffect(() => {
   const fetchLatestTotLink = async () => {
     const data = await getTotPickList();
+    console.log(data,"picklist data");
     if (data?.totLink?.length) {
       const latestLink = data.totLink[data.totLink.length - 1];
       setupdatedUrl(latestLink);
