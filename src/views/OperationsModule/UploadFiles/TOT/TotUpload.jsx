@@ -949,7 +949,6 @@ const handleFileChangeNewFile = (event) => {
   // Function to upload file using your existing GraphQL mutation
   const uploadFileToServer = async () => {
     if (!fileForUpload) return;
-console.log(fileForUpload, "fileForUpload");
     setIsUploading(true);
     setUploadStatus("Uploading file...");
     setUploadProgress(0);
@@ -969,13 +968,11 @@ console.log(fileForUpload, "fileForUpload");
 
       // Use your existing uploadFile function
       const result = await uploadFile(fileForUpload);
-    console.log(result, "upload result");
       clearInterval(progressInterval);
       setUploadProgress(100);
       // Based on your example response: { data: { data: { upload: { id: "28316", url: "https://..." } } } }
       if (result.data && result.data.data && result.data.data.upload) {
         const uploadData = result.data.data.upload;
-        console.log(uploadData, "uploadData");
         if (uploadData.id && uploadData.url) {
           setUploadStatus("File successfully uploaded!");
           setUploadResult(uploadData);
@@ -986,7 +983,6 @@ console.log(fileForUpload, "fileForUpload");
           // Store the file info in your database or state as needed
           props.updateToturl(uploadData.url)
           const updateConfig = await UpdatePicklist(52,[uploadData.url])
-          console.log(updateConfig, "updateConfig");
           storeFileInfoInDatabase(uploadData);
         } else {
           throw new Error('Upload failed: Missing id or url in response');
