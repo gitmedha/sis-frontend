@@ -181,7 +181,6 @@ const ProgramEnrollmentForm = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
-      console.log(filterValue, 'filterValue');
       let { data } = await searchInstitution(filterValue);
       let programEnrollmentInstitution = props.programEnrollment
         ? props.programEnrollment.institution
