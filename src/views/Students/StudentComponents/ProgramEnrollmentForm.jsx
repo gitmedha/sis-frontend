@@ -181,6 +181,7 @@ const ProgramEnrollmentForm = (props) => {
 
   const filterInstitution = async (filterValue) => {
     try {
+      console.log(filterValue, 'filterValue');
       let { data } = await searchInstitution(filterValue);
       let programEnrollmentInstitution = props.programEnrollment
         ? props.programEnrollment.institution
@@ -199,17 +200,16 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         };
       });
-
-      // if (
-      //   props.programEnrollment &&
-      //   programEnrollmentInstitution !== null &&
-      // ) {
-      //   console.log(programEnrollmentInstitution);
-      //   filterData.unshift({
-      //     label: programEnrollmentInstitution?.name,
-      //     value: Number(programEnrollmentInstitution?.id),
-      //   });
-      // }
+      if (
+        props.programEnrollment &&
+        programEnrollmentInstitution !== null &&
+        !institutionFoundInList
+      ) {
+        filterData.unshift({
+          label: programEnrollmentInstitution?.name,
+          value: Number(programEnrollmentInstitution?.id),
+        });
+      }
 
 
       return filterData;
