@@ -6,7 +6,7 @@ import { useState, useEffect } from "react";
 
 import { Input } from "../../../utils/Form";
 import { BatchValidations } from "../../../validations";
-import { getBatchesPickList, getBatchProgramEnrollments } from "../batchActions";
+import { getBatchesPickList, getBatchProgramEnrollments, getBatchStudentAttendances } from "../batchActions";
 import { batchLookUpOptions } from "../../../utils/function/lookupOptions";
 import {
   getAddressOptions,
@@ -277,17 +277,64 @@ const BatchForm = (props) => {
       values.per_student_fees = 0;
     }
 
-    const { data } = await getBatchProgramEnrollments(values.id);
-    const programEnrollments = data.data.programEnrollmentsConnection.values;
+    let programEnrollments = [];
+    if (values.id) {
+      const { data } = await getBatchProgramEnrollments(values.id);
+      programEnrollments = data.data.programEnrollmentsConnection.values;
+    }
+    // programEnrollments is an array with all the program enrollments for the batch
 
     setFormValues(values);
 
-    if (values.status === "In Progress") {
+    if (programEnrollments.length && values.status === "In Progress") {
       try {
         const updatePromises = programEnrollments.map((enrollment) =>
           updateProgramEnrollment(enrollment.id, { status: "Batch Assigned" })
         );
         await Promise.all(updatePromises);
+      } catch (error) {
+        console.error("Error updating program enrollment statuses:", error);
+      }
+    }
+
+    if (programEnrollments.length && values.status === "Complete") {
+      try {
+        const attendanceResponse = await getBatchStudentAttendances(values.id);
+        const sessionCount =
+          attendanceResponse?.data?.data?.sessionsConnection?.aggregate?.count ||
+          0;
+          //attendanceByEnrollment is an array with all the attendance records for the batch
+        const attendanceByEnrollment =
+          attendanceResponse?.data?.data?.attendancesConnection?.groupBy
+            ?.program_enrollment || [];
+
+        const updates = programEnrollments
+          .map((enrollment) => {
+            const attendanceRecord = attendanceByEnrollment.find(
+              (record) => Number(record.key) === Number(enrollment.id)
+            );
+            const presentCount =
+              attendanceRecord?.connection?.aggregate?.count || 0;
+            const attendancePercent = sessionCount
+              ? Math.floor((presentCount / sessionCount) * 100)
+              : 0;
+            const cappedPercent = Math.min(attendancePercent, 100);
+            const statusToSet =
+              cappedPercent >= 75 ? "Batch Complete" : "Student Dropout";
+
+            if (enrollment.status === statusToSet) {
+              return null;
+            }
+
+            return updateProgramEnrollment(enrollment.id, {
+              status: statusToSet,
+            });
+          })
+          .filter(Boolean);
+
+        if (updates.length) {
+          await Promise.all(updates);
+        }
       } catch (error) {
         console.error("Error updating program enrollment statuses:", error);
       }
