@@ -147,20 +147,18 @@ const InstitutionForm = (props) => {
     });
   };
 
+  const capitalizeWords = (text = "") =>
+    text
+      .trim()
+      .split(/\s+/)
+      .filter(Boolean)
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
+
   const onSubmit = async (values) => {
-    values.name = values.name
-      .split(" ")
-      .map((word) => {
-        return word[0].toUpperCase() + word.substring(1);
-      })
-      .join(" ");
-    values.city = values.city[0].toUpperCase() + values.city.slice(1);
-    values.address = values.address
-      .split(" ")
-      .map((word) => {
-        return word[0].toUpperCase() + word.substring(1);
-      })
-      .join(" ");
+    values.name = capitalizeWords(values.name);
+    values.city = capitalizeWords(values.city);
+    values.address = capitalizeWords(values.address);
 
     setFormValues(values);
     if (logo) {
