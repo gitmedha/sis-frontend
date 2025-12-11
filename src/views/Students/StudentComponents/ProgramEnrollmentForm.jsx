@@ -199,17 +199,16 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         };
       });
-
-      // if (
-      //   props.programEnrollment &&
-      //   programEnrollmentInstitution !== null &&
-      // ) {
-      //   console.log(programEnrollmentInstitution);
-      //   filterData.unshift({
-      //     label: programEnrollmentInstitution?.name,
-      //     value: Number(programEnrollmentInstitution?.id),
-      //   });
-      // }
+      if (
+        props.programEnrollment &&
+        programEnrollmentInstitution !== null &&
+        !institutionFoundInList
+      ) {
+        filterData.unshift({
+          label: programEnrollmentInstitution?.name,
+          value: Number(programEnrollmentInstitution?.id),
+        });
+      }
 
 
       return filterData;
