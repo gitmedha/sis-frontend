@@ -15,6 +15,7 @@ import {
   getDefaultAssigneeOptions,
 } from "../../../utils/function/lookupOptions";
 import * as Yup from "yup";
+// import { compareObjects, createLatestAcivity, findDifferences, findServiceStudentDifferences } from "src/utils/LatestChange/Api";
 
 const Section = styled.div`
   padding-top: 30px;
@@ -58,11 +59,13 @@ const AlumniServiceForm = (props) => {
     AlumniServiceValidations
   );
   const [feeFieldsRequired, setFeeFieldsRequired] = useState(false);
+  const [commentRequired,setCommentRequired]=useState(false);
   const [categoryOptions, setCategoryOptions] = useState([]);
   const [programOptions, setProgramOptions] = useState([]);
   const [selectedCategory, setSelectedCategory] = useState("");
   const [status, setStatus] = useState("");
   const [role,setRole]=useState([]);
+  const userId = Number(localStorage.getItem("user_id"))
 
   useEffect(() => {
     if (props.alumniService) {
@@ -91,7 +94,6 @@ const AlumniServiceForm = (props) => {
           label: item.value,
         }))
       );
-      // console.log(data);
       setRole(data.role);
     });
   }, []);
@@ -116,6 +118,7 @@ const AlumniServiceForm = (props) => {
     let fee_submission_date = Yup.string()
       .nullable()
       .required("Contribution submission date is required.");
+    let comments=Yup.string().nullable().required("Comment is required.");
     let fee_amount = Yup.string()
       .nullable()
       .required("Contribution amount is required.");
@@ -131,24 +134,35 @@ const AlumniServiceForm = (props) => {
       }
     }
     setFeeFieldsRequired(fieldsRequired);
-    if (fieldsRequired) {
+    if (fieldsRequired ) {
       setValidationRules(
         AlumniServiceValidations.shape({
           fee_submission_date,
           fee_amount,
           receipt_number,
+          comments
         })
       );
-    } else {
+      
+    }
+    if (commentRequired ) {
+      setValidationRules(
+        AlumniServiceValidations.shape({
+          comments
+        })
+      ); 
+    }
+    else {
       setValidationRules(
         AlumniServiceValidations.omit([
           "fee_submission_date",
           "fee_amount",
           "receipt_number",
+          "comments"
         ])
       );
     }
-  }, [status, props.alumniService]);
+  }, [status, props.alumniService,commentRequired]);
 
   useEffect(() => {
     setFeeSubmissionDateValue(
@@ -204,21 +218,20 @@ const AlumniServiceForm = (props) => {
 
   const onSubmit = async (values) => {
     setSelectedCategory("");
+
+
+    // let propgramEnrollemntData={};
+    // if(props.alumniService ){
+    //   propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Updated",event_id:values.student.id,updatedby:userId ,changes_in:findServiceStudentDifferences(props.alumniService,values)};
+      
+    // }else {
+    //   propgramEnrollemntData={module_name:"Student",activity:"Alumni Service Created",event_id:props.student.id,updatedby:userId ,changes_in:{name:values.alumni_service_student}};
+    // }
+
+    // await createLatestAcivity(propgramEnrollemntData);
     onHide(values);
   };
 
-  const colourOptions = [
-    { value: "ocean", label: "Ocean", color: "#00B8D9", isFixed: true },
-    { value: "blue", label: "Blue", color: "#0052CC", isDisabled: true },
-    { value: "purple", label: "Purple", color: "#5243AA" },
-    { value: "red", label: "Red", color: "#FF5630", isFixed: true },
-    { value: "orange", label: "Orange", color: "#FF8B00" },
-    { value: "yellow", label: "Yellow", color: "#FFC400" },
-    { value: "green", label: "Green", color: "#36B37E" },
-    { value: "forest", label: "Forest", color: "#00875A" },
-    { value: "slate", label: "Slate", color: "#253858" },
-    { value: "silver", label: "Silver", color: "#666666" },
-  ];
 
   return (
     <Modal
@@ -298,6 +311,10 @@ const AlumniServiceForm = (props) => {
                         options={typeOptions.filter(
                           (option) => option.category === selectedCategory
                         )}
+                        onChange={(selectedOption) => {
+                          const value = selectedOption?.value; 
+                          setCommentRequired(value.toLowerCase() === "workshop"); 
+                        }}
                         className="form-control"
                         placeholder="Subcategory"
                         required
@@ -423,6 +440,8 @@ const AlumniServiceForm = (props) => {
                       label="Comments"
                       placeholder="Comments"
                       control="input"
+                      required={commentRequired}
+                      // onInput={(e)=>setCommentRequired(true)}
                       className="form-control"
                       autoComplete="off"
                     ></Textarea>
@@ -430,7 +449,7 @@ const AlumniServiceForm = (props) => {
                 </div>
               </Section>
 
-              <div className="row justify-content-end mt-1">
+              <div className="row justify-content-end mt-5">
                 <div className="col-auto p-0">
                   <button
                     type="button"

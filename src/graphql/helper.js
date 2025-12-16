@@ -14,6 +14,25 @@ export const GET_PICKLIST = `
   }
 `;
 
+
+export const UPDATE_PICKLIST = `
+  mutation UPDATE_PICKLIST($id: ID!, $values: JSON) {
+    updatePicklistFieldConfig(
+      input: {
+        where: { id: $id }
+        data: { values: $values }
+      }
+    ) {
+      picklistFieldConfig {
+        id
+        table
+        field
+        values
+      }
+    }
+  }
+`;
+
 /**
 {
   "table": "institutions",

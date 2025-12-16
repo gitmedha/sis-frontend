@@ -64,6 +64,12 @@ const ProgramEnrollmentForm = (props) => {
     }
   },[props.programEnrollment])
 
+  useEffect(async() => {
+    let data =await filterInstitution('')
+    setInstitutionOptions(data)
+  }, [props])
+  
+
   useEffect(() => {
     if (props.institution) {
       filterInstitution(props.programEnrollment.institution.name).then(
@@ -193,17 +199,18 @@ const ProgramEnrollmentForm = (props) => {
           value: Number(institution.id),
         };
       });
-
       if (
         props.programEnrollment &&
         programEnrollmentInstitution !== null &&
         !institutionFoundInList
       ) {
         filterData.unshift({
-          label: programEnrollmentInstitution.name,
-          value: Number(programEnrollmentInstitution.id),
+          label: programEnrollmentInstitution?.name,
+          value: Number(programEnrollmentInstitution?.id),
         });
       }
+
+
       return filterData;
     } catch (error) {
       console.error("error:", error);
@@ -306,7 +313,6 @@ const ProgramEnrollmentForm = (props) => {
       
     
   },[courseLevel,courseType])
-
  
   return (
     <Modal
@@ -403,9 +409,9 @@ const ProgramEnrollmentForm = (props) => {
                       label="Institution"
                       required
                       filterData={filterInstitution}
-                      defaultOptions={props.id ? institutionOptions : true}
                       className="form-control"
                       placeholder="Institution"
+                      defaultOptions={institutionOptions}
                     />
                     ) : (
                       <Skeleton count={1} height={60} />

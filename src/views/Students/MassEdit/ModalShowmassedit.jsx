@@ -69,7 +69,6 @@ const ModalShowmassedit = (props) => {
   };
 
   const uploadData = (data) => {
-    console.log("datat",data);
     props.uploadData(data);
     // handleMassemployer();
   };

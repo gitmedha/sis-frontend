@@ -20,7 +20,7 @@ import Collapsible from "../../components/content/CollapsiblePanels";
 import SkeletonLoader from "../../components/content/SkeletonLoader";
 import BatchForm from "./batchComponents/BatchForm";
 import { setAlert } from "../../store/reducers/Notifications/actions";
-import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch,sendPreBatchLinks,sendPostBatchLinks } from "./batchActions";
+import { getBatchProgramEnrollments, deleteBatch, updateBatch, getBatchSessions, getBatchSessionAttendanceStats, getBatchStudentAttendances, batchGenerateCertificates, batchEmailCertificates, batchSendLinks,sendEmailOnCreateBatch,sendPreBatchLinks,sendPostBatchLinks,sendReminder } from "./batchActions";
 import ProgramEnrollments from "./batchComponents/ProgramEnrollments";
 import styled from 'styled-components';
 import { FaCheckCircle } from "react-icons/fa";
@@ -123,9 +123,14 @@ const Batch = (props) => {
         let programEnrollmentAttendances = data.data.data.attendancesConnection.groupBy.program_enrollment;
         let studentsWithAttendance = studentsData.map(student => {
           let studentAttendancePercent = programEnrollmentAttendances.find(programEnrollment => programEnrollment.key === student.id);
+          let presentCount = studentAttendancePercent?.connection?.aggregate?.count || 0;
+          let calculatedPercent =  sessionCount ? Math.floor((presentCount/sessionCount) * 100) : 0;
+          //cap at 100 % to handle duplicate attendance records
+          let cappedPercent = Math.min(calculatedPercent, 100);
           return {
             ...student,
-            attendancePercent: studentAttendancePercent ? Math.floor((studentAttendancePercent.connection.aggregate.count/sessionCount) * 100) : 0,
+            attendancePercent: cappedPercent
+
           }
         });
         setStudents(studentsWithAttendance);
@@ -308,6 +313,18 @@ const Batch = (props) => {
     }
   }
 console.log('batch',batch);
+  const triggerManualReminder = async(id)=>{
+    NP.start();
+    sendReminder(id).then(()=> {
+      setAlert("Reminder sent successfully.", "success");
+    }).catch(err => {
+      setAlert("Unable to send reminder.", "error");
+    }).finally(() => {
+      NP.done();
+      window.location.reload();
+    });
+  }
+
   if (isLoading) {
     return <SkeletonLoader />;
   } else {
@@ -361,6 +378,13 @@ console.log('batch',batch);
                       <FaCheckCircle size="20" color={!batch?.post_batch_email_sent ? '#E0E0E8' :'#207B69' }className="mr-2" />
                       <span style={{color:!batch?.post_batch_email_sent?'#E0E0E8' :'#000000'}}>&nbsp;&nbsp;Post survey test</span>
                     </Dropdown.Item>:<div></div>}
+                    <Dropdown.Item
+                      onClick={() => triggerManualReminder(batch.id)}
+                      className="d-flex align-items-center"
+                    >
+                      <FaCheckCircle size="20" color={batch?.manual_email_sent ?'#207B69':'#E0E0E8'} className="mr-2" />
+                      <span>&nbsp;&nbsp;Send Reminder</span>
+                    </Dropdown.Item>
                     {batch?.status === "Complete" &&
                     <Dropdown.Item
                     onClick={() => {

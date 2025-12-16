@@ -1,6 +1,7 @@
 export const opportunitiesFields = `
 id
 type
+earning_type
 role_or_designation
 number_of_opportunities
 created_at

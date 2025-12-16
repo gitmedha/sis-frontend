@@ -1,43 +1,47 @@
 import React, { useState, useEffect } from "react";
 import { Modal, Spinner } from "react-bootstrap";
 import styled from "styled-components";
-import { isAdmin, isSRM } from "../../../common/commonFunctions";
-import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../graphql";
-import { queryBuilder } from "../../../apis";
-import { getAllSrmbyname } from "../../../utils/function/lookupOptions";
-import {FaEdit, FaFileUpload,FaCheckCircle, FaRegCheckCircle } from "react-icons/fa";
+import { isAdmin, isSRM } from "../../../../common/commonFunctions";
+import { GET_ALL_BATCHES, GET_ALL_INSTITUTES } from "../../../../graphql";
+import { queryBuilder } from "../../../../apis";
+import { getAllSrmbyname } from "../../../../utils/function/lookupOptions";
+import {
+  FaEdit,
+  FaFileUpload,
+  FaCheckCircle,
+  FaRegCheckCircle,
+} from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
-import Papa from "papaparse";
 import * as XLSX from "xlsx";
 import {
   getAddressOptions,
   getStateDistricts,
-} from "../../Address/addressActions";
-import { bulkCreateUsersTots, getTotPickList } from "../OperationComponents/operationsActions";
-import CheckTot from "./CheckTot";
-import { isNumber } from "lodash";
+} from "../../../Address/addressActions";
+import {
+  bulkCreateUsersTots,
+  getAllInstitute,
+  getTotPickList,
+} from "../../OperationComponents/operationsActions";
+import checkQuery from "./checkQuery";
+import { isNumber, set } from "lodash";
 import { setAlert } from "src/store/reducers/Notifications/actions";
 import moment from "moment";
+import { searchStudents } from "src/views/Batches/batchActions";
+import CheckQuery from "./checkQuery";
 
 const expectedColumns = [
-  "Participant Name",
-  "Trainer 1",
-  "Project Name",
-  "Certificate Given",
-  "Module Name",
-  "Project Type",
-  "Trainer 2",
-  "Partner Department",
-  "College Name",
-  "City",
-  "State",
-  "Age",
-  "Gender",
-  "Mobile no.",
-  "Designation",
-  "Start Date",
-  "End Date",
-  "New Entry"
+  "Student ID",
+  "Query Start date",
+  "Full Name",
+  "Father's Name",
+  "Email ID",
+  "Mobile No.",
+  "Medha Area",
+  "Query Type",
+  "Query Description",
+  "Conclusion",
+  "Status",
+  "Query End Date"
 ];
 
 const Styled = styled.div`
@@ -213,16 +217,12 @@ const Styled = styled.div`
   }
 `;
 
-const options = [
-  { value: "feild_activity", label: "Field Activity" },
-  { value: "collegePitch", label: "Pitching" },
-];
-
-const TotUpload = (props) => {
+const QueryUpload = (props) => {
   const { onHide } = props;
   const [file, setFile] = useState(null);
   const handler = (data) => setFile(data);
   const [assigneOption, setAssigneeOption] = useState([]);
+  const [instituteOptions, setInstituteOptions] = useState([]);
   const [excelData, setExcelData] = useState([]);
   const [check, setCheck] = useState(false);
   const [areaOptions, setAreaOptions] = useState([]);
@@ -240,30 +240,37 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
 
-  useEffect(() => {
-    const getdata = async () => {
-      const data = await getAllSrmbyname();
-      setAssigneeOption(data);
-    };
+  // useEffect(() => {
+  //   const getdata = async () => {
+  //     const data = await getAllSrmbyname();
+  //     setAssigneeOption(data);
 
-    getdata();
-  }, [props]);
+  //     const instituteData = await getAllInstitute();
+  //     console.log(instituteData);
+
+  //     setInstituteOptions(instituteData)
+
+
+  //   };
+
+  //   getdata();
+  // }, [props]);
 
   const handleFileChange = (event) => {
     const fileInput = event.target;
     const file = fileInput.files[0];
-  
+
     setShowForm(true);
-    setFileName(''); // Reset the file name display
+    setFileName(""); // Reset the file name display
     setNextDisabled(false); // Optionally disable the next button
-    setUploadSuccesFully(''); 
-    setNotUploadSuccesFully('');
-  
+    setUploadSuccesFully("");
+    setNotUploadSuccesFully("");
+
     if (file) {
       setFileName(`${file.name} Uploaded`);
-  
+
       const reader = new FileReader();
-  
+
       reader.onload = () => {
         const fileData = reader.result;
         try {
@@ -272,9 +279,9 @@ const TotUpload = (props) => {
           setNotUploadSuccesFully(error?.message);
         }
       };
-  
+
       reader.readAsBinaryString(file);
-      fileInput.value = '';
+      fileInput.value = "";
     } else {
       setUploadSuccesFully("The file type should be .xlsx");
     }
@@ -300,33 +307,32 @@ const TotUpload = (props) => {
     const validRecords = [];
     const invalidRecords = [];
     for (const row of jsonData) {
-      const isRowEmpty = Object.values(row).every((value) => value === null || value === "");
-  
+      const isRowEmpty = Object.values(row).every(
+        (value) => value === null || value === ""
+      );
+
       if (isRowEmpty) {
-        break; 
+        break;
       }
       validRecords.push(row);
     }
     const filteredArray = validRecords.filter((obj) =>
       Object.values(obj).some((value) => value !== undefined)
-    ); 
-   if(filteredArray.length == 0){
-    setNotUploadSuccesFully("File is empty please select file which has data in it");
-    return ;
-   }
-    if (
-      validateColumns(filteredArray, expectedColumns) 
-    ) {
+    );
+    if (filteredArray.length == 0) {
+      setNotUploadSuccesFully(
+        "File is empty please select file which has data in it"
+      );
+      return;
+    }
+    if (validateColumns(filteredArray, expectedColumns)) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(filteredArray);
     }
   };
 
-  const isValidDate = (dateString) => {
-    const date = new Date(dateString);
-    return !isNaN(date.getTime());
-  };
+  
 
   const excelSerialDateToJSDate = (serial) => {
     const excelEpoch = new Date(Date.UTC(1899, 11, 30));
@@ -346,91 +352,68 @@ const TotUpload = (props) => {
   };
 
   useEffect(() => {
-    getTotPickList().then((data) => {
-      // setModuleName(data.module_name.map(item))
-      setModuleName(
-        data.module_name.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-      setPartnerDept(
-        data.partner_dept.map((item) => ({
-          key: item,
-          value: item,
-          label: item,
-        }))
-      );
-      setProjectName(data.project_name.map((item) => item));
-    });
-    getAddressOptions().then((data) => {
-      setStateOptions(
-        data?.data?.data?.geographiesConnection.groupBy.state
-          .map((state) => ({
-            key: state?.id,
-            label: state?.key,
-            value: state?.key,
-          }))
-          .sort((a, b) => a.label.localeCompare(b.label))
-      );
-    });
+ 
     getStateDistricts().then((data) => {
       setAreaOptions([]);
       setAreaOptions(
-        data?.data?.data?.geographiesConnection.groupBy.district
+        data?.data?.data?.geographiesConnection.groupBy.area
           .map((area) => ({
-            key: area.id,
-            label: area.key,
-            value: area.key,
+            value: area.key
           }))
-          .sort((a, b) => a.label.localeCompare(b.label))
+          // .sort((a, b) => a.label.localeCompare(b.label))
       );
+      // console.log(data?.data?.data?.geographiesConnection.groupBy);
+      
     });
   }, [props]);
 
   const capitalize = (s) => {
     return String(s)
-    .split(' ')
-    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
-    .join(' ');
+      .split(" ")
+      .map((word) => word.charAt(0).toUpperCase() + word.slice(1))
+      .join(" ");
   };
 
   const validateColumns = (data, expectedColumns) => {
     const fileColumns = Object.keys(data[0]);
-    console.log("data values",data);
     // if(!data){
     //   setUploadSuccesFully("No Data")
     // }
-    if(data.length == 0){
+    if (data.length == 0) {
       setNotUploadSuccesFully(
         "File is empty please select file which has data in it"
       );
-      return false
+      return false;
     }
-    if (!data ) {
+    if (!data) {
       setNotUploadSuccesFully(
         "Some data fields are empty or not properly initialized"
       );
       return false;
     }
-    const missingColumns = expectedColumns.filter(
-      (col) => {;
-        return !fileColumns.includes(col.trim())
-      }
-    );
+    const missingColumns = expectedColumns.filter((col) => {
+      return !fileColumns.includes(col.trim());
+    });
     const extraColumns = fileColumns.filter(
       (col) => !expectedColumns.includes(col.trim())
     );
-    const incompleteColumns = expectedColumns.filter(col =>
-      data.every(row => row[col] === null || row[col] === "" || row[col] ===undefined )
+    const exemptColumns = ["Age", "Contact Number"];
+    const incompleteColumns = expectedColumns.filter(
+      (col) =>
+        !exemptColumns.includes(col) &&
+        data.every(
+          (row) =>
+            row[col] === null || row[col] === "" || row[col] === undefined
+        )
     );
 
     if (incompleteColumns.length > 0) {
-      setNotUploadSuccesFully(`Columns with missing data: ${incompleteColumns.join(", ")}`);
+      setNotUploadSuccesFully(
+        `Columns with missing data: ${incompleteColumns.join(", ")}`
+      );
       return false;
     }
-    
+
     if (data.length > 0 && data.length > 200) {
       setNotUploadSuccesFully(`Number of rows should be less than 200`);
     }
@@ -448,172 +431,148 @@ const TotUpload = (props) => {
     }
     return true;
   };
+const processParsedData = async (data) => {
+  const formattedData = [];
+  const notFoundData = [];
+  const userId = localStorage.getItem("user_id");
 
- 
-
-  const processParsedData = (data) => {
-    const formattedData = [];
-    const notFoundData = [];
-    const userId = localStorage.getItem("user_id");
-
-    data.forEach((item, index) => {
-      const newItem = {};
-      Object.keys(item).forEach((key) => {
-        newItem[key] = item[key];
-      });
-
-      const currentUser = localStorage.getItem("user_id");
-      const StateCheck = stateOptions.find(
-        (state) => state === newItem["State"]
-      )?.id;
-      const areaCheck = areaOptions.find(
-        (area) => area === newItem["City"]
-      )?.id;
-      const moduleCheck = moduleName.find(
-        (module) => module.value === newItem["Module Name"]
-      );
-
-      const departMentCheck = partnerDept.find(
-        (department) => department.value === newItem["Partner Department"]
-      );
-
-      const projectCheck = ["Internal", "External"].find(
-        (project) => project === newItem["Project Type"]
-      );
-      const projectNameCheck = projectName.find(
-        (project) => project === newItem["Project Name"]
-      );
-
-      const trainer_1 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 1"]
-      )?.value;
-
-      const trainer_2 = assigneOption.find(
-        (user) => user.label === newItem["Trainer 2"]
-      )?.value;
-
-      const startDate = excelSerialDateToJSDate(newItem["Start Date"]);
-      const endDate = excelSerialDateToJSDate(newItem["End Date"]);
-
-      const isStartDateValid = isValidDateFormat(startDate);
-      const isEndDateValid = isValidDateFormat(endDate);
-      const createdby = Number(userId);
-      const updatedby = Number(userId);
-      const pattern = /^[0-9]{10}$/;
-      let parseDate;
-      if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
-        const parsedDate1 = moment(new Date(startDate)).unix();
-        const parsedDate2 = moment(new Date(endDate)).unix();
-        if (parsedDate2 < parsedDate1) {
-          parseDate = true;
-        }
-      }
-      let ageCheck=isNumber(newItem["Age"]) && (newItem["Age"]<100 && newItem["Age"]>10)
-      if (
-        !pattern.test(newItem["Mobile no."]) ||
-        !departMentCheck ||
-        !projectCheck ||
-        !moduleCheck ||
-        !isStartDateValid ||
-        !isEndDateValid ||
-        !projectNameCheck || !ageCheck || parseDate || !newItem["Participant Name"] || !newItem["College Name"]
-      ) {
-        notFoundData.push({
-          index: index + 1,
-          user_name: newItem["Participant Name"]
-            ? capitalize(newItem["Participant Name"])
-            : "No data",
-          trainer_1: newItem["Trainer 1"],
-          project_name: projectCheck
-            ? newItem["Project Name"]
-            : {
-                value: newItem["Project Name"]
-                  ? newItem["Project Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          certificate_given: newItem["Certificate Given"],
-          module_name: moduleCheck
-            ? newItem["Module Name"]
-            : {
-                value: newItem["Module Name"]
-                  ? newItem["Module Name"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          project_type: projectCheck
-            ? newItem["Project Type"]
-            : {
-                value: newItem["Project Type"]
-                  ? newItem["Project Type"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          trainer_2: newItem["Trainer 2"],
-          partner_dept: departMentCheck
-            ? newItem["Partner Department"]
-            : {
-                value: newItem["Partner Department"]
-                  ? newItem["Partner Department"]
-                  : "Please select from dropdown",
-                notFound: true,
-              },
-          college: newItem["College Name"]
-            ? capitalize(newItem["College Name"])
-            : "Please select from dropdown",
-          city: newItem["City"] ? capitalize(newItem["City"]) : "",
-          state: newItem["State"] ? capitalize(newItem["State"]) : "",
-          age: newItem["Age"],
-          gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
-          contact: newItem["Mobile no."],
-          designation: newItem["Designation"],
-          start_date: parseDate
-            ? { value: startDate, notFound: true }
-            : isStartDateValid
-            ? startDate
-            : { value: newItem["Start Date"] ? newItem["Start Date"] :"No data", notFound: true },
-          end_date: parseDate
-            ? { value: endDate, notFound: true }
-            : isEndDateValid
-            ? endDate
-            : { value: newItem["End Date"] ? newItem["End Date"] :"no data", notFound: true },
-          new_entry:newItem["New Entry"]
-        });
-      } else {
-        formattedData.push({
-          user_name: newItem["Participant Name"]
-            ? capitalize(newItem["Participant Name"])
-            : "",
-          trainer_1: Number(trainer_1),
-          project_name: newItem["Project Name"],
-          certificate_given: newItem["Certificate Given"],
-          module_name: newItem["Module Name"],
-          project_type: newItem["Project Type"],
-          trainer_2: Number(trainer_2),
-          partner_dept: newItem["Partner Department"],
-          college: newItem["College Name"]
-            ? capitalize(newItem["College Name"])
-            : "",
-          city: newItem["City"] ? capitalize(newItem["City"]) : "",
-          state: newItem["State"] ? capitalize(newItem["State"]) : "",
-          age: newItem["Age"],
-          gender: newItem["Gender"] ? capitalize(newItem["Gender"]) : "",
-          contact: newItem["Mobile no."],
-          designation: newItem["Designation"]
-            ? capitalize(newItem["Designation"])
-            : "",
-          start_date: startDate,
-          end_date: endDate,
-          createdby: createdby,
-          updatedby: currentUser,
-          new_entry:newItem["New Entry"]
-        });
-      }
+  // Process each row sequentially to ensure proper async handling
+  for (let index = 0; index < data.length; index++) {
+    const item = data[index];
+    const newItem = {};
+    
+    Object.keys(item).forEach((key) => {
+      newItem[key] = item[key];
     });
 
-    setExcelData(formattedData);
-    setNotuploadedData(notFoundData);
-  };
+    const currentUser = localStorage.getItem("user_id");
+    const StateCheck = stateOptions.find(
+      (state) => state === newItem["State"]
+    )?.id;
+
+    console.log("areaOptions", areaOptions);
+
+    const areaCheck = areaOptions.find(
+      (area) => area.value.toLowerCase() === newItem["Medha Area"].toLowerCase()
+    );
+    
+    const studentId = newItem["Student ID"];
+    let studentExists = false;
+    let studentIdNum;
+
+    // Check if student exists (only if studentId is provided)
+    if (studentId) {
+      try {
+        // Use await properly in the for loop
+        console.log(studentId);
+        
+        const student = await searchStudents(studentId);
+        console.log(student);
+        
+        studentIdNum = parseInt(
+          student.data?.studentsConnection.values[0]?.id,
+          10
+        );
+        // console.log(student);
+        
+        studentExists = student?.data?.studentsConnection?.values.length > 0;
+
+      } catch (err) {
+        console.error(`Error fetching student with ID: ${studentId}`, err);
+        // If there's an error, assume student doesn't exist
+        studentExists = false;
+      }
+    }
+
+    const startDate = excelSerialDateToJSDate(newItem["Query Start date"]);
+    const endDate = excelSerialDateToJSDate(newItem["Query End Date"]);
+
+    const isStartDateValid = isValidDateFormat(startDate);
+    const isEndDateValid = isValidDateFormat(endDate);
+    const createdby = Number(userId);
+    let parseDate;
+    
+    if (isValidDateFormat(startDate) && isValidDateFormat(endDate)) {
+      const parsedDate1 = moment(new Date(startDate)).unix();
+      const parsedDate2 = moment(new Date(endDate)).unix();
+      if (parsedDate2 < parsedDate1) {
+        parseDate = true;
+      }
+    }
+    
+    const isValidContact = (contact) => {
+      const pattern = /^[0-9]{10}$/; // 10-digit number regex
+      return contact && pattern.test(contact);
+    };
+    
+    const isValidEmail = (email) => {
+      const pattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/; // Standard email regex
+      return email && pattern.test(email);
+    };
+
+    if (
+      !isStartDateValid ||
+      !isEndDateValid ||
+      parseDate || 
+      !areaCheck || // Changed this condition - if areaCheck is falsy, it should go to notFoundData
+      !studentExists || // If student doesn't exist, it should go to notFoundData
+      !isValidContact(newItem["Mobile No."]) ||
+      !isValidEmail(newItem["Email ID"])
+    ) {
+      notFoundData.push({
+        father_name: newItem["Father's Name"] || "",
+        email: isValidEmail(newItem["Email ID"]) ? newItem["Email ID"] : { value: newItem["Email ID"], notFound: true } || "No Data",
+        phone: isValidContact(newItem["Mobile No."]) ? newItem["Mobile No."] : { value: newItem["Mobile No."], notFound: true } || "No Data",
+        location: areaCheck ? newItem["Medha Area"] : { value: newItem["Medha Area"], notFound: true } || "No Data",
+        query_type: newItem["Query Type"] || "",
+        query_desc: newItem["Query Description"] || "",
+        conclusion: newItem["Conclusion"] || "",
+        status: newItem["Status"] || "",
+        query_start: parseDate
+          ? { value: startDate, notFound: true }
+          : isStartDateValid
+            ? startDate
+            : {
+                value: newItem["Query Start date"]
+                  ? newItem["Query Start date"]
+                  : "No data",
+                notFound: true,
+              },
+        query_end: parseDate
+          ? { value: endDate, notFound: true }
+          : isEndDateValid
+            ? endDate
+            : {
+                value: newItem["Query End Date"] ? newItem["Query End Date"] : "no data",
+                notFound: true,
+              },
+        student_name: studentExists
+          ? newItem["Full Name"]
+          : { value: newItem["Full Name"], notFound: true } || "No Data",
+      });
+    } else {
+      formattedData.push({
+        start_date: startDate,
+        end_date: endDate,
+        student_id: studentIdNum || "",
+        student_name: capitalize(newItem["Full Name"]) || "",
+        father_name: newItem["Father's Name"] || "",
+        email: newItem["Email ID"] || "",
+        phone: newItem["Mobile No."] || "",
+        location: newItem["Medha Area"] || "",
+        query_type: newItem["Query Type"] || "",
+        query_desc: newItem["Query Description"] || "",
+        conclusion: newItem["Conclusion"] || "",
+        status: newItem["Status"] || "",
+        createdby: createdby,
+        updatedby: currentUser,
+      });
+    }
+  }
+
+  setExcelData(formattedData);
+  setNotuploadedData(notFoundData);
+};
 
   function hasNullValue(arr) {
     for (let i = 0; i < arr.length; i++) {
@@ -634,12 +593,16 @@ const TotUpload = (props) => {
     setShowModalTOT(false);
     setUploadSuccesFully("");
     setShowForm(true);
-    setFileName('');  // Reset the file name display
-    setNextDisabled(false);  // Optionally disable the next button
-    setUploadSuccesFully('');
+    setFileName(""); // Reset the file name display
+    setNextDisabled(false); // Optionally disable the next button
+    setUploadSuccesFully("");
   };
 
   const uploadDirect = () => {
+    console.log("notUploadedData", notUploadedData);
+    console.log(excelData);
+    
+    
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setShowForm(false);
     } else {
@@ -653,19 +616,18 @@ const TotUpload = (props) => {
     return () => clearTimeout(timer);
   }, []);
 
-  const uploadNewData =()=>{
+  const uploadNewData = () => {
     setShowForm(true);
-    setUploadNew(!uploadNew)
-  setFileName('');  
-  setNextDisabled(false);  
-  setUploadSuccesFully(''); 
-
-  }
+    setUploadNew(!uploadNew);
+    setFileName("");
+    setNextDisabled(false);
+    setUploadSuccesFully("");
+  };
 
   const proceedData = async () => {
     if (notUploadedData.length === 0 && excelData.length > 0) {
       setUploadNew(true);
-      props.uploadExcel(excelData, "tot");
+      props.uploadExcel(excelData, "alumniQuery");
     }
   };
 
@@ -685,7 +647,7 @@ const TotUpload = (props) => {
             id="contained-modal-title-vcenter"
             className="d-flex align-items-center"
           >
-            <h1 className="text--primary bebas-thick mb-0">Upload Data TOT</h1>
+            <h1 className="text--primary bebas-thick mb-0">Upload Alumni Query</h1>
           </Modal.Title>
         </Modal.Header>
         <Styled>
@@ -834,8 +796,11 @@ const TotUpload = (props) => {
           )}
         </Styled>
       </Modal>
+{console.log(showModalTOT)
+}
+console.log(notUploadedData);
 
-      <CheckTot
+      <CheckQuery
         show={showModalTOT}
         onHide={() => hideShowModal()}
         notUploadedData={notUploadedData}
@@ -846,4 +811,4 @@ const TotUpload = (props) => {
   );
 };
 
-export default TotUpload;
+export default QueryUpload;

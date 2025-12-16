@@ -16,6 +16,8 @@ export const batchesFields = `
   seats_available
   certificates_generated_at
   certificates_emailed_at
+  manual_email_sent
+  reminder_sent
   grant {
     id
     name
@@ -466,28 +468,28 @@ query GET_STUDENT_COUNT_BY_BATCH {
 `;
 
 
-export const GET_BATCH_STUDENTS_ATTENDANCE = `
-  query GET_BATCH_STUDENTS_ATTENDANCE ($id: ID!) {
-    attendancesConnection (where: {present: true, program_enrollment: {batch: { id: $id }}}) {
-      groupBy {
-        program_enrollment {
-          key
-          connection {
-            aggregate {
-              count
+  export const GET_BATCH_STUDENTS_ATTENDANCE = `
+    query GET_BATCH_STUDENTS_ATTENDANCE ($id: ID!) {
+      attendancesConnection (where: {present: true, program_enrollment: {batch: { id: $id }},session: { batch: { id: $id }}}) {
+        groupBy {
+          program_enrollment {
+            key
+            connection {
+              aggregate {
+                count
+              }
             }
           }
         }
       }
-    }
 
-    sessionsConnection (where: {batch: {id: $id}}) {
-      aggregate {
-        count
+      sessionsConnection (where: {batch: {id: $id}}) {
+        aggregate {
+          count
+        }
       }
     }
-  }
-`;
+  `;
 
 const programEnrollmentFields = `
   id
@@ -668,6 +670,7 @@ export const SEARCH_BY_STUDENTS = `
       where:{
         _or:[
           {full_name_contains:$query}
+          {student_id_contains:$query}
         ]
       }
     ){

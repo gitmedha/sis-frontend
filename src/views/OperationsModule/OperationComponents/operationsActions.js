@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_PICKLIST, GET_STUDENT } from "../../../graphql";
+import { GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT, UPDATE_PICKLIST } from "../../../graphql";
 import NP from "nprogress";
 import {
   GET_OPERATIONS,
@@ -27,7 +27,38 @@ import {
   SEARCH_BY_STUDENTS,
   SEARCH_BY_PROGRAMS,
   UPDATE_MENTORSHIP,
+  SEARCH_EMPLOYERS,
+  GET_COLLEGES_BY_PROJECT_NAME
 } from "../../../graphql/operations";
+
+
+export const getOrgsPicklist = async (field, table)=>{
+  try {
+       const response = await api.get(`/users-ops-activities/custom-picklist/${table}/${field}`);
+       return response.data;
+  } catch (error) {
+    console.error("Error fetching organization picklist:", error);
+    throw error;
+
+  }
+}
+
+export const searchEmployers = async function (searchValue) {
+  try {
+    const { data } = await api.post("/graphql", {
+      query: SEARCH_EMPLOYERS,
+      variables: {
+        limit: 20,
+        sort: "name:asc",
+        query: searchValue,
+      },
+    });
+
+    return data;
+  } catch (error) {
+    console.error(error.message);
+  }
+};
 
 export const searchPrograms = async function (searchValue) {
   try {
@@ -503,6 +534,14 @@ export const updateCollegePitch = async (id, data) => {
     .catch((error) => Promise.reject(error));
 };
 
+export const bulkCreatePmus = async (data) => {
+  try {
+    const response = await api.post("/pmuses/createBulkPmus", data);
+    return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
 export const bulkCreateOpsActivities = async (data) => {
   try {
     const response = await api.post(
@@ -571,6 +610,26 @@ export const bulkCreateAlumniQueries = async (data) => {
       "/alumni-queries/create-bulk-alumni-queries",
       data
     );
+    return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
+
+export const bulkCreateEcosystem = async (data) => {
+  try {   
+    const response = await api.post(
+      "/ecosystems/create-bulk-ecosystem",
+      data
+    );    
+return response;
+  } catch (error) {
+    return console.error(error);
+  }
+};
+export const bulkCreateCurriculumIntervention = async (data) => {
+  try {
+    const response = await api.post('/curricula/bulk-create', data);
     return response;
   } catch (error) {
     return console.error(error);
@@ -806,6 +865,124 @@ export const getOpsPickList = async () => {
       return pickList;
     })
     .catch((error) => {
+      return Promise.reject(error);
+    });
+};
+
+export const getAllInstitute = async () => {
+  try {
+    let count = 0;
+    let instituteData = [];
+    const countResponse = await api.post("/graphql", {
+      query: GET_INSTITUTES_COUNT,
+    });
+    count = countResponse.data.data.institutionsConnection.aggregate.count;
+    for (let i = 0; i < count; i += 500) {
+      const variables = {
+        limit: 500,
+        start: i,
+      };
+
+      const batchResponse = await api.post("/graphql", {
+        query: GET_ALL_INSTITUTES,
+        variables,
+      });
+
+      instituteData = [
+        ...instituteData,
+        ...batchResponse.data.data.institutionsConnection.values,
+      ];
+    }
+    return instituteData;
+  } catch (err) {
+    console.error(err);
+  }
+};
+
+export const getAllBatchs = async () => {
+  try {
+    let count = 0;
+    let batchData = [];
+
+    // First API call to get the count of batches
+    const countResponse = await api.post("/graphql", {
+      query: GET_BATCHES,
+    });
+
+    count = countResponse.data.data.batchesConnection.aggregate.count;
+
+    for (let i = 0; i < count; i += 500) {
+      const variables = {
+        limit: 500,
+        start: i,
+      };
+
+      const batchResponse = await api.post("/graphql", {
+        query: GET_ALL_BATCHES_UPLOAD_FILE,
+        variables,
+      });
+      batchData = [
+        ...batchData,
+        ...batchResponse.data.data.batches,
+      ];
+      return batchData;
+    }
+  } catch (err) {
+    console.error(err); 
+  }
+};
+
+
+export const searchCurriculumInterventions = async (searchParams) => {
+  try {
+    const response = await api.post('/curriculum-interventions/search-ops', searchParams);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCurriculumInterventionFieldValues = async (field) => {
+  try {
+    const response = await api.get(`/curriculum-interventions/distinct/${field}`);
+    return response.data;
+  } catch (error) {
+    throw error;
+  }
+};
+
+export const getCollegesByProjectName = async (projectName) => {
+  try {
+    const response = await api.post("/graphql", {
+      query: GET_COLLEGES_BY_PROJECT_NAME,
+      variables: { project_name:projectName },
+    });
+    return response?.data?.data?.institutionsConnection?.values?.map(college=>({
+      label: college.name,
+      value:college.name
+    }))
+
+  } catch (error) {
+    console.error("Error fetching colleges by project name:", error);
+    throw error;
+  }
+}
+
+
+export const UpdatePicklist = async (id, values) => {
+  return await api
+    .post("/graphql", {
+      query: UPDATE_PICKLIST,
+      variables: {
+        id,
+        values,
+      },
+    })
+    .then((res) => {
+      return res.data?.data?.updatePicklistFieldConfig?.picklistFieldConfig || null;
+    })
+    .catch((error) => {
+      console.error("Error updating picklist:", error);
       return Promise.reject(error);
     });
 };

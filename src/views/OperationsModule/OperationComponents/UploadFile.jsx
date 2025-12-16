@@ -426,7 +426,6 @@ const UploadFile = (props) => {
       );
 
      const batchId = newItem["Student Type"] === "Non-Medha Student" ? true : (batch ? batch.id : null);
-     console.log(typeof batchId);
       const instituteId = institute ? institute.id : null;
       const userId = user ? user.id : null;
 

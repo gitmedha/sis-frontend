@@ -47,6 +47,7 @@ function InstitutionSearchBar({
     { key: 3, label: "State", value: "state" },
     { key: 4, label: "Status", value: "status" },
     { key: 5, label: "Assigned To", value: "assigned_to" },
+    {key:6, label:"Source", value:"source"},
   ]);
 
   const [isDisabled, setDisbaled] = useState(true);

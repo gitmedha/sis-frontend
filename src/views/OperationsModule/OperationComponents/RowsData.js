@@ -144,7 +144,6 @@ export const RowsData = (props) => {
       props.handleChange(e,"student_type",id)
     }
   }
-  
 
   return (
     <>
@@ -361,14 +360,30 @@ export const RowsData = (props) => {
         </td>
 
         <td>
-          <input
-            className="table-input h-2"
-            type="text"
-            ref={org}
-            onChange={(e) => handleInputChange(row.id, "organization",org)}
+          <Select
+            className="basic-single table-input"
+            classNamePrefix="select"
+            isClearable={true}
+            isSearchable={true}
+            name="organization"
+            options={props.organizationOptions}
+            onChange={(selected) => {
+              console.log(selected);
+              props.handleChange(
+                selected ? selected.value : null,
+                "organization",
+                row.id
+              );
+            }}
 
+            onInputChange={inputValue => {
+              props.filterOrganization(inputValue).then(data => {
+                props.setOrganizationOptions(data);
+              });
+            }}
           />
         </td>
+
         <td>
           <input
             className={`table-input h-2 ${

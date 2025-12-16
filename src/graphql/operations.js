@@ -75,6 +75,7 @@ const usersTotsFields = `
     gender
     contact
     designation
+    email
 `;
 const studentUpskillingFields = `
     id
@@ -243,8 +244,59 @@ updatedby {
 
 `
 
+const ecosystemFields = `
+    id
+  activity_type
+  date_of_activity
+  topic
+  govt_dept_partner_with
+  type_of_partner
+  employer_name_external_party_ngo_partner_with
+  attended_students
+  male_participants
+  female_participants
+  medha_poc_1 {
+    id
+    username
+  }
+  medha_poc_2 {
+    id
+    username
+  }
+  created_at
+  updated_at
+  CreatedBy {
+    username
+  }
+  UpdatedBy {
+    username
+  }
+`;
 
-
+const curriculumInterventionFields = `
+    id
+    module_created_for
+    module_developed_revised
+    start_date
+    end_date
+    module_name
+    govt_dept_partnered_with
+    medha_poc{
+        id
+        username
+    }
+    created_at
+    updated_at
+    CreatedBy {
+      id
+      username
+    }
+    UpdatedBy {
+      id
+      username
+    }
+    isactive
+`;
 
 export const GET_OPERATIONS = `
     query GET_OPERATIONS ($limit:Int, $start:Int, $sort:String){
@@ -261,9 +313,28 @@ export const GET_OPERATIONS = `
         ) {
             values {
                 ${operationFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     } 
+`;
+
+export const UPDATE_PMUS_ENTRY = `
+  mutation UPDATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
 `;
 
 
@@ -285,7 +356,28 @@ export const GET_USERSTOTS = `
         ) {
             values {
                 ${usersTotsFields}
-            }
+            },
+            aggregate {
+                count
+            },
+        }
+    }
+`;
+
+export const GET_ECOSYSTEM_DATA = `
+    query GET_ECOSYSTEM_DATA($limit: Int, $start: Int, $sort: String) {
+        activeEcosystemData: ecosystemsConnection(
+            sort: $sort,    
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+            ${ecosystemFields}
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -306,7 +398,10 @@ export const GET_STUDENTS_UPSKILLINGS = `
         ) {
             values {
                 ${studentUpskillingFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -325,7 +420,10 @@ export const GET_DTE_SAMARTH_SDITS = `
             }
             aggregate {
                 count
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 
@@ -346,7 +444,10 @@ export const GET_ALUMNI_QUERIES = `
         ) {
             values {
                 ${alumniQueriesFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -367,7 +468,10 @@ export const GET_COLLEGE_PITCHES = `
         ) {
             values {
                 ${collegePitchesFields}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -377,7 +481,7 @@ export const GET_MENTORSHIP = `
         allMentoshipData: mentorshipsConnection {
             aggregate {
                 count
-            }
+            },
         }
         activeMentoshipData: mentorshipsConnection(
             sort: $sort,
@@ -387,7 +491,10 @@ export const GET_MENTORSHIP = `
         ) {
             values {
                 ${mentoshipfeild}
-            }
+            },
+            aggregate {
+                count
+            },
         }
     }
 `;
@@ -738,3 +845,348 @@ export const SEARCH_BY_PROGRAMS = `
     }
   }
 `
+
+export const UPDATE_ECOSYSTEM = `
+  mutation UPDATE_ECOSYSTEM($data: editEcosystemInput!, $id: ID!) {
+    updateEcosystem(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      ecosystem {
+        id
+        activity_type
+        date_of_activity
+        topic
+        govt_dept_partner_with
+        type_of_partner
+        employer_name_external_party_ngo_partner_with
+        attended_students
+        male_participants
+        female_participants
+        medha_poc_1 {
+          id
+          username
+        }
+        medha_poc_2 {
+          id
+          username
+        }
+        isactive
+        UpdatedBy {
+          id
+          username
+        }
+      }
+    }
+  }
+`;
+
+
+export const DELETE_ECOSYSTEM = `
+mutation DeleteEcosystem($id: ID!) {
+  deleteEcosystem(id: $id) {
+    data {
+      id
+    }
+  }
+}
+`
+
+export const DEACTIVATE_ECOSYSTEM_ENTRY = `
+  mutation DEACTIVATE_ECOSYSTEM_ENTRY($id: ID!, $data: editEcosystemInput!) {
+   updateEcosystem(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    )
+       {
+      ecosystem {
+        isactive
+      }
+    } 
+  }
+`;
+
+export const GET_CURRICULUM_INTERVENTIONS = `
+    query GET_CURRICULUM_INTERVENTIONS($limit: Int, $start: Int, $sort: String) {
+        activeCurriculumInterventions: curriculaConnection(
+            sort: $sort,
+            start: $start,
+            limit: $limit,
+            where: { isactive: true }
+        ) {
+            values {
+                ${curriculumInterventionFields}
+            },
+            aggregate {
+                count
+            },
+        }
+    }
+`;
+
+export const UPDATE_CURRICULUM_INTERVENTION = `
+  mutation UPDATE_CURRICULUM_INTERVENTION($data: editCurriculumInterventionInput!, $id: ID!) {
+    updateCurriculumIntervention(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    ) {
+      curriculumIntervention {
+        id
+        module_created_for
+        module_developed_revised
+        start_date
+        end_date
+        module_name
+        govt_dept_partnered_with
+        medha_poc
+        created_at
+        updated_at
+        created_by { id username }
+        updated_by { id username }
+        isactive
+      }
+    }
+  }
+`;
+
+export const DELETE_CURRICULUM_INTERVENTION = `
+mutation DeleteCurriculumIntervention($id: ID!) {
+  deleteCurriculumIntervention(id: $id) {
+    data {
+      id
+    }
+  }
+}
+`;
+
+export const DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY = `
+  mutation DEACTIVATE_CURRICULUM_INTERVENTION_ENTRY($id: ID!, $data: editCurriculumInterventionInput!) {
+   updateCurriculumIntervention(
+      input: {
+        data: $data,
+        where: { id: $id }
+      }
+    )
+       {
+      curriculumIntervention {
+        isactive
+      }
+    } 
+  }
+`;
+
+// PMus GraphQL operations
+export const GET_PMUS = `
+  query GET_PMUS($limit: Int, $start: Int, $sort: String) {
+    pmusesConnection(
+      sort: $sort,
+      start: $start,
+      limit: $limit
+    ) {
+      values {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_PMUS_COUNT = `
+  query GET_PMUS_COUNT {
+    pmusesConnection {
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const GET_PMUS_BY_ID = `
+  query GET_PMUS_BY_ID($id: ID!) {
+    pmus(id: $id) {
+      id
+      year
+      pmu
+      State
+      medha_poc { id username }
+      created_at
+      updated_at
+    }
+  }
+`;
+
+export const CREATE_PMUS = `
+  mutation CREATE_PMUS($data: PMUSInput!) {
+    createPmus(input: { data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const UPDATE_PMUS = `
+  mutation UPDATE_PMUS($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const DELETE_PMUS = `
+  mutation DELETE_PMUS($id: ID!) {
+    deletePmus(input: { where: { id: $id } }) {
+      pmus {
+        id
+      }
+    }
+  }
+`;
+
+export const CREATE_BULK_PMUS = `
+  mutation CREATE_BULK_PMUS($data: [PMUSInput]!) {
+    createBulkPmus(input: { data: $data }) {
+      pmuses {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+    }
+  }
+`;
+
+export const SEARCH_PMUS = `
+  query SEARCH_PMUS($searchFields: [String], $searchValues: [JSON]) {
+    searchOps(
+      searchFields: $searchFields,
+      searchValues: $searchValues
+    ) {
+      id
+      year
+      pmu
+      State
+      medha_poc { id username }
+      created_at
+      updated_at
+    }
+  }
+`;
+
+export const GET_PMUS_DISTINCT_FIELD = `
+  query GET_PMUS_DISTINCT_FIELD($field: String!) {
+    findDistinctField(field: $field) {
+      values
+    }
+  }
+`;
+
+export const GET_PMUS_DATA = `
+  query GetPMusData($where: JSON) {
+    pmusesConnection(where: $where) {
+      values {
+        id
+        year
+        pmu
+        State
+        medha_poc { id username }
+        created_at
+        updated_at
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+`;
+
+export const DEACTIVATE_PMUS_ENTRY = `
+  mutation DEACTIVATE_PMUS_ENTRY($id: ID!, $data: editPmusInput!) {
+    updatePmus(input: { where: { id: $id }, data: $data }) {
+      pmus {
+        isactive
+      }
+    }
+  }
+`;
+
+
+export const GET_COLLEGES_BY_PROJECT_NAME = `
+  query GET_COLLEGES_BY_PROJECT_NAME($project_name: String, $limit: Int, $start: Int, $sort: String) {
+  institutionsConnection(
+    sort: $sort,
+    start: $start,
+    limit: $limit,
+    where: {
+      project_name: $project_name,
+      source: "System Adoption"
+    }
+  ) {
+    values {
+      id
+      name
+      source
+    }
+    aggregate {
+      count
+    }
+  }
+}
+`;
+
+export const SEARCH_EMPLOYERS = `
+  query SEARCH_EMPLOYERS($query:String,$limit:Int,$sort:String){
+    employersConnection(
+      sort:$sort
+      limit:$limit
+      where:{
+        _or:[
+          {name_contains:$query}
+        ]
+      }
+    ){
+      values {
+        id
+        name
+      }
+      aggregate {
+        count
+      }
+    }
+  }
+    
+`
+
+
+

@@ -88,7 +88,8 @@ const Details = (props) => {
         <div className="row latto-regular">
           <div className="col-6 col-md-4">
             <DetailField label="Name" className="capitalize"value={name} />
-            <DetailField label="Industry" value={<Badge value={industry} pickList={pickList.industry} />} />
+            {/* <DetailField label="Industry" value={<Badge value={industry} pickList={pickList.industry} />} /> */}
+            <DetailField label="Industry" className="capitalize" value={industry} />
             <DetailField label="Website" value={ <a href={website} target="_blank" rel="noreferrer" className="latto-regular" > {website} </a> } />
             <DetailField label="Email" value= {<a target="_blank" href={`mailto:${email}`} rel="noreferrer"> {email} </a> } />
             &nbsp;

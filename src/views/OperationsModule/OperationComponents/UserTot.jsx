@@ -36,7 +36,10 @@ const UserTot = (props) => {
       contact: "",
       designation: "",
       start_date:"",
-      end_date:""
+      end_date:"",
+      email:"",
+      institution: "",
+      new_entry:""
     },
     // Add more initial rows as needed
   ]);
@@ -59,7 +62,9 @@ const UserTot = (props) => {
       contact: "",
       designation: "",
       start_date:"",
-      end_date:""
+      end_date:"",
+      email:"",
+      new_entry:""
     },
   ]);
   const [newRow, setNewRow] = useState({
@@ -80,7 +85,9 @@ const UserTot = (props) => {
     contact: "",
     designation: "",
     start_date:"",
-    end_date:""
+    end_date:"",
+    email:"",
+    new_entry:""
   });
   // 
   const [showLimit, setshowLimit] = useState(false);
@@ -148,7 +155,6 @@ const UserTot = (props) => {
         );
       });
     }
-    console.log(options);
     updateRow(rowid, key, options?.value);
   };
   const updateRow = (id, field, value) => {
@@ -290,7 +296,9 @@ const UserTot = (props) => {
           contact: "",
           designation: "",
           start_date:"",
-          end_date:""
+          end_date:"",
+          email:" ",
+          institution: ""
         },
       ]);
     } catch (error) {
@@ -334,7 +342,7 @@ const UserTot = (props) => {
         return {
           ...institution,
           label: institution.name,
-          value: Number(institution.id),
+          value: institution.name,
         };
       });
 
@@ -437,6 +445,7 @@ const UserTot = (props) => {
                 <tr>
                   {/* <th className="id">ID</th> */}
                   <th>Participant Name *</th>
+                  <th>Email id</th>
                   <th>Age </th>
                   <th>Gender </th>
                   <th>Mobile no.  </th>
@@ -449,11 +458,11 @@ const UserTot = (props) => {
                   <th>Module Name</th>
                   <th>Start Date *</th>
                   <th>End Date *</th>
-                  <th>Trainer 1 *</th>
-                  <th>Trainer 2 </th>
+                  <th>Facilitator 1 *</th>
+                  <th>Facilitator 2 </th>
                   <th>Certificate Given *</th>
                   <th>Project Type *</th>
-                  {/* <th>New Entry</th> */}
+                  <th>New Entry</th>
                 </tr>
               </thead>
               <tbody>
@@ -471,6 +480,8 @@ const UserTot = (props) => {
                     statedata={stateOptions}
                     areaOptions={areaOptions}
                     classValue={classValue}
+                    filterInstitution={filterInstitution}
+                    setInstitutionOptions={setInstitutionOptions}
                   />
                 ))}
               </tbody>

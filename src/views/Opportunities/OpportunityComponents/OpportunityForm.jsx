@@ -9,7 +9,6 @@ import  {getOpportunitiesPickList} from "./opportunityAction"
 import { getAllEmployers,searchEmployers } from '../../Students/StudentComponents/StudentActions';
 import { getAddressOptions, getStateDistricts }  from "../../Address/addressActions";
 import { filterAssignedTo, getDefaultAssigneeOptions } from '../../../utils/function/lookupOptions';
-
 const Section = styled.div`
   padding-top: 30px;
   padding-bottom: 30px;
@@ -51,7 +50,10 @@ const OpportunityForm = (props) => {
   const [districtOptions, setDistrictOptions] = useState([]);
   const [areaOptions, setAreaOptions] = useState([]);
   const [cityOptions, setCityOptions] = useState([]);
+  const [experienceOption, setExperienceOption] = useState([]);
   const userId = parseInt(localStorage.getItem('user_id'))
+  const [earningTypeOptions, setEarningTypeOptions] = useState([]);
+
 
   const [initialValues, setInitialValues] = useState({
     employer: '',
@@ -71,6 +73,8 @@ const OpportunityForm = (props) => {
     pin_code: '',
     medha_area: '',
     district:'',
+    experience_required:'',
+    earning_type:''
   });
 
   useEffect(() => {
@@ -98,13 +102,23 @@ const OpportunityForm = (props) => {
         };
       }));
 
-      setTypeOptions(data.type.map((item) => {
+      setTypeOptions(data?.type.map((item) => {
         return {
           key: item.value,
           label: item.value,
           value: item.value,
         };
       }));
+      setExperienceOption(
+        
+        data?.experience_required?.map((item) => {
+          return {
+            key: item,
+            label: item,
+            value: item,
+          };
+        })
+      )
 
       setDepartmentOptions(data.department.map((item) => {
         return {
@@ -120,7 +134,13 @@ const OpportunityForm = (props) => {
           value: item.value,
         };
       }));
-    });
+      setEarningTypeOptions(
+        data.earning_type.map((item) => ({
+          key: item.value,
+          value: item.value,
+          label: item.value,
+        })));
+      });
 
     getAllEmployers().then((data) => {
       const employersData = data?.data?.data?.employers.map((employer) => ({
@@ -149,6 +169,8 @@ const OpportunityForm = (props) => {
         ...props,
         assigned_to: props?.assigned_to?.id,
         employer: props.employer ? Number(props.employer.id) : '',
+        earning_type: props.earning_type || '', // Handle null values
+        experience_required: props.experience_required ?? '', // ✅ make it a string
       });
     }
 
@@ -191,29 +213,64 @@ const OpportunityForm = (props) => {
 
   const onSubmit = async (values) => {
     
-  values.city = values.city[0].toUpperCase() + values.city.slice(1);
-  values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
- delete values.updated_at
-  values.skills_required = values.skills_required
-    .split(",")
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(" ")
-  values.role_description = values.role_description
-    .split(",")
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(" ")
-  values.address = values.address
-    .split(" ")
-    .map((word) => {
-      return word[0].toUpperCase() + word.substring(1);
-    }).join(" ")
- 
+    // Safely capitalize city
+    if (values.city && values.city.trim()) {
+      values.city = values.city[0].toUpperCase() + values.city.slice(1);
+    }
+    
+    // Safely capitalize role_or_designation
+    if (values.role_or_designation && values.role_or_designation.trim()) {
+      values.role_or_designation = values.role_or_designation[0].toUpperCase() + values.role_or_designation.slice(1);
+    }
+    
+    delete values.updated_at;
+    
+    // Safely capitalize skills_required
+    if (values.skills_required && values.skills_required.trim()) {
+      values.skills_required = values.skills_required
+        .split(",")
+        .map((word) => {
+          const trimmedWord = word.trim();
+          return trimmedWord ? trimmedWord[0].toUpperCase() + trimmedWord.substring(1) : '';
+        })
+        .filter(word => word !== '')
+        .join(" ");
+    }
+    
+    // Safely capitalize role_description
+    if (values.role_description && values.role_description.trim()) {
+      values.role_description = values.role_description
+        .split(",")
+        .map((word) => {
+          const trimmedWord = word.trim();
+          return trimmedWord ? trimmedWord[0].toUpperCase() + trimmedWord.substring(1) : '';
+        })
+        .filter(word => word !== '')
+        .join(" ");
+    }
+    
+    // Safely capitalize address
+    if (values.address && values.address.trim()) {
+      values.address = values.address
+        .split(" ")
+        .map((word) => {
+          const trimmedWord = word.trim();
+          return trimmedWord ? trimmedWord[0].toUpperCase() + trimmedWord.substring(1) : '';
+        })
+        .filter(word => word !== '')
+        .join(" ");
+    }
+    
+    if (values.type !== 'Freelance') {
+      values.earning_type = null;
+    }
+    
     onHide(values);
   };
+  
 
-  const handleEmployerChange = (employer) => {
+
+const handleEmployerChange = (employer) => {
     setInitialValues({
       ...initialValues,
       employer: employer.value || '',
@@ -324,6 +381,22 @@ const OpportunityForm = (props) => {
                       required
                     />
                   </div>
+                  {values.type === "Freelance" && (
+                  <div className="col-md-6 col-sm-12 mb-2">
+                    <Input
+
+                       icon="down"
+                       name="earning_type"
+                       control="lookup"
+                       label="Earning Type"
+                       placeholder="Earning Type"
+                       options={earningTypeOptions}
+                       className="form-control"
+                       required
+                     />
+
+                   </div> )}
+
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="number_of_opportunities"
@@ -374,13 +447,14 @@ const OpportunityForm = (props) => {
                       options={departmentOptions}
                     />
                   </div>
+                  
                   <div className="col-md-6 col-sm-12 mb-2">
                     <Input
                       name="salary"
                       type="number"
                       control="input"
-                      label="Salary"
-                      placeholder="Salary"
+                      label="Monthly Salary Offered"
+                      placeholder="Monthly Salary Offered"
                       className="form-control"
                       required
                     />
@@ -407,6 +481,18 @@ const OpportunityForm = (props) => {
                       required
                     />
                   </div>
+                  <div className="col-md-6 col-sm-12 mb-2">
+                      <Input
+                        icon="down"
+                        name="experience_required"
+                        control="lookup"
+                        required
+                        label="Experience Required"
+                        placeholder="Experience"
+                        options={experienceOption}
+                        className="form-control"
+                      />
+                    </div>
                   <div className="col-sm-12 mb-2">
                     <Input
                       name="role_description"
