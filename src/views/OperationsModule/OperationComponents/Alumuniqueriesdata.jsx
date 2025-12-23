@@ -138,7 +138,7 @@ const Alumuniqueriesdata = (props) => {
                   /> */}
                     <DetailField
                     
-                    label="Student Name"
+                    label="Student Id"
                     value={<Anchor text={props.student_name ? props.student_id.student_id : ""} target="_blank" rel="noopener noreferrer" href={`/student/${props.student_id?.id}`} />}
                   />
                   <DetailField label="Query Description" value={props.query_desc} />
