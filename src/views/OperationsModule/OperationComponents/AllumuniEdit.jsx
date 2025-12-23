@@ -315,6 +315,22 @@ const AllumuniEdit = (props) => {
                           />
                         </div>
                         <div className="col-md-6 col-sm-12 mb-2">
+                          <div className="form-group">
+                            <label>Student ID</label>
+                            <input
+                              type="text"
+                              className="form-control"
+                              value={
+                                props.student_id?.student_id
+                                  ? props.student_id.student_id
+                                  : ""
+                              }
+                              disabled
+                              readOnly
+                            />
+                          </div>
+                        </div>
+                        <div className="col-md-6 col-sm-12 mb-2">
                           <Input
                             control="input"
                             name="father_name"
