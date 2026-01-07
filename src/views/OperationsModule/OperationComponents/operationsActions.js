@@ -1,5 +1,5 @@
 import api from "../../../apis";
-import { GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT, UPDATE_PICKLIST } from "../../../graphql";
+import { GET_ALL_BATCHES_UPLOAD_FILES, GET_ALL_BATCHES_UPLOAD_FILE, GET_ALL_INSTITUTES, GET_BATCHES, GET_INSTITUTES_COUNT, GET_PICKLIST, GET_STUDENT, UPDATE_PICKLIST } from "../../../graphql";
 import NP from "nprogress";
 import {
   GET_OPERATIONS,
@@ -918,15 +918,16 @@ export const getAllBatchs = async () => {
       };
 
       const batchResponse = await api.post("/graphql", {
-        query: GET_ALL_BATCHES_UPLOAD_FILE,
+        query: GET_ALL_BATCHES_UPLOAD_FILES,
         variables,
       });
       batchData = [
         ...batchData,
-        ...batchResponse.data.data.batches,
+        ...batchResponse.data.data.batchesConnection.values,
       ];
-      return batchData;
+      
     }
+    return batchData;
   } catch (err) {
     console.error(err); 
   }
