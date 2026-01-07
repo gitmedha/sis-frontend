@@ -708,3 +708,15 @@ query GET_ALL_BATCHES {
   }
 }
 `;
+
+export const GET_ALL_BATCHES_UPLOAD_FILES = `
+query GET_ALL_BATCHES_UPLOAD_FILE($start:Int, $limit:Int) {
+  batchesConnection(start:$start, limit:$limit) {
+    values {
+      id
+      name
+      status
+    }
+  }
+}
+`;
