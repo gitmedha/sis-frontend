@@ -60,6 +60,8 @@ const UpskillingUpload = (props) => {
   const [batchOption, setBatchOption] = useState([]);
   const [programOption, setProgramOption] = useState([]);
   const [validationComplete, setValidationComplete] = useState(false); // New state variable
+  const [dataLoaded, setDataLoaded] = useState(false); // Track if all data is loaded
+  const [pendingExcelData, setPendingExcelData] = useState(null); // Store Excel data if processed before data is ready
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -193,7 +195,15 @@ const UpskillingUpload = (props) => {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
       processParsedData(filteredArray);
+
+      // Check if data is loaded before processing
+      if (dataLoaded && batchOption.length > 0 && instituteOptions.length > 0 && assigneOption.length > 0) {
+        processParsedData(filteredArray);
+      } else {
+        setPendingExcelData(filteredArray);
+      }
     }
+      
   };
 
   const excelSerialDateToJSDate = (serial) => {
@@ -214,6 +224,7 @@ const UpskillingUpload = (props) => {
   };
 
   const processParsedData = async (data) => {
+    
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
@@ -225,15 +236,104 @@ const UpskillingUpload = (props) => {
       });
 
       const currentUser = localStorage.getItem("user_id");
-      const batch = batchOption.find(
-        (batch) => batch.name === newItem["Batch"]
-      );
-      const institute = instituteOptions.find(
-        (institute) => institute.name === newItem["Institution"]
-      );
-      const user = assigneOption.find(
-        (user) => user.name === newItem["Assigned To"]
-      );
+      
+      // Improved batch matching with multiple strategies
+      const excelBatchName = newItem["Batch"];
+      const normalizeSpaces = (str) => {
+        if (!str) return str;
+        return str.trim().replace(/\s+/g, ' ');
+      };
+      const normalizedExcel = normalizeSpaces(excelBatchName);
+      
+      
+      
+      let batch = null;
+      
+      
+      if (excelBatchName) {
+        
+        // First try exact match
+        batch = batchOption.find(
+          (batch) => batch.name === excelBatchName
+        );
+       
+        
+        // If not found, try trimmed match (handles extra spaces)
+        if (!batch) {
+          batch = batchOption.find(
+            (batch) => batch.name && normalizeSpaces(batch.name) === normalizedExcel
+          );
+         
+        }
+        
+        // If still not found, try case-insensitive normalized match
+        if (!batch) {
+          batch = batchOption.find(
+            (batch) => batch.name && normalizeSpaces(batch.name).toLowerCase() === normalizedExcel.toLowerCase()
+          );
+         
+        }
+      }
+      
+      
+      // Improved institution matching with multiple strategies
+      const excelInstituteName = newItem["Institution"];
+      let institute = null;
+      
+      
+      if (excelInstituteName) {
+        // First try exact match
+        institute = instituteOptions.find(
+          (institute) => institute.name === excelInstituteName
+        );
+       
+        
+        // If not found, try trimmed match
+        if (!institute) {
+          institute = instituteOptions.find(
+            (institute) => institute.name && institute.name.trim() === excelInstituteName.trim()
+          );
+         
+        }
+        
+        // If still not found, try case-insensitive trimmed match
+        if (!institute) {
+          institute = instituteOptions.find(
+            (institute) => institute.name && institute.name.trim().toLowerCase() === excelInstituteName.trim().toLowerCase()
+          );
+        }
+      }
+      
+      
+      // Improved user matching with multiple strategies
+      const excelUserName = newItem["Assigned To"];
+      let user = null;
+      let userMatchType = null;
+      
+      if (excelUserName) {
+        // First try exact match
+        user = assigneOption.find(
+          (user) => user.name === excelUserName
+        );
+       
+        
+        // If not found, try trimmed match
+        if (!user) {
+          user = assigneOption.find(
+            (user) => user.name && user.name.trim() === excelUserName.trim()
+          );
+          
+        }
+        
+        // If still not found, try case-insensitive trimmed match
+        if (!user) {
+          user = assigneOption.find(
+            (user) => user.name && user.name.trim().toLowerCase() === excelUserName.trim().toLowerCase()
+          );
+        }
+      }
+      
+     
       const batchId = batch ? batch.id : null;
       const instituteId = institute ? institute.id : null;
       const assignedUserId = user ? user.id : null;
@@ -265,13 +365,11 @@ const UpskillingUpload = (props) => {
             student.data?.studentsConnection.values[0].id,
             10
           );
-          studentExists = student?.data?.studentsConnection?.values.filter((val)=>val.student_id == studentId).length > 0 ;
+          studentExists = student?.data?.studentsConnection?.values.length > 0;
         } catch (err) {
           console.error(`Error fetching student with ID: ${studentId}`, err);
         }
       }
-      console.log(studentExists);
-      
       const createdby = Number(userId);
       const updatedby = Number(userId);
       if (
@@ -295,7 +393,7 @@ const UpskillingUpload = (props) => {
               },
           student_id: studentExists
             ? newItem["Student ID"]
-            : { value: newItem["Student ID"] || "NO Data", notFound: true } || "No Data",
+            : { value: newItem["Student ID"], notFound: true } || "No Data",
           institution: institute
             ? institute.name
             : {
@@ -316,16 +414,16 @@ const UpskillingUpload = (props) => {
             ? { value: startDate, notFound: true }
             : isStartDateValid
             ? startDate
-            : { value: newItem['Start Date'] ? newItem['Start Date'] : "No data", notFound: true },
+            : { value: startDate ? startDate : "No data", notFound: true },
           end_date: parseDate
             ? { value: endDate, notFound: true }
             : isEndDateValid
             ? endDate
-            : { value: newItem['End Date'] ? newItem['End Date'] : "no data", notFound: true },
-          course_name: newItem["Certificate Course Name"]? newItem["Certificate Course Name"] :"No Data" || "",
-          certificate_received: newItem["Certificate Received"] ? newItem["Certificate Received"] :"No Data" || "",
-          category: newItem["Category"]? newItem["Category"] :"No Data" || "",
-          sub_category: newItem["Sub Category"] ? newItem["Sub Category"]:"No Data" || "",
+            : { value: endDate ? endDate : "no data", notFound: true },
+          course_name: newItem["Certificate Course Name"] || "",
+          certificate_received: newItem["Certificate Received"] || "",
+          category: newItem["Category"] || "",
+          sub_category: newItem["Sub Category"] || "",
           issued_org: newItem["Issuing Organization"] || "",
           program_name: newItem["Program Name"] || "",
         });
@@ -395,15 +493,23 @@ const UpskillingUpload = (props) => {
   useEffect(() => {
     const getbatch = async () => {
       let batchData = await getAllBatchs();
-      setBatchOption(batchData);
+      setBatchOption(batchData || []);
       let instituteData = await getAllInstitute();
-      setInstituteOptions(instituteData);
+      setInstituteOptions(instituteData || []);
       const data = await getAllMedhaUsers();
-      setAssigneeOption(data);
+      setAssigneeOption(data || []  );
+      setDataLoaded(true);
     };
 
     getbatch();
   }, [props]);
+
+  useEffect(() => {
+    if (dataLoaded && pendingExcelData && batchOption.length > 0 && instituteOptions.length > 0 && assigneOption.length > 0) {
+      processParsedData(pendingExcelData);
+      setPendingExcelData(null); // Clear pending data
+    }
+  }, [dataLoaded, batchOption, instituteOptions, assigneOption, pendingExcelData]);
 
   return (
     <>
