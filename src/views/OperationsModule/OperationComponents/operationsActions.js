@@ -923,10 +923,11 @@ export const getAllBatchs = async () => {
       });
       batchData = [
         ...batchData,
-        ...batchResponse.data.data.batches,
+        ...batchResponse.data.data.batchesConnection.values,
       ];
-      return batchData;
+      
     }
+    return batchData;
   } catch (err) {
     console.error(err); 
   }

@@ -60,6 +60,8 @@ const UpskillingUpload = (props) => {
   const [batchOption, setBatchOption] = useState([]);
   const [programOption, setProgramOption] = useState([]);
   const [validationComplete, setValidationComplete] = useState(false); // New state variable
+  const [dataLoaded, setDataLoaded] = useState(false); // Track if all data is loaded
+  const [pendingExcelData, setPendingExcelData] = useState(null); // Store Excel data if processed before data is ready
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -192,7 +194,13 @@ const UpskillingUpload = (props) => {
     if (validateColumns(filteredArray, expectedColumns)) {
       setUploadSuccesFully(`File Uploaded`);
       setNextDisabled(true);
-      processParsedData(filteredArray);
+      
+      // Check if data is loaded before processing
+      if (dataLoaded && batchOption.length > 0 && instituteOptions.length > 0 && assigneOption.length > 0) {
+        processParsedData(filteredArray);
+      } else {
+        setPendingExcelData(filteredArray);
+      }
     }
   };
 
@@ -214,6 +222,7 @@ const UpskillingUpload = (props) => {
   };
 
   const processParsedData = async (data) => {
+    
     const formattedData = [];
     const notFoundData = [];
     const userId = localStorage.getItem("user_id");
@@ -225,15 +234,104 @@ const UpskillingUpload = (props) => {
       });
 
       const currentUser = localStorage.getItem("user_id");
-      const batch = batchOption.find(
-        (batch) => batch.name === newItem["Batch"]
-      );
-      const institute = instituteOptions.find(
-        (institute) => institute.name === newItem["Institution"]
-      );
-      const user = assigneOption.find(
-        (user) => user.name === newItem["Assigned To"]
-      );
+      
+      // Improved batch matching with multiple strategies
+      const excelBatchName = newItem["Batch"];
+      const normalizeSpaces = (str) => {
+        if (!str) return str;
+        return str.trim().replace(/\s+/g, ' ');
+      };
+      const normalizedExcel = normalizeSpaces(excelBatchName);
+      
+      
+      
+      let batch = null;
+      
+      
+      if (excelBatchName) {
+        
+        // First try exact match
+        batch = batchOption.find(
+          (batch) => batch.name === excelBatchName
+        );
+       
+        
+        // If not found, try trimmed match (handles extra spaces)
+        if (!batch) {
+          batch = batchOption.find(
+            (batch) => batch.name && normalizeSpaces(batch.name) === normalizedExcel
+          );
+         
+        }
+        
+        // If still not found, try case-insensitive normalized match
+        if (!batch) {
+          batch = batchOption.find(
+            (batch) => batch.name && normalizeSpaces(batch.name).toLowerCase() === normalizedExcel.toLowerCase()
+          );
+         
+        }
+      }
+      
+      
+      // Improved institution matching with multiple strategies
+      const excelInstituteName = newItem["Institution"];
+      let institute = null;
+      
+      
+      if (excelInstituteName) {
+        // First try exact match
+        institute = instituteOptions.find(
+          (institute) => institute.name === excelInstituteName
+        );
+       
+        
+        // If not found, try trimmed match
+        if (!institute) {
+          institute = instituteOptions.find(
+            (institute) => institute.name && institute.name.trim() === excelInstituteName.trim()
+          );
+         
+        }
+        
+        // If still not found, try case-insensitive trimmed match
+        if (!institute) {
+          institute = instituteOptions.find(
+            (institute) => institute.name && institute.name.trim().toLowerCase() === excelInstituteName.trim().toLowerCase()
+          );
+        }
+      }
+      
+      
+      // Improved user matching with multiple strategies
+      const excelUserName = newItem["Assigned To"];
+      let user = null;
+      let userMatchType = null;
+      
+      if (excelUserName) {
+        // First try exact match
+        user = assigneOption.find(
+          (user) => user.name === excelUserName
+        );
+       
+        
+        // If not found, try trimmed match
+        if (!user) {
+          user = assigneOption.find(
+            (user) => user.name && user.name.trim() === excelUserName.trim()
+          );
+          
+        }
+        
+        // If still not found, try case-insensitive trimmed match
+        if (!user) {
+          user = assigneOption.find(
+            (user) => user.name && user.name.trim().toLowerCase() === excelUserName.trim().toLowerCase()
+          );
+        }
+      }
+      
+     
       const batchId = batch ? batch.id : null;
       const instituteId = institute ? institute.id : null;
       const assignedUserId = user ? user.id : null;
@@ -393,15 +491,27 @@ const UpskillingUpload = (props) => {
   useEffect(() => {
     const getbatch = async () => {
       let batchData = await getAllBatchs();
-      setBatchOption(batchData);
+      setBatchOption(batchData || []);
+      
       let instituteData = await getAllInstitute();
-      setInstituteOptions(instituteData);
+      setInstituteOptions(instituteData || []);
+      
       const data = await getAllMedhaUsers();
-      setAssigneeOption(data);
+      setAssigneeOption(data || []);
+      
+      setDataLoaded(true);
     };
 
     getbatch();
   }, [props]);
+  
+  // Process pending Excel data once all data is loaded
+  useEffect(() => {
+    if (dataLoaded && pendingExcelData && batchOption.length > 0 && instituteOptions.length > 0 && assigneOption.length > 0) {
+      processParsedData(pendingExcelData);
+      setPendingExcelData(null); // Clear pending data
+    }
+  }, [dataLoaded, batchOption, instituteOptions, assigneOption, pendingExcelData]);
 
   return (
     <>
