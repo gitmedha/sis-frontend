@@ -695,12 +695,16 @@ query GET_ALL_BATCHES {
 }
 `;
 
+
+
 export const GET_ALL_BATCHES_UPLOAD_FILE = `
-query GET_ALL_BATCHES {
-  batches {
-    id
-    name
-    status
+query GET_ALL_BATCHES_UPLOAD_FILE($start:Int, $limit:Int) {
+  batchesConnection(start:$start, limit:$limit) {
+    values {
+      id
+      name
+      status
+    }
   }
 }
 `;
