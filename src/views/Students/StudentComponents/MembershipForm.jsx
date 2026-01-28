@@ -86,8 +86,8 @@ const MembershipForm = (props) => {
       receipt_number: membership.receipt_number,
       membership_status: membership.membership_status,
       reason_for_cancellation: membership.reason_for_cancellation || "",
+      student: student.full_name,
     };
-    console.log(initialValues, "initial values in membership form");
   }
 
   const handleClose = () => {
