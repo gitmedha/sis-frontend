@@ -1676,7 +1676,7 @@ const SampleFile = () => {
       case "mentorship":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Mentorship-Template.xlsx";
       case "upskilling":
-        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student+Upskilling+Template.xlsx";
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student%2BUpskilling%2BTemplate.xlsx";
       case "collegePitches":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
       case "alumniQueries":
