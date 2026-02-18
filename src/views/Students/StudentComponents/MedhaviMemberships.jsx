@@ -115,19 +115,19 @@ const [formMode, setFormMode] = useState('create');
       },
       {
         Header: 'Date of Payment',
-        accessor: 'date_of_payment',
+        accessor: 'date_of_payment_formatted',
       },
       {
         Header: 'Date of Avail',
-        accessor: 'date_of_avail',
+        accessor: 'date_of_avail_formatted',
       },
       {
         Header: 'Date of Settlement',
-        accessor: 'date_of_settlement',
+        accessor: 'date_of_settlement_formatted',
       },
       {
         Header: 'Tenure Completion',
-        accessor: 'tenure_completion_date',
+        accessor: 'tenure_completion_date_formatted',
       },
       {
         Header: 'Updated At',
