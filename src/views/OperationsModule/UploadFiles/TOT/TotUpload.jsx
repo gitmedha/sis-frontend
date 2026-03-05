@@ -238,6 +238,13 @@ const TotUpload = (props) => {
   const { onHide } = props;
   const [file, setFile] = useState(null);
   const handler = (data) => setFile(data);
+  const filteypeoptions = useMemo(
+    () => [
+      { value: "newFileUpload", label: "New Template Upload" },
+      { value: "newData", label: "New Data Entry" },
+    ],
+    []
+  );
   const [assigneOption, setAssigneeOption] = useState([]);
   const [instituteOptions, setInstituteOptions] = useState([]);
   const [excelData, setExcelData] = useState([]);
@@ -1061,7 +1068,8 @@ const handleFileChangeNewFile = (event) => {
           >
             <h1 className="text--primary bebas-thick mb-0">Upload Data TOT</h1>
           </Modal.Title>
-        </Modal.Header> <div className="mb-4  col-3" style={{ marginLeft: '2rem' }}>
+        </Modal.Header>
+        <div className="mb-4  col-3" style={{ marginLeft: '2rem' }}>
           <label htmlFor="uploadType" className="text--primary bebas">
             Select Upload Type
           </label>
