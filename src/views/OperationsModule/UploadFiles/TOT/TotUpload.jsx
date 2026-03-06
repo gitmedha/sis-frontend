@@ -13,6 +13,7 @@ import {
 } from "react-icons/fa";
 // import CheckValuesOpsUploadedData from "./CheckValuesOpsUploadedData";
 import * as XLSX from "xlsx";
+import { useMemo } from "react";
 import {
   getAddressOptions,
   getStateDistricts,
@@ -238,6 +239,13 @@ const TotUpload = (props) => {
   const { onHide } = props;
   const [file, setFile] = useState(null);
   const handler = (data) => setFile(data);
+  const filteypeoptions = useMemo(
+    () => [
+      { value: "newFileUpload", label: "New Template Upload" },
+      { value: "newData", label: "New Data Entry" },
+    ],
+    []
+  );
   const [assigneOption, setAssigneeOption] = useState([]);
   const [instituteOptions, setInstituteOptions] = useState([]);
   const [excelData, setExcelData] = useState([]);
@@ -257,7 +265,6 @@ const TotUpload = (props) => {
   const [showForm, setShowForm] = useState(true);
   const [uploadNew, setUploadNew] = useState(false);
   const [uploadType, setUploadType] = useState("newData");
-  const role =localStorage.getItem('role').toLocaleUpperCase()
   useEffect(() => {
     const getdata = async () => {
       const data = await getAllSrmbyname();
@@ -322,7 +329,7 @@ const TotUpload = (props) => {
   };
 
   const processFileData = (jsonData, field = "Fileupload") => {
-    if (field == "fileUpload") {
+    if (field === "Fileupload") {
       const validRecords = [];
       const invalidRecords = [];
       for (const row of jsonData) {
@@ -1061,7 +1068,8 @@ const handleFileChangeNewFile = (event) => {
           >
             <h1 className="text--primary bebas-thick mb-0">Upload Data TOT</h1>
           </Modal.Title>
-        </Modal.Header> <div className="mb-4  col-3" style={{ marginLeft: '2rem' }}>
+        </Modal.Header>
+        <div className="mb-4  col-3" style={{ marginLeft: '2rem' }}>
           <label htmlFor="uploadType" className="text--primary bebas">
             Select Upload Type
           </label>
