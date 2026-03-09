@@ -147,10 +147,11 @@ export const EmploymentConnectionValidations = Yup.object({
   end_date: Yup.string()
     .nullable()
     .when("status", {
-      is: (status) => status === "Internship Complete",
+      is: (status) =>
+        status === "Internship Complete" || status === "Project Completed",
       then: Yup.string()
         .nullable()
-        .required("End date is required when internship complete."),
+        .required("End date is required when status is complete."),
     }),
   work_engagement,
   assigned_to,

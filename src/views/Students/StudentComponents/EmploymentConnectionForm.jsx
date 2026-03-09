@@ -248,9 +248,13 @@ const EnrollmentConnectionForm = (props) => {
     setShowEndDate(
       selectedStatus === "Internship Complete" ||
       selectedStatus === "Offer Accepted by Student" ||
+      selectedStatus === "Project Completed" ||
       selectedOpportunityType === "Apprenticeship"
     );
-    setEndDateMandatory(selectedStatus === "Internship Complete");
+    setEndDateMandatory(
+      selectedStatus === "Internship Complete" ||
+      selectedStatus === "Project Completed"
+    );
   }, [selectedStatus, selectedOpportunityType]);
 
   useEffect(() => {
