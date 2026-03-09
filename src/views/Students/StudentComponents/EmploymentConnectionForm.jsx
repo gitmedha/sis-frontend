@@ -102,10 +102,10 @@ const EnrollmentConnectionForm = (props) => {
       ? props.employmentConnection.opportunity.id
       : null;
     initialValues["start_date"] = props.employmentConnection.start_date
-    ? props.employmentConnection.start_date.slice(0, 11)
+      ? new Date(props.employmentConnection.start_date)
       : null;
     initialValues["end_date"] = props.employmentConnection.end_date
-      ? new Date(props.employmentConnection?.end_date)
+      ? new Date(props.employmentConnection.end_date)
       : null;
   }
 
@@ -302,7 +302,7 @@ const EnrollmentConnectionForm = (props) => {
 
   if (props.employmentConnection) {
     filterEmployer(
-      Number(props.employmentConnection?.opportunity?.employer?.name)
+      props.employmentConnection?.opportunity?.employer?.name
     ).then((data) => {
       setEmployerOptions(data);
     });
