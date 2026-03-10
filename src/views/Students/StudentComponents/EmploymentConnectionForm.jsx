@@ -585,20 +585,6 @@ console.log(statusOptions,'statusOptions')
                       onChange={(e) => handleStatusChange(e.value)}
                     />
                   </div>
-                  {selectedOpportunityType === "Freelance" && (
-                    <div className="col-md-6 col-sm-12 mt-2">
-                      <Input
-                        icon="down"
-                        control="lookup"
-                        name="earning_type"
-                        label="Earning Type"
-                        options={earningTypeOptions}
-                        className="form-control"
-                        placeholder="Earning Type"
-                        required
-                      />
-                    </div>
-                  )}
                   <div className="col-md-6 col-sm-12 mt-2">
                     <Input
                       name="start_date"
