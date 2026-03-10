@@ -37,13 +37,15 @@ const EmploymentConnection = (props) => {
   const [opportunitiesPickList, setOpportunitiesPickList] = useState([]);
 
   let endDate = '';
-  if (employmentConnection.opportunity && employmentConnection.opportunity.type === 'Internship' && employmentConnection.status === 'Internship Complete' ) {
-    endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
-  }if(employmentConnection.opportunity && employmentConnection.opportunity.type === 'Apprenticeship'){
-    endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
-  }
-  if(employmentConnection.opportunity && employmentConnection.opportunity.type === 'Apprenticeship'){
-    endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
+  if (employmentConnection.end_date) {
+    if (
+      (employmentConnection.opportunity?.type === 'Internship' && employmentConnection.status === 'Internship Complete') ||
+      (employmentConnection.opportunity?.type === 'Apprenticeship') ||
+      (employmentConnection.status === 'Offer Accepted by Student') ||
+      (employmentConnection.status === 'Project Completed')
+    ) {
+      endDate = moment(employmentConnection.end_date).format("DD MMM YYYY");
+    }
   }
 
   useEffect(() => {
@@ -124,7 +126,7 @@ const EmploymentConnection = (props) => {
             <div className="col-md-6 col-sm-12">
               <DetailField label="Assigned To" value={employmentConnection.assigned_to ? employmentConnection.assigned_to?.username : ''} />
               <DetailField label="Start Date" value={employmentConnection.start_date ? moment(employmentConnection.start_date).format("DD MMM YYYY") : ''} />
-              <DetailField label="End Date" value={endDate} />
+              {endDate && <DetailField label="End Date" value={endDate} />}
               <DetailField label="Rejection reason" value={employmentConnection.reason_if_rejected} />
               {employmentConnection.reason_if_rejected_other && <DetailField label="Specify rejection reason" value={employmentConnection.reason_if_rejected_other} />}
               <DetailField label="Salary Offered" value={employmentConnection.salary_offered} />
