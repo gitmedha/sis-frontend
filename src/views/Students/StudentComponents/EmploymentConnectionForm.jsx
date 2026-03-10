@@ -315,13 +315,24 @@ const EnrollmentConnectionForm = (props) => {
     }
   }, []);
 
-  const handleStatusChange = async (value) => {
+  const requiresEndDateFor = (status, opportunityType) =>
+    status === "Internship Complete" ||
+    status === "Offer Accepted by Student" ||
+    status === "Project Completed" ||
+    opportunityType === "Apprenticeship";
+
+  const handleStatusChange = async (value, setFieldValue) => {
     setSelectedStatus(value);
-    if (value === "Rejected by Employer") {
-      setRejected(true);
-    } else if (value === "Student Dropped Out") {
-      setRejected(true);
-    } else if (value === "Rejected by Student") {
+
+    if (!requiresEndDateFor(value, selectedOpportunityType)) {
+      setFieldValue("end_date", null);
+    }
+
+    if (
+      value === "Rejected by Employer" ||
+      value === "Student Dropped Out" ||
+      value === "Rejected by Student"
+    ) {
       setRejected(true);
     } else {
       setRejected(false);
@@ -458,7 +469,9 @@ const EnrollmentConnectionForm = (props) => {
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
-                      onChange={(e) => handleStatusChange(e.value)}
+                      onChange={(e) =>
+                        handleStatusChange(e.value, setFieldValue)
+                      }
                     />
                   </div>
                   {isFreelanceOpportunityType(selectedOpportunityType) && (
