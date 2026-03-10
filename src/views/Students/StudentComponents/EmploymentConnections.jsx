@@ -125,8 +125,10 @@ const EmploymentConnections = (props) => {
     []
   );
 
-  const handleRowClick = (programEnrollment) => {
-    setSelectedEmploymentConnection(programEnrollment);
+  const handleRowClick = (row) => {
+    // Use the original employmentConnection object (not the table-mapped row)
+    const original = employmentConnections.find((ec) => ec.id === row.id);
+    setSelectedEmploymentConnection(original || row);
     setViewModalShow(true);
   };
 
