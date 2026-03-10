@@ -36,6 +36,10 @@ const Section = styled.div`
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student, employmentConnection } = props;
+  const isFreelanceOpportunityType = (type) =>
+    String(type || "")
+      .toLowerCase()
+      .includes("freelance");
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
@@ -112,9 +116,9 @@ const EnrollmentConnectionForm = (props) => {
   };
 
   const onSubmit = async (values) => {
-    if (selectedOpportunityType !== 'Freelance') {
-          values.earning_type = null;   
-        }
+    if (!isFreelanceOpportunityType(selectedOpportunityType)) {
+      values.earning_type = null;
+    }
     onHide(values);
   };
 
@@ -210,7 +214,7 @@ const EnrollmentConnectionForm = (props) => {
       selectedOpportunityType === "UnPaid GIG" ||
       selectedOpportunityType === "Paid GIG" ||
       selectedOpportunityType === "Apprenticeship" ||
-      selectedOpportunityType === "Freelance"
+      isFreelanceOpportunityType(selectedOpportunityType)
     ) {
       filteredOptions = allStatusOptions.filter(
         (item) =>
@@ -227,6 +231,14 @@ const EnrollmentConnectionForm = (props) => {
       );
     }
     // setStatusOptions(filteredOptions);
+
+    // Only show these statuses for Freelance opportunities
+    if (!isFreelanceOpportunityType(selectedOpportunityType)) {
+      filteredOptions = filteredOptions.filter(
+        (item) =>
+          item.value !== "Project Started" && item.value !== "Project Completed"
+      );
+    }
 
     setStatusOptions(
       filteredOptions.map((item) => {
@@ -351,8 +363,12 @@ const EnrollmentConnectionForm = (props) => {
           validate={(values) => {
             const errors = {};
             // Require earning_type only when the chosen opportunity TYPE is Freelance
-            if (selectedOpportunityType === 'Freelance' && !values.earning_type) {
-              errors.earning_type = 'Earning type is required when type is Freelance.';
+            if (
+              isFreelanceOpportunityType(selectedOpportunityType) &&
+              !values.earning_type
+            ) {
+              errors.earning_type =
+                "Earning type is required when type is Freelance.";
             }
         
             return errors;
@@ -445,7 +461,7 @@ const EnrollmentConnectionForm = (props) => {
                       onChange={(e) => handleStatusChange(e.value)}
                     />
                   </div>
-                  {selectedOpportunityType === "Freelance" && (
+                  {isFreelanceOpportunityType(selectedOpportunityType) && (
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         icon="down"
