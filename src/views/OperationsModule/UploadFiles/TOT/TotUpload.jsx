@@ -1062,22 +1062,25 @@ const handleFileChangeNewFile = (event) => {
           >
             <h1 className="text--primary bebas-thick mb-0">Upload Data TOT</h1>
           </Modal.Title>
-        </Modal.Header> <div className="mb-4  col-3" style={{ marginLeft: '2rem' }}>
-          <label htmlFor="uploadType" className="text--primary bebas">
-            Select Upload Type
-          </label>
-          <Select
-            id="uploadType"
-            className="basic-single"
-            classNamePrefix="select"
-            value={options.find((option) => option.value === uploadType)}
-            onChange={(selectedOption) => {
-              setUploadType(selectedOption.value);
-            }}
-            options={filteypeoptions}
-            placeholder="Choose upload type..."
-          />
-        </div> 
+        </Modal.Header>
+        {isAdmin() && (
+          <div className="mb-4  col-3" style={{ marginLeft: "2rem" }}>
+            <label htmlFor="uploadType" className="text--primary bebas">
+              Select Upload Type
+            </label>
+            <Select
+              id="uploadType"
+              className="basic-single"
+              classNamePrefix="select"
+              value={options.find((option) => option.value === uploadType)}
+              onChange={(selectedOption) => {
+                setUploadType(selectedOption.value);
+              }}
+              options={filteypeoptions}
+              placeholder="Choose upload type..."
+            />
+          </div>
+        )}
         
         {uploadType == "newData" && <Styled>
           {showForm ? (
