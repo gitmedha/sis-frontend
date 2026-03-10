@@ -41,6 +41,10 @@ const Section = styled.div`
 
 const EnrollmentConnectionForm = (props) => {
   let { onHide, show, student, employmentConnection } = props;
+  const isFreelanceOpportunityType = (type) =>
+    String(type || "")
+      .toLowerCase()
+      .includes("freelance");
   const [assigneeOptions, setAssigneeOptions] = useState([]);
   const [employerOptions, setEmployerOptions] = useState([]);
   const [allStatusOptions, setAllStatusOptions] = useState([]);
@@ -236,6 +240,9 @@ const EnrollmentConnectionForm = (props) => {
     values.earning_type = null;   
   }
 
+    if (!isFreelanceOpportunityType(selectedOpportunityType)) {
+      values.earning_type = null;
+    }
     onHide(values);
   };
 
@@ -330,7 +337,7 @@ const EnrollmentConnectionForm = (props) => {
       selectedOpportunityType === "UnPaid GIG" ||
       selectedOpportunityType === "Paid GIG" ||
       selectedOpportunityType === "Apprenticeship" ||
-      selectedOpportunityType === "Freelance"
+      isFreelanceOpportunityType(selectedOpportunityType)
     ) {
       filteredOptions = allStatusOptions.filter(
         (item) =>
@@ -349,6 +356,14 @@ const EnrollmentConnectionForm = (props) => {
       );
     }
     // setStatusOptions(filteredOptions);
+
+    // Only show these statuses for Freelance opportunities
+    if (!isFreelanceOpportunityType(selectedOpportunityType)) {
+      filteredOptions = filteredOptions.filter(
+        (item) =>
+          item.value !== "Project Started" && item.value !== "Project Completed"
+      );
+    }
 
     setStatusOptions(
       filteredOptions.map((item) => {
@@ -425,13 +440,25 @@ const EnrollmentConnectionForm = (props) => {
     }
   }, []);
 
-  const handleStatusChange = async (value) => {
+  const handleStatusChange = async (value, setFieldValue) => {
     setSelectedStatus(value);
-    if (value === "Rejected by Employer") {
-      setRejected(true);
-    } else if (value === "Student Dropped Out") {
-      setRejected(true);
-    } else if (value === "Rejected by Student") {
+
+    // Clear end_date if the selected status/opportunity type does not require an end date
+    const requiresEndDate =
+      value === "Internship Complete" ||
+      value === "Offer Accepted by Student" ||
+      value === "Project Completed" ||
+      selectedOpportunityType === "Apprenticeship";
+
+    if (!requiresEndDate) {
+      setFieldValue("end_date", null);
+    }
+
+    if (
+      value === "Rejected by Employer" ||
+      value === "Student Dropped Out" ||
+      value === "Rejected by Student"
+    ) {
       setRejected(true);
     } else {
       setRejected(false);
@@ -474,8 +501,12 @@ console.log(statusOptions,'statusOptions')
             const errors = {};
         
             // Require earning_type only when the chosen opportunity TYPE is Freelance
-            if (selectedOpportunityType === 'Freelance' && !values.earning_type) {
-              errors.earning_type = 'Earning type is required when type is Freelance.';
+            if (
+              isFreelanceOpportunityType(selectedOpportunityType) &&
+              !values.earning_type
+            ) {
+              errors.earning_type =
+                "Earning type is required when type is Freelance.";
             }
         
             return errors;
@@ -556,8 +587,20 @@ console.log(statusOptions,'statusOptions')
                       </>
                     )}
                   </div>
-
-                  {selectedOpportunityType === "Freelance" && (
+                  <div className="col-md-6 col-sm-12 mt-2">
+                    <Input
+                      icon="down"
+                      control="lookup"
+                      name="status"
+                      label="Status"
+                      required
+                      options={statusOptions}
+                      className="form-control"
+                      placeholder="Status"
+                      onChange={(e) => handleStatusChange(e.value, setFieldValue)}
+                    />
+                  </div>
+                  {isFreelanceOpportunityType(selectedOpportunityType) && (
                     <div className="col-md-6 col-sm-12 mt-2">
                       <Input
                         icon="down"
@@ -582,7 +625,7 @@ console.log(statusOptions,'statusOptions')
                       options={statusOptions}
                       className="form-control"
                       placeholder="Status"
-                      onChange={(e) => handleStatusChange(e.value)}
+                      onChange={(e) => handleStatusChange(e.value, setFieldValue)}
                     />
                   </div>
                   <div className="col-md-6 col-sm-12 mt-2">
