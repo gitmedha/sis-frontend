@@ -314,6 +314,13 @@ const StudentForm = (props) => {
                         control="input"
                         placeholder="Name"
                         className="form-control capitalize"
+                        onChange={(event) => {
+                          const englishOnlyValue = event.target.value.replace(
+                            /[^\x00-\x7F]/g,
+                            ""
+                          );
+                          setFieldValue("full_name", englishOnlyValue);
+                        }}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
@@ -341,6 +348,16 @@ const StudentForm = (props) => {
                         control="input"
                         placeholder="Parents Name"
                         className="form-control capitalize"
+                        onChange={(event) => {
+                          const englishOnlyValue = event.target.value.replace(
+                            /[^\x00-\x7F]/g,
+                            ""
+                          );
+                          setFieldValue(
+                            "name_of_parent_or_guardian",
+                            englishOnlyValue
+                          );
+                        }}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
@@ -539,6 +556,13 @@ const StudentForm = (props) => {
                         placeholder="Address"
                         className="form-control capitalize"
                         required
+                        onChange={(event) => {
+                          const englishOnlyValue = event.target.value.replace(
+                            /[^\x00-\x7F]/g,
+                            ""
+                          );
+                          setFieldValue("address", englishOnlyValue);
+                        }}
                       />
                     </div>
                     <div className="col-md-6 col-sm-12 mb-2">
