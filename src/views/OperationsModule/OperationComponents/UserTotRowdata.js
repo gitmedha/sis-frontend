@@ -54,7 +54,7 @@ const UserTotRowdata = (props) => {
       { value: "ITI transformation", label: "ITI transformation", department: "Department of Vocational Education, Skill Development and Entrepreneurship (DVESDE, UP)" }
     ],
     "Bihar": [
-      { value: "Swayam", label: "Swayam", department: "Department of Labor and Resource" }
+      { value: "Swayam", label: "Swayam", department: "Youth, Employment and Skill Department" }
     ]
   };
 
