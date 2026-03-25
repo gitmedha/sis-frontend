@@ -41,6 +41,26 @@ const statusOption = [
   { value: "Unpaid", label: "Unpaid" },
 ];
 
+const ROLE_LABEL_TO_ENUM = {
+  Participant: "Participant",
+  Volunteer: "Volunteer",
+  "Resource Person": "Resource_Person",
+  "Chapter Leader": "Chapter_Leader",
+  "Central Team": "Central_Team",
+};
+
+const ROLE_OPTIONS = Object.entries(ROLE_LABEL_TO_ENUM).map(([label, value]) => ({
+  label,
+  value,
+}));
+
+const getRoleEnumValue = (role) => {
+  if (!role) return role;
+  const roleText = String(role).trim();
+  if (ROLE_LABEL_TO_ENUM[roleText]) return ROLE_LABEL_TO_ENUM[roleText];
+  return roleText;
+};
+
 const AlumniServiceForm = (props) => {
   let { onHide, show } = props;
   const [assigneeOptions, setAssigneeOptions] = useState([]);
@@ -94,7 +114,7 @@ const AlumniServiceForm = (props) => {
           label: item.value,
         }))
       );
-      setRole(data.role);
+      setRole(ROLE_OPTIONS);
     });
   }, []);
 
@@ -208,7 +228,7 @@ const AlumniServiceForm = (props) => {
     initialValues["category"] = props.alumniService.category
       ? props.alumniService.category
       : null;
-      initialValues["role"]=props.alumniService?.role
+      initialValues["role"] = getRoleEnumValue(props.alumniService?.role);
   }
 
   const handleClose = () => {
