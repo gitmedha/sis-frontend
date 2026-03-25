@@ -61,6 +61,14 @@ const Section = styled.div`
   }
 `;
 
+const ROLE_ENUM_TO_LABEL = {
+  Participant: "Participant",
+  Volunteer: "Volunteer",
+  Resource_Person: "Resource Person",
+  Chapter_Leader: "Chapter Leader",
+  Central_Team: "Central Team",
+};
+
 const AlumniService = (props) => {
   let { onHide, show, handleEdit, handleDelete, student } = props;
   const [alumniService, setAlumniService] = useState(props.alumniService);
@@ -110,7 +118,10 @@ const AlumniService = (props) => {
                 <DetailField label="Category" value={alumniService.category}/>
                 
                 {props.alumniService.category &&  <DetailField label="Subcategory" value={alumniService.type}/>}
-                <DetailField label="Role" value={alumniService?.role}/>
+                <DetailField
+                  label="Role"
+                  value={ROLE_ENUM_TO_LABEL[alumniService?.role] || alumniService?.role}
+                />
               </div>
             </div>
           </FileStyled>
