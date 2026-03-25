@@ -132,6 +132,7 @@ const alumniServicesFields = `
   fee_amount
   comments
   status
+  role
   created_at
   updated_at
 `;
