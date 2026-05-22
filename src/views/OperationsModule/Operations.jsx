@@ -1678,9 +1678,9 @@ const SampleFile = () => {
       case "upskilling":
         return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Student%2BUpskilling%2BTemplate.xlsx";
       case "collegePitches":
-        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching+Template.xlsx";
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Pitching%2BTemplate.xlsx";
       case "alumniQueries":
-        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Alumni+Queries+Template.xlsx";
+        return "https://medhasisstg.s3.ap-south-1.amazonaws.com/Alumni%2BQueries%2BTemplate.xlsx";
       default:
         return ""; // Fallback in case the tab doesn't match
     }
