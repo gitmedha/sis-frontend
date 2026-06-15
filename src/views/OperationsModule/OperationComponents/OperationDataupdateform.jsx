@@ -109,14 +109,24 @@ const OperationDataupdateform = (props) => {
   const filterInstitution = async (filterValue) => {
     try {
       const { data } = await searchInstitutions(filterValue);
+      let institutionInformation = props ? props.institution : null;
+      let institutionFoundInList = false;
       let filterData = data.institutionsConnection.values.map((institution) => {
+        if (props && institution.id === Number(institutionInformation?.id)) {
+          institutionFoundInList = true;
+        }
         return {
           ...institution,
           label: institution.name,
           value: Number(institution.id),
         };
       });
-
+      if (props && institutionInformation !== null && !institutionFoundInList) {
+        filterData.unshift({
+          label: institutionInformation.name,
+          value: Number(institutionInformation.id),
+        });
+      }
       return filterData;
     } catch (error) {
       console.error(error);
@@ -233,7 +243,9 @@ const OperationDataupdateform = (props) => {
 
   if (props) {
     initialValues["batch"] = Number(props?.batch?.id);
-    initialValues["institution"] = Number(props.institution.id);
+    initialValues["institution"] = props?.institution?.id
+      ? Number(props.institution.id)
+      : "";
     initialValues["topic"] = props.topic;
     initialValues["activity_type"] = props.activity_type;
     initialValues["assigned_to"] = props.assigned_to.id.toString();
@@ -380,18 +392,16 @@ const OperationDataupdateform = (props) => {
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
-                          {institutionOptions.length && (
-                            <Input
-                              control="lookup"
-                              name="institution"
-                              label="Institution"
-                              // filterData={filterInstitution}
-                              Options={institutionOptions}
-                              placeholder="Institution"
-                              className="form-control"
-                              // isClearable
-                            />
-                          )}
+                          <Input
+                            control="lookupAsync"
+                            name="institution"
+                            label="Institution"
+                            filterData={filterInstitution}
+                            defaultOptions={institutionOptions}
+                            placeholder="Institution"
+                            className="form-control"
+                            isClearable
+                          />
                         </div>
 
                         <div className="col-md-6 col-sm-12 mb-2">
