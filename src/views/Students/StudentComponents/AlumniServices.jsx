@@ -23,6 +23,14 @@ const AlumniServices = (props) => {
   const [alumniServices, setAlumniServices] = useState([]);
   const [selectedAlumniService, setSelectedAlumniService] = useState({});
 
+  
+
+  const getGraphQLError = (response) => {
+    const errors = response?.data?.errors;
+    if (errors?.length) return errors[0]?.message || "Unable to save Alumni Engagement.";
+    return null;
+  };
+
   const fetchStudentAlumniServices = async (limit=paginationPageSize, offset=0, sortBy='updated_at', sortOrder = 'asc') => {
     NP.start();
     await getStudentAlumniServices(Number(id), limit, offset, sortBy, sortOrder)
@@ -169,6 +177,11 @@ const AlumniServices = (props) => {
 
      NP.start();
      createAlumniService(dataToSave).then(data => {
+      const gqlError = getGraphQLError(data);
+      if (gqlError) {
+        setAlert(gqlError, "error");
+        return;
+      }
       setAlert("Alumni Engagement created successfully.", "success");
     }).catch(err => {
       setAlert("Unable to create Alumni Engagement.", "error");
@@ -197,6 +210,11 @@ const AlumniServices = (props) => {
 
     NP.start();
     updateAlumniService(Number(id), dataToSave).then(data => {
+      const gqlError = getGraphQLError(data);
+      if (gqlError) {
+        setAlert(gqlError, "error");
+        return;
+      }
       setAlert("Alumni Engagement updated successfully.", "success");
     }).catch(err => {
       
